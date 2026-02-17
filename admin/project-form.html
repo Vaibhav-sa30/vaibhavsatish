@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Project - Local Only</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        button {
+            background: #2563eb;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #1d4ed8;
+        }
+        .output {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            display: none;
+        }
+        .copy-btn {
+            background: #10b981;
+            margin-top: 10px;
+        }
+        .copy-btn:hover {
+            background: #059669;
+        }
+        .warning {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🚀 Add New Project</h1>
+    
+    <div class="warning">
+        <strong>⚠️ Local Use Only!</strong> This form is for your convenience. 
+        It generates JSON that you'll copy into <code>js/components/projects.js</code>
+    </div>
+
+    <form id="projectForm">
+        <div class="form-group">
+            <label>Project ID (lowercase-with-dashes):</label>
+            <input type="text" id="id" required placeholder="my-awesome-project">
+        </div>
+
+        <div class="form-group">
+            <label>Project Title:</label>
+            <input type="text" id="title" required placeholder="My Awesome Project">
+        </div>
+
+        <div class="form-group">
+            <label>Category:</label>
+            <select id="category" required>
+                <option value="fullstack">Full-Stack</option>
+                <option value="ml">Machine Learning</option>
+                <option value="data-analysis">Data Analysis</option>
+                <option value="research">Research</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Short Description (for card):</label>
+            <textarea id="description" required placeholder="Brief description for project card"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Long Description (for modal):</label>
+            <textarea id="longDescription" required placeholder="Detailed description for project details"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Technologies (comma-separated):</label>
+            <input type="text" id="technologies" required placeholder="Python, TensorFlow, Flask, Docker">
+        </div>
+
+        <div class="form-group">
+            <label>GitHub URL:</label>
+            <input type="url" id="githubUrl" required placeholder="https://github.com/username/project">
+        </div>
+
+        <div class="form-group">
+            <label>Live Demo URL (optional):</label>
+            <input type="url" id="liveUrl" placeholder="https://project-demo.com">
+        </div>
+
+        <div class="form-group">
+            <label>Key Outcomes (one per line):</label>
+            <textarea id="outcomes" required placeholder="Achieved 95% accuracy&#10;Reduced processing time by 50%&#10;Published research paper"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Featured Project?</label>
+            <select id="featured">
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+            </select>
+        </div>
+
+        <button type="submit">Generate JSON</button>
+    </form>
+
+    <div class="output" id="output"></div>
+    <button class="copy-btn" id="copyBtn" style="display: none;">📋 Copy to Clipboard</button>
+
+    <script>
+        document.getElementById('projectForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const project = {
+                id: document.getElementById('id').value,
+                title: document.getElementById('title').value,
+                category: document.getElementById('category').value,
+                description: document.getElementById('description').value,
+                longDescription: document.getElementById('longDescription').value,
+                technologies: document.getElementById('technologies').value.split(',').map(t => t.trim()),
+                images: [
+                    `assets/images/${document.getElementById('id').value}-1.jpg`,
+                    `assets/images/${document.getElementById('id').value}-2.jpg`
+                ],
+                githubUrl: document.getElementById('githubUrl').value,
+                liveUrl: document.getElementById('liveUrl').value || null,
+                outcomes: document.getElementById('outcomes').value.split('\n').filter(o => o.trim()),
+                featured: document.getElementById('featured').value === 'true'
+            };
+
+            const jsonOutput = JSON.stringify(project, null, 4);
+            const outputDiv = document.getElementById('output');
+            const copyBtn = document.getElementById('copyBtn');
+
+            outputDiv.textContent = jsonOutput;
+            outputDiv.style.display = 'block';
+            copyBtn.style.display = 'inline-block';
+
+            copyBtn.onclick = function() {
+                navigator.clipboard.writeText(jsonOutput).then(() => {
+                    copyBtn.textContent = '✅ Copied!';
+                    setTimeout(() => {
+                        copyBtn.textContent = '📋 Copy to Clipboard';
+                    }, 2000);
+                });
+            };
+
+            // Scroll to output
+            outputDiv.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // Auto-generate ID from title
+        document.getElementById('title').addEventListener('input', function(e) {
+            const idField = document.getElementById('id');
+            if (!idField.value || idField.value === idField.dataset.autoGenerated) {
+                const autoId = e.target.value.toLowerCase()
+                    .replace(/[^a-z0-9]+/g, '-')
+                    .replace(/^-|-$/g, '');
+                idField.value = autoId;
+                idField.dataset.autoGenerated = autoId;
+            }
+        });
+    </script>
+</body>
+</html>

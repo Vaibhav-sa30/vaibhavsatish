@@ -1,0 +1,100 @@
+# GitHub Pages Configuration
+title: "Data Science Portfolio"
+description: "Professional portfolio showcasing data science projects, research work, and expertise in responsible AI"
+author: "Data Science Student"
+email: "[your-email]@example.com"
+url: "https://[username].github.io"
+baseurl: ""
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+permalink: pretty
+
+# Plugins
+plugins:
+  - jekyll-sitemap
+  - jekyll-feed
+  - jekyll-seo-tag
+
+# SEO settings
+lang: en_US
+twitter:
+  username: "[twitter-username]"
+  card: summary_large_image
+
+social:
+  name: "[Your Name]"
+  links:
+    - https://github.com/[username]
+    - https://linkedin.com/in/[username]
+    - https://twitter.com/[username]
+
+# Google Analytics (optional)
+google_analytics: "[GA-TRACKING-ID]"
+
+# Exclude files from processing
+exclude:
+  - README.md
+  - LICENSE
+  - CHANGELOG.md
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+  - .sass-cache
+  - .jekyll-cache
+  - gemfiles
+  - test
+  - optimize.js
+  - package.json
+  - package-lock.json
+  - .github
+  - .gitignore
+  - .vscode
+
+# Include files
+include:
+  - _pages
+  - assets
+  - .htaccess
+  - .well-known
+
+# Collections
+collections:
+  projects:
+    output: false
+  research:
+    output: false
+
+# Default front matter
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "default"
+  - scope:
+      path: ""
+      type: "projects"
+    values:
+      layout: "project"
+  - scope:
+      path: ""
+      type: "research"
+    values:
+      layout: "research"
+
+# Sass configuration
+sass:
+  sass_dir: _sass
+  style: compressed
+
+# Compression
+compress_html:
+  clippings: all
+  comments: all
+  endings: all
+  startings: []
+  blanklines: false
+  profile: false

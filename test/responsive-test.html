@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Design Testing Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .test-header {
+            background: #2563eb;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .test-controls {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .device-btn {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .device-btn:hover,
+        .device-btn.active {
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+        }
+        
+        .test-frame-container {
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .test-frame {
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin: 0 auto;
+            transition: all 0.3s ease;
+            background: white;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .device-info {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .test-results {
+            padding: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .test-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .test-status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .test-status.pass {
+            background: #10b981;
+            color: white;
+        }
+        
+        .test-status.fail {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .test-status.warning {
+            background: #f59e0b;
+            color: white;
+        }
+        
+        .custom-size {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .custom-size input {
+            width: 80px;
+            padding: 4px 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h1>Portfolio Responsive Design Testing</h1>
+            <p>Test your portfolio across different devices and screen sizes</p>
+        </div>
+        
+        <div class="test-controls">
+            <button class="device-btn active" data-width="375" data-height="667" data-name="iPhone SE">iPhone SE</button>
+            <button class="device-btn" data-width="390" data-height="844" data-name="iPhone 12">iPhone 12</button>
+            <button class="device-btn" data-width="414" data-height="896" data-name="iPhone 12 Pro Max">iPhone 12 Pro Max</button>
+            <button class="device-btn" data-width="768" data-height="1024" data-name="iPad">iPad</button>
+            <button class="device-btn" data-width="1024" data-height="768" data-name="iPad Landscape">iPad Landscape</button>
+            <button class="device-btn" data-width="1280" data-height="720" data-name="Desktop">Desktop</button>
+            <button class="device-btn" data-width="1920" data-height="1080" data-name="Large Desktop">Large Desktop</button>
+            
+            <div class="custom-size">
+                <label>Custom:</label>
+                <input type="number" id="custom-width" placeholder="Width" value="375">
+                <span>×</span>
+                <input type="number" id="custom-height" placeholder="Height" value="667">
+                <button class="device-btn" id="apply-custom">Apply</button>
+            </div>
+        </div>
+        
+        <div class="test-frame-container">
+            <iframe class="test-frame" id="test-frame" src="../index.html" width="375" height="667"></iframe>
+            <div class="device-info" id="device-info">iPhone SE - 375 × 667</div>
+        </div>
+        
+        <div class="test-results">
+            <h3>Responsive Design Checklist</h3>
+            <div id="test-results-list">
+                <!-- Test results will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class ResponsiveTestTool {
+            constructor() {
+                this.frame = document.getElementById('test-frame');
+                this.deviceInfo = document.getElementById('device-info');
+                this.deviceButtons = document.querySelectorAll('.device-btn');
+                this.customWidth = document.getElementById('custom-width');
+                this.customHeight = document.getElementById('custom-height');
+                this.applyCustom = document.getElementById('apply-custom');
+                this.testResultsList = document.getElementById('test-results-list');
+                
+                this.currentDevice = { name: 'iPhone SE', width: 375, height: 667 };
+                this.testResults = new Map();
+                
+                this.init();
+            }
+            
+            init() {
+                this.setupEventListeners();
+                this.runTests();
+                this.updateTestResults();
+            }
+            
+            setupEventListeners() {
+                this.deviceButtons.forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        if (e.target.id === 'apply-custom') {
+                            this.applyCustomSize();
+                        } else {
+                            this.selectDevice(e.target);
+                        }
+                    });
+                });
+                
+                this.frame.addEventListener('load', () => {
+                    setTimeout(() => {
+                        this.runTests();
+                        this.updateTestResults();
+                    }, 1000);
+                });
+            }
+            
+            selectDevice(button) {
+                this.deviceButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                
+                const width = parseInt(button.dataset.width);
+                const height = parseInt(button.dataset.height);
+                const name = button.dataset.name;
+                
+                this.setFrameSize(width, height, name);
+            }
+            
+            applyCustomSize() {
+                const width = parseInt(this.customWidth.value) || 375;
+                const height = parseInt(this.customHeight.value) || 667;
+                
+                this.deviceButtons.forEach(btn => btn.classList.remove('active'));
+                this.applyCustom.classList.add('active');
+                
+                this.setFrameSize(width, height, 'Custom');
+            }
+            
+            setFrameSize(width, height, name) {
+                this.frame.style.width = width + 'px';
+                this.frame.style.height = height + 'px';
+                this.deviceInfo.textContent = `${name} - ${width} × ${height}`;
+                
+                this.currentDevice = { name, width, height };
+                
+                // Run tests after frame resize
+                setTimeout(() => {
+                    this.runTests();
+                    this.updateTestResults();
+                }, 500);
+            }
+            
+            runTests() {
+                try {
+                    const frameDoc = this.frame.contentDocument || this.frame.contentWindow.document;
+                    
+                    // Test 1: Navigation visibility
+                    this.testResults.set('navigation', this.testNavigation(frameDoc));
+                    
+                    // Test 2: Content readability
+                    this.testResults.set('readability', this.testReadability(frameDoc));
+                    
+                    // Test 3: Button accessibility
+                    this.testResults.set('buttons', this.testButtons(frameDoc));
+                    
+                    // Test 4: Image responsiveness
+                    this.testResults.set('images', this.testImages(frameDoc));
+                    
+                    // Test 5: Form usability
+                    this.testResults.set('forms', this.testForms(frameDoc));
+                    
+                    // Test 6: Layout integrity
+                    this.testResults.set('layout', this.testLayout(frameDoc));
+                    
+                    // Test 7: Performance
+                    this.testResults.set('performance', this.testPerformance(frameDoc));
+                    
+                } catch (error) {
+                    console.error('Testing error:', error);
+                }
+            }
+            
+            testNavigation(doc) {
+                const nav = doc.querySelector('.nav');
+                const navToggle = doc.querySelector('.nav__toggle');
+                
+                if (!nav) return { status: 'fail', message: 'Navigation not found' };
+                
+                const navRect = nav.getBoundingClientRect();
+                const isVisible = navRect.width > 0 && navRect.height > 0;
+                
+                if (this.currentDevice.width <= 767) {
+                    // Mobile: should have hamburger menu
+                    if (!navToggle || getComputedStyle(navToggle).display === 'none') {
+                        return { status: 'fail', message: 'Mobile menu toggle not visible' };
+                    }
+                    return { status: 'pass', message: 'Mobile navigation working' };
+                } else {
+                    // Desktop: should have full menu
+                    const navMenu = doc.querySelector('.nav__menu');
+                    if (!navMenu || getComputedStyle(navMenu).display === 'none') {
+                        return { status: 'fail', message: 'Desktop menu not visible' };
+                    }
+                    return { status: 'pass', message: 'Desktop navigation working' };
+                }
+            }
+            
+            testReadability(doc) {
+                const textElements = doc.querySelectorAll('p, h1, h2, h3, h4, h5, h6');
+                let issues = 0;
+                
+                textElements.forEach(el => {
+                    const styles = getComputedStyle(el);
+                    const fontSize = parseFloat(styles.fontSize);
+                    
+                    // Check minimum font size
+                    if (fontSize < 14) issues++;
+                    
+                    // Check line height
+                    const lineHeight = parseFloat(styles.lineHeight);
+                    if (lineHeight < fontSize * 1.2) issues++;
+                });
+                
+                if (issues === 0) {
+                    return { status: 'pass', message: 'Text is readable' };
+                } else if (issues < 5) {
+                    return { status: 'warning', message: `${issues} readability issues found` };
+                } else {
+                    return { status: 'fail', message: `${issues} readability issues found` };
+                }
+            }
+            
+            testButtons(doc) {
+                const buttons = doc.querySelectorAll('button, .button, a[role="button"]');
+                let issues = 0;
+                
+                buttons.forEach(btn => {
+                    const rect = btn.getBoundingClientRect();
+                    
+                    // Check minimum touch target size (44px)
+                    if (rect.width < 44 || rect.height < 44) {
+                        issues++;
+                    }
+                });
+                
+                if (issues === 0) {
+                    return { status: 'pass', message: 'All buttons are touch-friendly' };
+                } else {
+                    return { status: 'warning', message: `${issues} buttons below 44px touch target` };
+                }
+            }
+            
+            testImages(doc) {
+                const images = doc.querySelectorAll('img');
+                let issues = 0;
+                
+                images.forEach(img => {
+                    // Check if image has alt text
+                    if (!img.alt) issues++;
+                    
+                    // Check if image is responsive
+                    const styles = getComputedStyle(img);
+                    if (styles.maxWidth !== '100%' && styles.width !== '100%') {
+                        issues++;
+                    }
+                });
+                
+                if (issues === 0) {
+                    return { status: 'pass', message: 'Images are responsive and accessible' };
+                } else {
+                    return { status: 'warning', message: `${issues} image issues found` };
+                }
+            }
+            
+            testForms(doc) {
+                const forms = doc.querySelectorAll('form');
+                const inputs = doc.querySelectorAll('input, textarea, select');
+                let issues = 0;
+                
+                inputs.forEach(input => {
+                    const rect = input.getBoundingClientRect();
+                    
+                    // Check minimum input height
+                    if (rect.height < 44) issues++;
+                    
+                    // Check if input has label
+                    const label = doc.querySelector(`label[for="${input.id}"]`);
+                    if (!label && !input.getAttribute('aria-label')) issues++;
+                });
+                
+                if (inputs.length === 0) {
+                    return { status: 'pass', message: 'No forms to test' };
+                } else if (issues === 0) {
+                    return { status: 'pass', message: 'Forms are accessible and usable' };
+                } else {
+                    return { status: 'warning', message: `${issues} form accessibility issues` };
+                }
+            }
+            
+            testLayout(doc) {
+                const body = doc.body;
+                const bodyRect = body.getBoundingClientRect();
+                
+                // Check for horizontal scrolling
+                if (bodyRect.width > this.currentDevice.width) {
+                    return { status: 'fail', message: 'Horizontal scrolling detected' };
+                }
+                
+                // Check for overlapping elements
+                const sections = doc.querySelectorAll('.section');
+                let overlapping = false;
+                
+                for (let i = 0; i < sections.length - 1; i++) {
+                    const current = sections[i].getBoundingClientRect();
+                    const next = sections[i + 1].getBoundingClientRect();
+                    
+                    if (current.bottom > next.top) {
+                        overlapping = true;
+                        break;
+                    }
+                }
+                
+                if (overlapping) {
+                    return { status: 'warning', message: 'Potential element overlap detected' };
+                }
+                
+                return { status: 'pass', message: 'Layout is stable' };
+            }
+            
+            testPerformance(doc) {
+                const images = doc.querySelectorAll('img');
+                const scripts = doc.querySelectorAll('script');
+                const styles = doc.querySelectorAll('link[rel="stylesheet"]');
+                
+                let score = 100;
+                
+                // Penalize for too many resources
+                if (images.length > 20) score -= 10;
+                if (scripts.length > 10) score -= 10;
+                if (styles.length > 5) score -= 10;
+                
+                // Check for lazy loading
+                const lazyImages = doc.querySelectorAll('img[loading="lazy"]');
+                if (lazyImages.length < images.length * 0.5) score -= 15;
+                
+                if (score >= 90) {
+                    return { status: 'pass', message: `Performance score: ${score}` };
+                } else if (score >= 70) {
+                    return { status: 'warning', message: `Performance score: ${score}` };
+                } else {
+                    return { status: 'fail', message: `Performance score: ${score}` };
+                }
+            }
+            
+            updateTestResults() {
+                this.testResultsList.innerHTML = '';
+                
+                const tests = [
+                    { key: 'navigation', name: 'Navigation Responsiveness' },
+                    { key: 'readability', name: 'Text Readability' },
+                    { key: 'buttons', name: 'Button Accessibility' },
+                    { key: 'images', name: 'Image Responsiveness' },
+                    { key: 'forms', name: 'Form Usability' },
+                    { key: 'layout', name: 'Layout Integrity' },
+                    { key: 'performance', name: 'Performance Check' }
+                ];
+                
+                tests.forEach(test => {
+                    const result = this.testResults.get(test.key);
+                    if (result) {
+                        const testItem = document.createElement('div');
+                        testItem.className = 'test-item';
+                        testItem.innerHTML = `
+                            <span>${test.name}</span>
+                            <span class="test-status ${result.status}">${result.message}</span>
+                        `;
+                        this.testResultsList.appendChild(testItem);
+                    }
+                });
+            }
+        }
+        
+        // Initialize the testing tool
+        document.addEventListener('DOMContentLoaded', () => {
+            new ResponsiveTestTool();
+        });
+    </script>
+</body>
+</html>

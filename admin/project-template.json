@@ -1,0 +1,26 @@
+{
+    "id": "project-name-lowercase",
+    "title": "Project Display Name",
+    "category": "fullstack | ml | data-analysis | research",
+    "description": "Brief 2-3 sentence description for project card. Focus on what the project does and the main problem it solves.",
+    "longDescription": "Detailed 3-5 sentence description for project modal. Include technical details, key features, and impact or results achieved.",
+    "technologies": [
+        "Technology 1",
+        "Technology 2",
+        "Technology 3",
+        "Technology 4"
+    ],
+    "images": [
+        "assets/images/project-name-lowercase-1.jpg",
+        "assets/images/project-name-lowercase-2.jpg"
+    ],
+    "githubUrl": "https://github.com/username/repository",
+    "liveUrl": "https://project-demo.com (optional, use null if not available)",
+    "outcomes": [
+        "Specific achievement with metrics (e.g., Achieved 95% accuracy)",
+        "Performance improvement (e.g., Reduced processing time by 50%)",
+        "Recognition or ranking (e.g., Top 10% in competition)",
+        "Publication or presentation (e.g., Published at ACM Conference)"
+    ],
+    "featured": true
+}
