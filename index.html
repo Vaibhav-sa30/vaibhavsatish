@@ -22,7 +22,7 @@
     <meta name="twitter:description"
         content="Portfolio showcasing data science projects, research work, and startup ventures in responsible AI">
 
-    <title>Data Science Student Portfolio</title>
+    <title>Vaibhav Satish</title>
 
     <!-- Preconnect to Google Fonts for performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -42,7 +42,7 @@
     <script src="https://unpkg.com/simple-icons@latest/icons.js"></script>
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="assets/icons/favicon.ico">
+    <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
 
     <!-- Web App Manifest -->
     <link rel="manifest" href="manifest.json">
@@ -62,6 +62,21 @@
 </head>
 
 <body>
+    <!-- Fluid Background Canvas -->
+    <canvas id="fluid-canvas"></canvas>
+
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="loader-content">
+            <svg class="loader-logo" viewBox="0 0 100 100" width="80" height="80">
+                <circle cx="50" cy="50" r="45" stroke="currentColor" stroke-width="2" fill="none"
+                    class="loader-circle" />
+                <text x="50" y="55" text-anchor="middle" font-family="'Inter', sans-serif" font-weight="bold"
+                    font-size="24" fill="currentColor">VS</text>
+            </svg>
+            <div class="loader-text">Loading...</div>
+        </div>
+    </div>
     <!-- Navigation Header -->
     <header class="header" id="header">
         <nav class="nav container">
@@ -82,6 +97,12 @@
                     </li>
                     <li class="nav__item">
                         <a href="#research" class="nav__link">Research</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="writings.html" class="nav__link">Writings</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="#startup" class="nav__link">Startup</a>
                     </li>
                     <li class="nav__item">
                         <a href="#contact" class="nav__link">Contact</a>
@@ -756,6 +777,75 @@
             </div>
         </section>
 
+        <!-- Startup Section -->
+        <section class="startup section" id="startup">
+            <div class="container">
+                <h2 class="section__title">Startup</h2>
+                <span class="section__subtitle">Aicademia: Democratizing Secure AI</span>
+
+                <div class="startup__container grid" style="margin-top: 3rem; align-items: center; gap: 4rem;">
+                    <div class="startup__content">
+                        <h3 class="startup__title"
+                            style="font-size: 2rem; margin-bottom: 1rem; color: var(--title-color);">Aicademia</h3>
+                        <p class="startup__description"
+                            style="margin-bottom: 1.5rem; color: var(--text-color); line-height: 1.6;">
+                            Democratizing app development by empowering non-technical users to build and deploy
+                            applications with confidence.
+                            Our platform ensures that every app built is secure by design, integrating automated
+                            security measures and responsible AI principles from the ground up.
+                        </p>
+
+                        <div class="startup__features"
+                            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+                            <div class="startup__feature">
+                                <h4
+                                    style="color: var(--title-color); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                                    </svg>
+                                    Secure by Design
+                                </h4>
+                                <p style="font-size: 0.9rem;">Automated security checks baked into the development
+                                    process.</p>
+                            </div>
+                            <div class="startup__feature">
+                                <h4
+                                    style="color: var(--title-color); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                        <circle cx="9" cy="7" r="4" />
+                                        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                                    </svg>
+                                    No-Code Friendly
+                                </h4>
+                                <p style="font-size: 0.9rem;">Intuitive interface for non-technical founders and
+                                    creators.</p>
+                            </div>
+                            <div class="startup__feature">
+                                <h4
+                                    style="color: var(--title-color); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <path
+                                            d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                                        <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                                        <line x1="12" y1="22.08" x2="12" y2="12" />
+                                    </svg>
+                                    AI Powered
+                                </h4>
+                                <p style="font-size: 0.9rem;">Leveraging advanced AI to assist in logic and design.</p>
+                            </div>
+                        </div>
+
+                        <a href="#" class="button button--primary">Learn More</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Contact Section -->
         <section class="contact section" id="contact">
             <div class="container">
@@ -842,7 +932,10 @@
         </div>
     </footer>
 
-    <!-- JavaScript -->
+    <!-- Fluid Script -->
+    <script src="js/components/fluid.js"></script>
+
+    <!-- Main Script -->
     <script src="js/main.js"></script>
     <script src="js/components/navigation.js"></script>
     <script src="js/components/projects.js"></script>

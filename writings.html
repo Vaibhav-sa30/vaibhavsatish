@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Writings & Articles - Vaibhav Satish | Data Science, Responsible AI, and Technology">
+    <meta name="keywords" content="data science blog, responsible AI writings, technology articles, Vaibhav Satish">
+    <meta name="author" content="Vaibhav Satish">
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Writings - Vaibhav Satish">
+    <meta property="og:description" content="Thoughts and articles on data science, responsible AI, and technology.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://[username].github.io/writings.html">
+
+    <title>Writings - Vaibhav Satish</title>
+
+    <!-- Preconnect to Google Fonts for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
+
+    <!-- Simple Icons -->
+    <script src="https://unpkg.com/simple-icons@latest/icons.js"></script>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="manifest.json">
+</head>
+
+<body>
+    <!-- Fluid Background Canvas -->
+    <canvas id="fluid-canvas"></canvas>
+
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="loader-content">
+            <svg class="loader-logo" viewBox="0 0 100 100" width="80" height="80">
+                <circle cx="50" cy="50" r="45" stroke="currentColor" stroke-width="2" fill="none"
+                    class="loader-circle" />
+                <text x="50" y="55" text-anchor="middle" font-family="'Inter', sans-serif" font-weight="bold"
+                    font-size="24" fill="currentColor">VS</text>
+            </svg>
+            <div class="loader-text">Loading...</div>
+        </div>
+    </div>
+
+    <!-- Navigation Header -->
+    <header class="header" id="header">
+        <nav class="nav container">
+            <div class="nav__brand">
+                <a href="index.html" class="nav__logo">Vaibhav Satish</a>
+            </div>
+
+            <div class="nav__menu" id="nav-menu">
+                <ul class="nav__list">
+                    <li class="nav__item">
+                        <a href="index.html#home" class="nav__link">Home</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="index.html#about" class="nav__link">About</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="index.html#projects" class="nav__link">Projects</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="index.html#research" class="nav__link">Research</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="#" class="nav__link active-link">Writings</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="index.html#startup" class="nav__link">Startup</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="index.html#contact" class="nav__link">Contact</a>
+                    </li>
+                </ul>
+
+                <div class="nav__close" id="nav-close">
+                    <svg class="nav__close-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="nav__toggle" id="nav-toggle">
+                <svg class="nav__toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <section class="section">
+            <div class="container">
+                <h2 class="section__title">Writings</h2>
+                <span class="section__subtitle">Thoughts, Articles & Technical Guides</span>
+
+                <div class="writings__container grid"
+                    style="margin-top: 3rem; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+
+                    <!-- Placeholder Article 1 -->
+                    <article class="card" style="padding: 2rem; display: flex; flex-direction: column; gap: 1rem;">
+                        <span class="research__date">Coming Soon</span>
+                        <h3 class="research__title">The Future of Responsible AI</h3>
+                        <p class="research__description">
+                            Exploring the ethical implications of large language models and how we can build safer AI
+                            systems.
+                        </p>
+                        <a href="#" class="button button--small button--disabled"
+                            style="align-self: flex-start; opacity: 0.7; pointer-events: none;">Read More</a>
+                    </article>
+
+                    <!-- Placeholder Article 2 -->
+                    <article class="card" style="padding: 2rem; display: flex; flex-direction: column; gap: 1rem;">
+                        <span class="research__date">Coming Soon</span>
+                        <h3 class="research__title">Building Secure Web Apps</h3>
+                        <p class="research__description">
+                            A guide to implementing security best practices in modern web development frameworks.
+                        </p>
+                        <a href="#" class="button button--small button--disabled"
+                            style="align-self: flex-start; opacity: 0.7; pointer-events: none;">Read More</a>
+                    </article>
+
+                    <!-- Placeholder Article 3 -->
+                    <article class="card" style="padding: 2rem; display: flex; flex-direction: column; gap: 1rem;">
+                        <span class="research__date">Coming Soon</span>
+                        <h3 class="research__title">Machine Unlearning Explained</h3>
+                        <p class="research__description">
+                            Deep dive into the techniques and importance of removing data influence from trained models.
+                        </p>
+                        <a href="#" class="button button--small button--disabled"
+                            style="align-self: flex-start; opacity: 0.7; pointer-events: none;">Read More</a>
+                    </article>
+
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__content">
+                <p class="footer__copy">
+                    &copy; 2024 Vaibhav Satish. Built with passion for responsible AI.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/components/fluid.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/components/navigation.js"></script>
+
+    <!-- Retain only necessary components for this page -->
+    <!--  <script src="js/components/animations.js"></script> -->
+
+</body>
+
+</html>
