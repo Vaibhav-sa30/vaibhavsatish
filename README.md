@@ -2,7 +2,7 @@
 
 A modern, responsive portfolio website showcasing data science projects, research work, and startup ventures. Built with vanilla HTML, CSS, and JavaScript for optimal performance and GitHub Pages compatibility.
 
-[![Deploy to GitHub Pages](https://github.com/vaibhav-sa30/vaibhav-sa30.github.io/actions/workflows/deploy.yml/badge.svg)](https://github.com/[username]/[username].github.io/actions/workflows/deploy.yml)
+[![Visit Portfolio](https://vaibhav-sa30.github.io/vaibhavsatish/)](https://github.com/vaibhav-sa30/vaibhav-30.github.io/actions/workflows/deploy.yml)
 [![Lighthouse Score](https://img.shields.io/badge/Lighthouse-95%2B-brightgreen)](https://developers.google.com/web/tools/lighthouse)
 [![Accessibility](https://img.shields.io/badge/Accessibility-WCAG%202.1%20AA-blue)](https://www.w3.org/WAI/WCAG21/quickref/)
 
