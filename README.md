@@ -9,7 +9,7 @@
 
 - **Email**: [vaibhavsatish9]@gmail.com
 - **LinkedIn**: [Vaibhav Satish](https://linkedin.com/in/vaibhavsatish)
-- **Website**: [https://vaibhav-sa30.github.io](https://vaibhav-sa30.github.io)
+- **Website**: [https://vaibhav-sa30.github.io](https://vaibhav-sa30.github.io/vaibhavsatish/)
 
 ---
 
