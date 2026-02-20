@@ -5,7 +5,7 @@
 
 ## 📞 Contact & Support
 
-- **Email**: [vaibhavsatish9]@gmail.com
+- **Email**: [vaibhavsatish9@gmail.com](vaibhavsatish9@gmail.com)
 - **LinkedIn**: [vaibhavsatish](https://linkedin.com/in/vaibhavsatish)
 - **Website**: [https://vaibhav-sa30.github.io/vaibhavsatish](https://vaibhav-sa30.github.io/vaibhavsatish/)
 
