@@ -12,5 +12,3 @@
 ---
 
 **Built with ❤️ for showcasing data science expertise and responsible AI research.**
-
-*Last updated: $(date)*
