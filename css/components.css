@@ -26,8 +26,11 @@
 .nav__logo {
   color: var(--title-color);
   font-weight: var(--font-semi-bold);
+  font-family: "Roboto", sans-serif;
   font-size: var(--h3-font-size);
   transition: var(--transition-fast);
+  /* Optional: Variation settings if needed, but defaults are usually fine */
+  /* font-variation-settings: "wdth" 100; */
 }
 
 .nav__logo:hover {
@@ -232,6 +235,7 @@
   font-size: var(--biggest-font-size);
   margin-bottom: var(--spacing-sm);
   line-height: 1.1;
+  font-weight: 300;
 }
 
 .hero__name {
@@ -244,6 +248,7 @@
   color: var(--text-color-light);
   margin-bottom: var(--spacing-lg);
   min-height: 3rem;
+  font-weight: 300;
 }
 
 .hero__typing {
@@ -259,6 +264,10 @@
 @keyframes blink {
   0%, 50% { opacity: 1; }
   51%, 100% { opacity: 0; }
+}
+
+.hero__data{
+  font-weight: 300;
 }
 
 .hero__description {
@@ -849,6 +858,7 @@ ADDITIONAL HERO ANIMATIONS ===== */
   min-width: 100%;
   display: block;
   align-self: stretch;
+  position: relative; /* Context for absolute positioning of labels */
 }
 
 .research__img {
@@ -879,7 +889,7 @@ ADDITIONAL HERO ANIMATIONS ===== */
 }
 
 .research__card--ongoing .research__header {
-  background: linear-gradient(135deg, var(--accent-color), #f97316);
+  background: linear-gradient(135deg, #eab308, #b45309); /* Yellowish-Amber */
 }
 
 .research__type {
@@ -910,6 +920,7 @@ ADDITIONAL HERO ANIMATIONS ===== */
   font-size: var(--h3-font-size);
   margin-bottom: var(--spacing-md);
   line-height: 1.3;
+  font-weight: 300;
 }
 
 .research__authors {
@@ -1050,8 +1061,25 @@ ADDITIONAL HERO ANIMATIONS ===== */
 }
 
 /* Specific adjustment for card view venue tile */
-.research__links .research__venue {
-  margin-left: auto;
+.research__links {
+  display: flex;
+  align-items: center;
+  width: 100%; /* Ensure full width layout */
+}
+
+/* Container for labels to positions them in bottom right corner absolutely */
+.research__tags,
+.research__links > .research__venue {
+  position: absolute;
+  bottom: var(--spacing-xl);
+  right: var(--spacing-xl);
+  display: flex; /* For tags container */
+  gap: 0.5rem;   /* For tags container */
+}
+
+/* Ensure single items don't have flex gap issues if treated as flex container */
+.research__links > .research__venue {
+  display: inline-block; /* Reset display for single spans */
 }
 
 .research__link {
@@ -1672,6 +1700,7 @@ ADDITIONAL HERO ANIMATIONS ===== */
   font-size: var(--h3-font-size);
   margin-bottom: var(--spacing-sm);
   line-height: 1.3;
+  font-weight: 300;
 }
 
 .project__description {
@@ -2077,6 +2106,107 @@ ADDITIONAL HERO ANIMATIONS ===== */
   }
 }
 
+/* ===== RESEARCH TYPE BADGES ===== */
+.research__links .research__venue:first-of-type {
+  margin-left: auto; /* Push this and subsequent siblings to the right */
+}
+
+.research__links .research__venue + .research__venue {
+  margin-left: 0.5rem; /* Small gap between multiple labels */
+}
+
+.research__venue {
+  background-color: var(--container-color);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: inline-block;
+}
+
+/* Category Specific Label Colors */
+/* Original: Gold/Amber - Requested */
+[data-category~="original"] .research__venue {
+  background-color: #fffbeb; /* Amber-50 */
+  color: #d97706; /* Amber-600 */
+  border-color: #fcd34d; /* Amber-300 */
+}
+
+/* Implemented: Indigo/Blue - Technical/Code */
+[data-category~="implemented"] .research__venue {
+  background-color: #eef2ff; /* Indigo-50 */
+  color: #4f46e5; /* Indigo-600 */
+  border-color: #a5b4fc; /* Indigo-300 */
+}
+
+/* Studies: Purple - Academic/Deep */
+[data-category~="studies"] .research__venue {
+  background-color: #faf5ff; /* Purple-50 */
+  color: #7e22ce; /* Purple-700 */
+  border-color: #d8b4fe; /* Purple-300 */
+}
+
+/* Dataset Audits: Rose - Alert/Critical */
+[data-category~="dataset-audits"] .research__venue {
+  background-color: #fff1f2; /* Rose-50 */
+  color: #e11d48; /* Rose-600 */
+  border-color: #fda4af; /* Rose-300 */
+}
+
+/* Research Tooling: Slate/Cyan - Utility/Tech */
+[data-category~="research-tooling"] .research__venue {
+  background-color: #ecfeff; /* Cyan-50 */
+  color: #0891b2; /* Cyan-600 */
+  border-color: #67e8f9; /* Cyan-300 */
+}
+.research__type {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background-color: var(--primary-color); /* Fallback */
+  color: white;
+}
+
+.research__type--presented {
+  background-color: #dcfce7; /* Green-100 */
+  color: #166534; /* Green-800 */
+}
+
+
+.research__type--completed {
+  background-color: #cffafe; /* Cyan-100 */
+  color: #0e7490; /* Cyan-800 */
+}
+
+/* ===== RESEARCH AUTHOR ALIGNMENT ===== */
+.research__authors {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.research__author,
+.research__author--primary {
+  display: inline;
+  font-size: 0.9rem;
+}
+
+.research__author--primary {
+  font-weight: 600;
+  color: var(--title-color);
+}
+
+.research__author {
+  color: var(--text-color-light);
+}
+
   .project__modal-content {
     max-height: 95vh;
   }
@@ -2291,6 +2421,44 @@ ADDITIONAL HERO ANIMATIONS ===== */
     width: 15px;
     height: 15px;
   }
+}
+
+/* ===== CUSTOM JS TOOLTIP ===== */
+.custom-tooltip {
+  position: fixed;
+  padding: 0.75rem 1rem;
+  background-color: var(--title-color);
+  color: var(--container-color);
+  font-size: 0.85rem;
+  border-radius: 0.5rem;
+  width: max-content;
+  max-width: 280px;
+  text-align: center;
+  z-index: 10000;
+  pointer-events: none;
+  font-weight: normal;
+  line-height: 1.5;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  transform: translateY(10px);
+}
+
+.custom-tooltip.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.custom-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: var(--title-color);
 }
 
 /* ===== ADVANCED HOVER EFFECTS ===== */

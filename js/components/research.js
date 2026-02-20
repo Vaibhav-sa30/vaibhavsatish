@@ -108,8 +108,86 @@ const researchData = [
         links: [
             { label: 'Competition Repository', url: '#', icon: 'github' }
         ]
+    },
+    {
+        id: 'neuroreset',
+        title: 'NeuroReset: LLM Unlearning via Dual Phase Mixed Methodology',
+        category: 'Indepedendent Research',
+        description: 'Implemented a simplified version of NeuroReset using OLMo-1B and LoRA to explore forgetting specific information while retaining general knowledge.',
+        longDescription: 'This research implements a simplified version of NeuroReset using OLMo-1B and LoRA to explore forgetting specific information while retaining general knowledge. The approach uses a dual-phase unlearning method: a Forget Phase (λ=1) to erase memorized information and a Retain Phase (λ=0) to restore general knowledge. The implementation was evaluated using Membership Inference Attack (MIA) for privacy leakage and Mini-MMLU for utility preservation.',
+        venue: 'Independent Implementation',
+        status: 'Completed',
+        highlights: [
+            'Dual-Phase Approach: Forget Phase (λ=1) & Retain Phase (λ=0)',
+            'Model: OLMo-1B with LoRA fine-tuning (RTX 3050 optimized)',
+            'Evaluation: MIA for privacy leakage & Mini-MMLU for utility preservation'
+        ],
+        links: [
+            { label: 'Project Repository', url: 'https://github.com/Vaibhav-sa30/Neuroreset---Machine-Unlearning', icon: 'github' }
+        ]
     }
 ];
+
+class TooltipManager {
+    constructor() {
+        this.tooltip = null;
+        this.init();
+    }
+
+    init() {
+        // Create tooltip element
+        this.tooltip = document.createElement('div');
+        this.tooltip.className = 'custom-tooltip';
+        document.body.appendChild(this.tooltip);
+
+        // Add event listeners to all elements with data-tooltip
+        this.addListeners();
+
+        // Re-run listeners on dynamic content if needed by observing body or manual re-init
+        // For now, static and filter buttons are sufficient.
+    }
+
+    addListeners() {
+        const triggers = document.querySelectorAll('[data-tooltip]');
+        triggers.forEach(trigger => {
+            trigger.addEventListener('mouseenter', (e) => this.show(e));
+            trigger.addEventListener('mouseleave', () => this.hide());
+            trigger.addEventListener('mousemove', (e) => this.updatePosition(e)); // Optional: follow mouse? No, fixed looks better.
+        });
+    }
+
+    show(e) {
+        const target = e.target;
+        const text = target.dataset.tooltip;
+        if (!text) return;
+
+        this.tooltip.textContent = text;
+        this.tooltip.classList.add('visible');
+
+        this.position(target);
+    }
+
+    hide() {
+        this.tooltip.classList.remove('visible');
+    }
+
+    position(target) {
+        const rect = target.getBoundingClientRect();
+        const tooltipRect = this.tooltip.getBoundingClientRect();
+
+        // Default: display above
+        let top = rect.top - tooltipRect.height - 10; // 10px spacing
+        let left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
+
+        // Keep within viewport (simple check)
+        if (left < 10) left = 10;
+        if (left + tooltipRect.width > window.innerWidth - 10) left = window.innerWidth - tooltipRect.width - 10;
+
+        // Use transform for smooth movement if animating, but fixed positioning needs simple top/left
+        this.tooltip.style.top = `${top}px`;
+        this.tooltip.style.left = `${left}px`;
+    }
+}
 
 class ResearchShowcase {
     constructor() {
@@ -120,6 +198,7 @@ class ResearchShowcase {
 
     init() {
         this.createModal();
+        this.setupFilters();
         this.addEventListeners();
     }
 
@@ -141,6 +220,60 @@ class ResearchShowcase {
             </div>
         `;
         document.body.appendChild(this.modal);
+    }
+
+    setupFilters() {
+        const filterButtons = document.querySelectorAll('.research__filters .projects__filter-btn');
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Update active button
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                // Filter content
+                const filter = button.dataset.filter;
+                this.filterResearch(filter);
+            });
+        });
+    }
+
+    filterResearch(category) {
+        const emptyState = document.querySelector('.research__empty-state');
+
+        this.cards.forEach(card => {
+            // Animation handling
+            card.style.opacity = '0';
+            card.style.transform = 'scale(0.95)';
+
+            setTimeout(() => {
+                const cardCategories = card.dataset.category ? card.dataset.category.split(' ') : [];
+                if (category === 'all' || cardCategories.includes(category)) {
+                    card.style.display = 'flex';
+                    // Trigger reflow
+                    void card.offsetWidth;
+                    card.style.opacity = '1';
+                    card.style.transform = 'scale(1)';
+                } else {
+                    card.style.display = 'none';
+                }
+            }, 300);
+        });
+
+        // Toggle empty state matching the timeout
+        setTimeout(() => {
+            // Re-count visibly displayed cards (filtering based on logic above)
+            const matches = Array.from(this.cards).filter(c => {
+                const cardCategories = c.dataset.category ? c.dataset.category.split(' ') : [];
+                return category === 'all' || cardCategories.includes(category);
+            });
+
+            if (matches.length === 0) {
+                if (emptyState) emptyState.style.display = 'block';
+            } else {
+                if (emptyState) emptyState.style.display = 'none';
+            }
+        }, 300);
     }
 
     addEventListeners() {
@@ -260,4 +393,5 @@ class ResearchShowcase {
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     new ResearchShowcase();
+    new TooltipManager();
 });

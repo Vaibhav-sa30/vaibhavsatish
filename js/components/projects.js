@@ -32,7 +32,7 @@ const projectsData = [
         thumbnail: 'assets/images/mad1/admin-dashboard.png',
         images: ['assets/images/mad1/admin-dashboard.png', 'assets/images/mad1/admin-create-parking-lot.png', 'assets/images/mad1/admin-user.png', 'assets/images/mad1/admin-reservations.png', 'assets/images/mad1/admin-summaries.png', 'assets/images/mad1/user-dashboard.png', 'assets/images/mad1/user-parking-lot.png', 'assets/images/mad1/user-reservations.png', 'assets/images/mad1/user-summaries.png', 'assets/images/mad1/user-profile.png'],
         githubUrl: 'https://github.com/21f3002068/Park-Ease',
-        liveUrl: null,
+        liveUrl: 'https://youtu.be/Ly-Wm7Tt9Ck',
         outcomes: [
             'Reduced parking search time by 60%',
             'Implemented real-time space availability tracking',
@@ -51,7 +51,7 @@ const projectsData = [
         thumbnail: 'assets/images/mad2/admin-dashboard.png',
         images: ['assets/images/mad2/admin-dashboard.png', 'assets/images/mad2/admin-lots.png', 'assets/images/mad2/admin-user.png', 'assets/images/mad2/admin-reservations.png', 'assets/images/mad2/admin-summaries.png', 'assets/images/mad2/user-dashboard.png', 'assets/images/mad2/user-lots.png', 'assets/images/mad2/user-reservations.png', 'assets/images/mad2/user-profile.png', 'assets/images/mad2/user-summaries.png'],
         githubUrl: 'https://github.com/21f3002068/ParkEase-V2',
-        liveUrl: 'https://parking-demo.herokuapp.com',
+        liveUrl: 'https://youtu.be/2-0TXPrJNqE',
         outcomes: [
             'Improved performance by 40% with Redis caching',
             'Added real-time notifications with WebSocket',
@@ -297,7 +297,7 @@ class ProjectsShowcase {
                     <polyline points="15,3 21,3 21,9"></polyline>
                     <line x1="10" y1="14" x2="21" y2="3"></line>
                 </svg>
-                ${project.liveUrlLabel || 'Live Demo'}
+                ${project.liveUrlLabel || 'Demo Video'}
             </a>` : '';
 
         card.innerHTML = `
