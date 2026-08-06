@@ -58,23 +58,12 @@ self.addEventListener('install', (event) => {
 /* ===== ACTIVATE EVENT ===== */
 self.addEventListener('activate', (event) => {
     console.log('Service Worker: Activating...');
-    
     event.waitUntil(
-        caches.keys()
-            .then(cacheNames => {
-                return Promise.all(
-                    cacheNames.map(cacheName => {
-                        if (cacheName !== STATIC_CACHE && cacheName !== DYNAMIC_CACHE) {
-                            console.log('Service Worker: Deleting old cache', cacheName);
-                            return caches.delete(cacheName);
-                        }
-                    })
-                );
-            })
-            .then(() => {
-                console.log('Service Worker: Activated');
-                return self.clients.claim();
-            })
+        caches.keys().then(cacheNames => {
+            return Promise.all(cacheNames.map(cacheName => caches.delete(cacheName)));
+        }).then(() => {
+            return self.clients.claim();
+        })
     );
 });
 

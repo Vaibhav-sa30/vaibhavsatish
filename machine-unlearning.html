@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Art of Forgetting: Everything Happening in Machine Unlearning</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,600;1,6..72,300;1,6..72,400&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+  :root {
+    --ink: #1a1a18;
+    --ink-muted: #5a5955;
+    --ink-faint: #9a9890;
+    --page: #faf9f6;
+    --surface: #f3f1ec;
+    --border: #e2dfd7;
+    --accent: #c2410c;
+    --accent-light: #fef2ee;
+    --accent2: #1d4ed8;
+    --accent2-light: #eff6ff;
+    --highlight: #fbbf24;
+    --green: #065f46;
+    --green-light: #ecfdf5;
+    --purple: #4c1d95;
+    --purple-light: #f5f3ff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Newsreader', Georgia, serif;
+    background: var(--page);
+    color: var(--ink);
+    font-size: 18px;
+    line-height: 1.75;
+  }
+
+  .masthead {
+    border-bottom: 1px solid var(--border);
+    padding: 1.2rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .masthead-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  .masthead-date {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    color: var(--ink-faint);
+  }
+
+  .hero {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 4rem 2rem 2.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .kicker {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  h1 {
+    font-family: 'Newsreader', Georgia, serif;
+    font-size: clamp(2rem, 5vw, 3.4rem);
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+    color: var(--ink);
+  }
+
+  .hero-deck {
+    font-size: 1.2rem;
+    font-weight: 300;
+    color: var(--ink-muted);
+    line-height: 1.6;
+    max-width: 680px;
+    font-style: italic;
+  }
+
+  .byline {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--ink-faint);
+    margin-top: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .byline span { color: var(--ink-muted); font-weight: 500; }
+
+  .layout {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  .article-body {
+    padding-top: 2.5rem;
+  }
+
+  .sidebar {
+    padding-top: 2.5rem;
+    position: sticky;
+    top: 2rem;
+  }
+
+  .toc {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .toc-title {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 0.75rem;
+  }
+
+  .toc ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .toc a {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--ink-muted);
+    text-decoration: none;
+    line-height: 1.4;
+  }
+
+  .toc a:hover { color: var(--accent); text-decoration: underline; }
+
+  .stat-box {
+    background: var(--ink);
+    color: #f5f3f0;
+    border-radius: 4px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .stat-box .stat-num {
+    font-size: 2.2rem;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+
+  .stat-box .stat-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    opacity: 0.65;
+    line-height: 1.4;
+  }
+
+  .callout-box {
+    border-left: 3px solid var(--accent);
+    background: var(--accent-light);
+    padding: 1rem 1.25rem;
+    border-radius: 0 4px 4px 0;
+    margin-bottom: 1.5rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--ink-muted);
+    line-height: 1.5;
+  }
+
+  .callout-box strong {
+    display: block;
+    color: var(--accent);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+
+  p { margin-bottom: 1.4rem; }
+
+  h2 {
+    font-family: 'Newsreader', Georgia, serif;
+    font-size: 1.75rem;
+    font-weight: 400;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+    color: var(--ink);
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h3 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    color: var(--ink);
+    letter-spacing: 0.01em;
+  }
+
+  blockquote {
+    border-left: 3px solid var(--highlight);
+    padding: 0.75rem 1.5rem;
+    margin: 2rem 0;
+    background: #fffbeb;
+    border-radius: 0 4px 4px 0;
+  }
+
+  blockquote p {
+    font-style: italic;
+    color: var(--ink-muted);
+    font-size: 1.05rem;
+    margin-bottom: 0;
+  }
+
+  .pullquote {
+    font-family: 'Newsreader', Georgia, serif;
+    font-size: 1.4rem;
+    font-style: italic;
+    font-weight: 300;
+    color: var(--ink-muted);
+    border-top: 2px solid var(--ink);
+    border-bottom: 1px solid var(--border);
+    padding: 1.25rem 0;
+    margin: 2.5rem 0;
+    line-height: 1.45;
+  }
+
+  .domain-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0 2rem;
+  }
+
+  .domain-card {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1rem 1.25rem;
+    background: white;
+  }
+
+  .domain-card-icon {
+    font-size: 1.4rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .domain-card h4 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+    color: var(--ink);
+  }
+
+  .domain-card p {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    color: var(--ink-muted);
+    line-height: 1.5;
+    margin-bottom: 0;
+  }
+
+  .method-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0 2rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13.5px;
+  }
+
+  .method-table th {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 0.6rem 0.9rem;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  .method-table td {
+    border: 1px solid var(--border);
+    padding: 0.65rem 0.9rem;
+    color: var(--ink-muted);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  .method-table tr:nth-child(even) td { background: #faf9f6; }
+
+  .badge {
+    display: inline-block;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 2px;
+  }
+
+  .badge-green { background: var(--green-light); color: var(--green); }
+  .badge-amber { background: #fef3c7; color: #92400e; }
+  .badge-red { background: #fef2f2; color: #991b1b; }
+  .badge-blue { background: var(--accent2-light); color: var(--accent2); }
+  .badge-purple { background: var(--purple-light); color: var(--purple); }
+
+  .timeline {
+    position: relative;
+    padding-left: 2rem;
+    margin: 1.5rem 0 2rem;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 6px;
+    bottom: 6px;
+    width: 2px;
+    background: var(--border);
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 1.5rem;
+  }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -1.7rem;
+    top: 6px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--page);
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+
+  .timeline-year {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+    margin-bottom: 0.2rem;
+  }
+
+  .timeline-title {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 0.25rem;
+  }
+
+  .timeline-body {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--ink-muted);
+    line-height: 1.55;
+  }
+
+  .challenge-list {
+    list-style: none;
+    margin: 1rem 0 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .challenge-list li {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--ink-muted);
+    padding-left: 1.25rem;
+    position: relative;
+    line-height: 1.55;
+  }
+
+  .challenge-list li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+  }
+
+  hr.section-rule {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 3rem 0;
+  }
+
+  .big-number {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 3rem;
+    font-weight: 600;
+    color: var(--accent);
+    line-height: 1;
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+
+  .footer-section {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    margin-top: 4rem;
+    padding: 2.5rem 2rem;
+    text-align: center;
+  }
+
+  .footer-section p {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--ink-faint);
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 700px) {
+    .layout {
+      grid-template-columns: 1fr;
+    }
+    .sidebar { position: static; }
+    h1 { font-size: 2rem; }
+    .domain-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <a href="writings.html" class="masthead-label" style="text-decoration: none; color: var(--ink-faint);">← Back to Writings</a>
+  <div style="display: flex; gap: 1rem; align-items: center;">
+    <a href="index.html" style="font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); text-decoration: none;">Home</a>
+    <a href="research.html" style="font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); text-decoration: none;">Research</a>
+    <a href="writings.html" style="font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); text-decoration: none;">Writings</a>
+  </div>
+</header>
+
+<div class="hero">
+  <span class="kicker">Machine Unlearning</span>
+  <h1>The Art of Forgetting: Everything Happening in Machine Unlearning Right Now</h1>
+  <p class="hero-deck">AI models are trained to learn. But what happens when they need to forget? From privacy law to diffusion models to autonomous agents — machine unlearning has quietly become one of the most consequential battlegrounds in all of AI research.</p>
+  <div class="byline">Published May 2026 &nbsp;·&nbsp; <span>~22 min read</span></div>
+</div>
+
+<div class="layout">
+  <main class="article-body">
+
+    <p>There is something almost philosophical about the problem. We have spent decades getting machines to remember — to encode, store, and recall patterns from data with astonishing fidelity. Neural networks memorize training examples down to individual pixels, sentences, and biomarkers. We celebrate that. Then one day a user says: <em>I want you to forget I was ever here.</em></p>
+
+    <p>And we realize we have no idea how to make that happen.</p>
+
+    <p>This is the core paradox of machine unlearning — a field that, despite its somewhat paradoxical name, has grown from a niche privacy curiosity in 2015 into one of the most active and consequential research areas in all of artificial intelligence. It sits at the intersection of privacy law, AI safety, copyright, model robustness, and the fundamental question of what it means for a model to "know" something. In 2023, Google ran the first ever machine unlearning competition at NeurIPS. By 2025, research papers on the topic were appearing faster than most researchers could read them. And in 2026, with AI-generated content in courtrooms and regulators treating model weights as personal data, machine unlearning has moved from an academic curiosity to an operational necessity.</p>
+
+    <p>This piece covers all of it. What unlearning is, where it came from, how it works technically, and where it's being applied — across text, images, graphs, federated systems, multimodal models, and AI agents.</p>
+
+    <h2 id="origins">Where It All Started: The Right to Be Forgotten</h2>
+
+    <p>The legal origin of machine unlearning is Article 17 of the European Union's General Data Protection Regulation — better known as the "right to be forgotten." Codified in 2016, this provision grants individuals the authority to request that data controllers erase their personal data. Its original targets were search engines like Google and Yahoo, which could de-index links. The GDPR's authors could not have fully anticipated that, within a decade, the dominant data-holding systems would not be search indexes but neural networks — systems where the distinction between "data" and "computation" has entirely collapsed.</p>
+
+    <p>The moment a model is trained, the training data no longer exists as retrievable rows. It exists as influence — distributed, diffuse, baked into billions of weights. Deleting the original CSV file does nothing. The model still "knows" it. As one analysis put it bluntly: the privacy laws you adhere to were written for databases, not neural networks.</p>
+
+    <p>The first academic paper to formally address this challenge was published in 2015 by Yinzhi Cao and Junfeng Yang, titled "Towards Making Systems Forget with Machine Unlearning." Presented at the IEEE Symposium on Security and Privacy, it introduced the term "machine unlearning" and proposed a statistical approach that transformed learning algorithms into a summation form — enabling selective removal without full retraining. Their method demonstrated that systems ranging from spam filters to recommendation engines to malware detectors could be made to forget specific training data while retaining their overall utility.</p>
+
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-year">2012–2016</div>
+        <div class="timeline-title">GDPR drafted and enacted</div>
+        <div class="timeline-body">Article 17 introduces "right to be forgotten," initially aimed at search engines. No mention of neural networks or model weights.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2015</div>
+        <div class="timeline-title">The term "machine unlearning" is coined</div>
+        <div class="timeline-body">Cao and Yang publish their landmark paper at IEEE S&amp;P, formally defining machine unlearning and proposing the summation-form approach for efficient forgetting.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2021</div>
+        <div class="timeline-title">SISA Training proposed</div>
+        <div class="timeline-body">Bourtoule et al. propose Sharded, Isolated, Sliced, and Aggregated (SISA) training — a practical exact unlearning method that splits datasets into shards so only affected shards need retraining.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2022–2023</div>
+        <div class="timeline-title">Explosion of LLM and diffusion model research</div>
+        <div class="timeline-body">Gradient ascent, gradient difference, and fine-tuning-based unlearning methods proliferate. Research on copyright erasure, harmful content removal, and concept erasure from diffusion models accelerates dramatically.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2023</div>
+        <div class="timeline-title">Google's NeurIPS Machine Unlearning Challenge</div>
+        <div class="timeline-body">The first ever standardized machine unlearning competition attracts 1,338 participants from 72 countries and 1,121 teams — a watershed moment for field legitimacy and evaluation standardization.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2024–2025</div>
+        <div class="timeline-title">Multimodal, federated, and agentic unlearning</div>
+        <div class="timeline-body">Research expands into multimodal LLMs, graph neural networks, federated systems, and autonomous agents. The EU AI Act adds regulatory weight. Benchmarks like TOFU, MLLMU-Bench, and RWKU standardize evaluation.</div>
+      </div>
+    </div>
+
+    <h2 id="what">What Machine Unlearning Actually Is</h2>
+
+    <p>The naive approach to unlearning is obvious: delete the data and retrain from scratch. If a user revokes consent for their data, remove it from the training set and start over. This is also known as the "gold standard" — a model retrained from scratch without the target data represents perfect unlearning, by definition.</p>
+
+    <p>The problem is cost. Retraining a large language model costs millions of dollars and months of compute time. You cannot do that every time a user invokes Article 17, or every time a courtroom orders a copyright takedown, or every time a piece of training data turns out to be toxic. The entire field of machine unlearning exists to find ways to approximate that gold standard without paying its price.</p>
+
+    <p>Formally, machine unlearning can be defined as follows: given a model trained on dataset <em>D</em>, and a "forget set" <em>D_f</em> ⊆ <em>D</em>, produce a model that behaves as if it were trained only on the "retain set" <em>D_r = D \ D_f</em>. The unlearned model should be statistically indistinguishable from the model you would have gotten by never training on <em>D_f</em> in the first place.</p>
+
+    <p>Critically, machine unlearning is <em>not</em> simply blocking outputs or adding a system prompt filter. Those are surface-level interventions. True unlearning adjusts the model's internal weights to make it behave as if it never saw that specific data point. As one description puts it, the goal is to reverse the learning process — a mathematical subtraction that removes the influence of a specific subset while leaving the rest of the knowledge structure intact.</p>
+
+    <div class="pullquote">"Simply deleting samples from a database does not allow the model to 'forget' the data. The model remembers the patterns from that user's data even after the original file is gone."</div>
+
+    <h3>The Two Main Approaches: Exact vs. Approximate</h3>
+
+    <p>Machine unlearning research has broadly converged on two paradigms.</p>
+
+    <p><strong>Exact unlearning</strong> methods guarantee that the unlearned model is provably equivalent to a model retrained from scratch. The most prominent is SISA (Sharded, Isolated, Sliced, and Aggregated), proposed by Bourtoule et al. in 2021. SISA splits the full training dataset into shards, trains sub-models on each shard separately, then aggregates them. When unlearning is required, only the shard containing the target data needs to be retrained — dramatically reducing computation. However, SISA requires storing the full training dataset in partitioned form, and research has found it can have disparate impacts on minority classes in the training data.</p>
+
+    <p><strong>Approximate unlearning</strong> methods make changes to a trained model's weights without full retraining, accepting a small approximation error in exchange for speed and efficiency. This is where most of the active research lives, with techniques including:</p>
+
+    <table class="method-table">
+      <thead>
+        <tr>
+          <th>Method</th>
+          <th>Core Idea</th>
+          <th>Speed</th>
+          <th>Quality</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Gradient Ascent (GA)</strong></td>
+          <td>Minimizes the model's ability to predict the forget set by ascending rather than descending the loss gradient on those samples</td>
+          <td><span class="badge badge-green">Fast</span></td>
+          <td><span class="badge badge-amber">Risky — can damage general utility</span></td>
+        </tr>
+        <tr>
+          <td><strong>Gradient Difference</strong></td>
+          <td>Combines gradient ascent on the forget set with gradient descent on the retain set to preserve overall utility</td>
+          <td><span class="badge badge-green">Fast</span></td>
+          <td><span class="badge badge-green">Better balance</span></td>
+        </tr>
+        <tr>
+          <td><strong>Negative Preference Optimization (NPO)</strong></td>
+          <td>Treats forget data as negative preference examples, adapting the DPO objective to lower likelihood of forget-set outputs</td>
+          <td><span class="badge badge-green">Fast</span></td>
+          <td><span class="badge badge-green">Foundational for LLM unlearning</span></td>
+        </tr>
+        <tr>
+          <td><strong>Fine-tuning / LoRA-based</strong></td>
+          <td>Uses parameter-efficient fine-tuning to redirect model behavior away from target concepts, often cheaper and more targeted</td>
+          <td><span class="badge badge-green">Fast</span></td>
+          <td><span class="badge badge-amber">Varies by application</span></td>
+        </tr>
+        <tr>
+          <td><strong>Neuron Masking</strong></td>
+          <td>Identifies and masks specific neurons responsible for memorizing target data, selectively suppressing their activation</td>
+          <td><span class="badge badge-amber">Moderate</span></td>
+          <td><span class="badge badge-blue">Surgical — low collateral damage</span></td>
+        </tr>
+        <tr>
+          <td><strong>Input/Output Filtering</strong></td>
+          <td>Uses prompt classifiers or post-processing to intercept and corrupt forget-set inputs without weight changes</td>
+          <td><span class="badge badge-green">Very fast</span></td>
+          <td><span class="badge badge-red">Surface-level — not true unlearning</span></td>
+        </tr>
+        <tr>
+          <td><strong>In-context Unlearning</strong></td>
+          <td>Constructs tailored prompts with flipped labels for forget data, inducing forgetting without weight modification</td>
+          <td><span class="badge badge-green">Instant</span></td>
+          <td><span class="badge badge-amber">Lightweight but impermanent</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 id="llms">Unlearning in Large Language Models</h2>
+
+    <p>The challenge of unlearning in large language models has become perhaps the hottest subfield in the entire area. LLMs are trained on vast crawls of internet data — and that data can contain private information, copyrighted text, harmful content, and factual errors. Unlike a database, you cannot simply delete a row. The model has internalized the information into its weights, and there is no clean separation between what it "knows" from one source versus another.</p>
+
+    <p>Researchers and practitioners have identified at least five distinct reasons why LLM unlearning matters:</p>
+
+    <ul class="challenge-list">
+      <li><strong>Privacy erasure.</strong> Users who revoke data consent deserve to have their information removed from the model's parameters, not just the training set files.</li>
+      <li><strong>Copyright compliance.</strong> LLMs demonstrably memorize and reproduce training data — including books, articles, and song lyrics — verbatim. Legal pressure from publishers and authors has made copyright removal an urgent operational priority for model providers.</li>
+      <li><strong>Harmful content removal.</strong> Models trained on internet data absorb toxic, dangerous, and discriminatory patterns. Unlearning offers a way to remove harmful response behaviors that safety fine-tuning alone fails to fully suppress.</li>
+      <li><strong>Hallucination reduction.</strong> Selectively unlearning factually wrong or outdated information that the model confidently reproduces is an active research direction.</li>
+      <li><strong>Policy compliance.</strong> Content policies evolve. When a platform's community standards change, unlearning provides a mechanism to rapidly remove previously acceptable but now prohibited behaviors.</li>
+    </ul>
+
+    <p>The foundational methods for LLM unlearning are gradient ascent (GA) and negative preference optimization (NPO). GA works by ascending the loss gradient on forget-set samples — essentially doing the opposite of learning on that data. NPO, adapted from Direct Preference Optimization, treats the forget set as negative preference data and adjusts the model to assign lower probability to those outputs. Research has shown that while both GA and DPO-based methods can unlearn targeted data, both risk damaging overall model performance if applied too aggressively.</p>
+
+    <blockquote>
+      <p>Research on LLaMA and Phi models has shown that LLaMA appears significantly more sensitive than Phi to the balancing factor between unlearning efficacy and knowledge retention — suggesting that model architecture itself shapes how tractable unlearning is.</p>
+    </blockquote>
+
+    <h3>The "Who's Harry Potter?" Benchmark and TOFU</h3>
+
+    <p>One of the most widely cited demonstrations of LLM unlearning is Microsoft's "Who's Harry Potter?" work by Eldan and Russinovich (2023), which showed that a model could be made to effectively forget a specific fictional character while retaining general language capabilities. This sparked a wave of work on <em>knowledge unlearning</em> — removing specific factual associations from a model rather than just reducing the probability of certain tokens.</p>
+
+    <p>The field has since developed standardized benchmarks. TOFU (Task of Fictitious Unlearning, Maini et al. 2024) evaluates unlearning on synthetically generated profiles of fictitious people, allowing clean measurement of forget quality without the confounds of real-world data. RWKU (Real-World Knowledge Unlearning) benchmarks performance on real-world entities. These benchmarks evaluate three key dimensions simultaneously: forget quality, retain quality (the model should still work well on everything else), and locality (unlearning one thing should not corrupt related knowledge).</p>
+
+    <h3>The Quantization Problem</h3>
+
+    <p>One particularly alarming finding presented at ICLR 2025 is what researchers called "catastrophic failure of LLM unlearning via quantization." After applying state-of-the-art unlearning methods to an LLM, researchers found that simply quantizing the model — compressing it for deployment — could restore much of the supposedly unlearned knowledge. This suggests that unlearning methods that appear effective at full precision may be fundamentally fragile, and that evaluation must account for post-processing steps like quantization that are standard in real-world deployment.</p>
+
+    <h3>Multi-hop Knowledge and Multilingual Complications</h3>
+
+    <p>Research from 2024 found that unlearning faces a deeper structural challenge: knowledge in LLMs is not stored atomically. When you unlearn a fact, you may not unlearn all the downstream inferences that fact enables. A model that "forgets" a person's birthplace may still answer questions that implicitly require knowing that birthplace if they are posed as multi-hop queries. This is known as the multi-hop unlearning problem, and it represents one of the most difficult open challenges in the field.</p>
+
+    <p>Multilingual models add yet another layer. Work on multilingual unlearning found that unlearning a concept in one language may not generalize to other languages — the model has encoded similar knowledge in different representational spaces. The MUTE framework (Multilingual Unlearning via Targeted Erasure) addresses this by identifying language-agnostic intermediate layers using Centered Kernel Alignment, restricting updates to those shared representations so that unlearning propagates across all languages simultaneously.</p>
+
+    <h2 id="images">Unlearning in Image Generation: Concept Erasure</h2>
+
+    <p>Text-to-image diffusion models — Stable Diffusion, DALL-E, Flux, Midjourney and their successors — present a distinctive flavor of the unlearning problem. These models do not store knowledge as facts. They encode visual patterns, styles, and concepts in the weights of a denoising network. Unlearning from them is variously called "concept erasure," "concept removal," or "machine unlearning for generative models" — and the stakes are high.</p>
+
+    <p>Diffusion model unlearning has four primary targets:</p>
+
+    <div class="domain-grid">
+      <div class="domain-card">
+        <div class="domain-card-icon">🔞</div>
+        <h4>NSFW / Explicit Content</h4>
+        <p>Removing the model's ability to generate sexually explicit or violent content, often called NSFW suppression. Methods like SLD, SDD, RECE, and KPOP tackle this at the concept level.</p>
+      </div>
+      <div class="domain-card">
+        <div class="domain-card-icon">🎨</div>
+        <h4>Artistic Style Erasure</h4>
+        <p>Removing the ability to generate images in the style of specific living artists, addressing intellectual property concerns. Targets include Van Gogh, Picasso, and named digital artists.</p>
+      </div>
+      <div class="domain-card">
+        <div class="domain-card-icon">👤</div>
+        <h4>Celebrity / Face Erasure</h4>
+        <p>Removing the model's ability to generate recognizable likenesses of specific public figures, addressing privacy and non-consensual deepfake concerns.</p>
+      </div>
+      <div class="domain-card">
+        <div class="domain-card-icon">🏗️</div>
+        <h4>Object / Class Removal</h4>
+        <p>Removing specific object categories from the model's generative repertoire — from CIFAR-10 classes to trademarked logos and copyrighted characters.</p>
+      </div>
+    </div>
+
+    <p>The earliest and most influential work in this space is ESD (Erased Stable Diffusion, Gandikota et al. 2023), which fine-tuned diffusion model weights using negative guidance to steer generation away from unwanted concepts. ESD demonstrated that concept erasure was feasible but revealed a key challenge: erasing one concept often causes "collateral damage," degrading the generation quality for unrelated concepts. A model that aggressively forgets "nudity" may also degrade its ability to generate realistic human anatomy in benign contexts.</p>
+
+    <p>Subsequent methods have tackled this collateral damage problem from multiple angles. FMN (Forget-Me-Not) adjusts cross-attention mechanisms to reduce emphasis on undesired concepts. MACE (Multi-concept Erasure) scales erasure to over 100 concepts simultaneously using low-rank adaptation (LoRA). UCE (Unlearning via Concept Editing) proposes a closed-form solution for cross-attention weight editing. The most recent generation of methods — including work on "compensation-free" erasure — has argued that the very act of compensating for erasure with additional training can introduce its own reliability problems, and that better-designed erasure should preserve utility without remediation.</p>
+
+    <h3>Training-based vs. Training-free Erasure</h3>
+
+    <p>A key division in diffusion model unlearning is between training-based approaches (which fine-tune model weights) and training-free approaches (which intervene at inference time without weight modification). Training-free methods like activation steering, modified classifier-free guidance, and representation editing offer an immediate and reversible alternative — if the concept needs to come back, no retraining is required. But they tend to be less robust: a sufficiently adversarial prompt can often bypass inference-time interventions in ways that weight-level unlearning resists.</p>
+
+    <p>Work published in 2025 introduced the HiRM (High-level Representation Misdirection) framework, which operates on intermediate high-level representations rather than the denoiser weights directly. By targeting the semantic encoding space rather than the low-level denoising machinery, HiRM achieves more precise concept removal with less impact on unrelated concepts — and notably, the method transfers to newer architectures like Flux without additional training.</p>
+
+    <h3>The Adversarial Robustness Problem</h3>
+
+    <p>Perhaps the most pressing open problem in image-generation unlearning is adversarial robustness. Research has repeatedly shown that concept erasure methods that appear complete can be bypassed by adversarially crafted prompts — prompts that do not use the erased concept's name but arrive at the same visual output through synonyms, circumlocutions, or embedding-space attacks. AdvUnlearn explicitly models this attack surface during the unlearning process itself, incorporating adversarial prompts during training to improve robustness. But no method has yet achieved both thorough erasure and full adversarial robustness simultaneously — this remains an open research question.</p>
+
+    <h2 id="multimodal">Unlearning in Multimodal Large Language Models</h2>
+
+    <p>Multimodal large language models (MLLMs) — systems like LLaVA, GPT-4V, Idefics, and their successors that process both images and text — represent a distinct and increasingly urgent frontier for unlearning. These models combine a visual encoder with an LLM backbone, connected by a projection layer, and they inherit privacy and copyright risks from both modalities simultaneously.</p>
+
+    <p>Unlearning in MLLMs is more complex than in either unimodal LLMs or diffusion models alone. The visual and textual encodings of the same concept may be stored in different components of the model, and unlearning one modality's representation does not necessarily erase the other's. A model that "forgets" a person's name in its language component may still visually recognize and describe them if prompted with their image.</p>
+
+    <p>The MLLMU-Bench benchmark (introduced in 2024) was the first standardized evaluation framework specifically designed for MLLM unlearning, evaluating performance on fictitious profiles at both visual and textual levels. It assesses forget effectiveness, generalizability (does forgetting transfer to transformed versions of the same image, or paraphrased text?), and model utility on retained knowledge.</p>
+
+    <p>The MMUnlearner framework (ACL 2025) introduced the notion of "geometry-constrained gradient descent" for multimodal unlearning — a method that preserves the geometry of the model's parameter space while directing updates away from target visual concepts. Crucially, MMUnlearner erases only the visual patterns associated with a given entity while explicitly preserving the corresponding textual knowledge in the language model backbone — recognizing that visual and textual knowledge need to be handled separately.</p>
+
+    <p>A lighter-weight alternative, MLLMEraser (2025), achieves test-time unlearning in MLLMs through activation steering — injecting direction vectors into intermediate activations to suppress target-concept outputs without any weight modification. This offers the significant practical advantage of being instantly reversible and requiring no retraining, at the cost of some robustness.</p>
+
+    <h2 id="federated">Federated Unlearning</h2>
+
+    <p>Federated learning allows model training across distributed data sources — users' devices, hospitals, banks — without centralizing the raw data. This architecture was explicitly designed for privacy, but it creates a new unlearning problem: when a participant wants to withdraw their contribution, the model must be updated to remove that contribution without access to the original data and without requiring every other participant to retrain.</p>
+
+    <p>Federated unlearning (FU) has become a substantial research area in its own right. The basic challenge is that in standard federated learning, a global model is the aggregate of many local model updates over many rounds. Determining exactly what a given client's contribution was — and reversing it — requires either storing historical model states or developing principled approximations.</p>
+
+    <p>Key methods include FedEraser, which recovers the model state at the checkpoint just before the target client's data was incorporated, and FRU (Federated Recommendation Unlearning), which extends this to recommendation systems by incorporating user-item mixed semi-hard negative sampling to minimize storage requirements. A 2024 survey published in IEEE Transactions on Neural Networks and Learning Systems provides a comprehensive taxonomy of federated unlearning methods, covering both client-level removal (removing an entire participant) and sample-level removal (removing specific data points contributed by a participant).</p>
+
+    <p>The challenge intensifies in federated recommendation systems — systems like those underlying TikTok, Instagram, or Netflix — where user-item interaction graphs are deeply interconnected. When a user deletes their interaction history, the system must recalibrate recommendation probabilities for related items while ensuring that deleted information becomes completely unrecoverable from inference. Work on pre-training for recommendation unlearning (2025) explicitly addresses this interdependence problem in GNN-based recommendation architectures.</p>
+
+    <h2 id="graphs">Graph Neural Networks and Graph Unlearning</h2>
+
+    <p>Graph neural networks (GNNs) operate on structured relational data — social networks, molecular graphs, knowledge graphs, financial transaction networks. Unlearning from GNNs is harder than from standard neural networks because of the fundamental property of GNNs: message passing. When a node's data is used in training, its representation influences the representations of its neighbors, which influence their neighbors, in rippling concentric waves through the graph. Unlearning one node's contribution therefore requires reasoning about its cascade of influence through the entire network structure.</p>
+
+    <p>Graph unlearning methods must address two types of removal requests: node-level removal (removing a user and all their connections from a social network model) and edge-level removal (removing specific relationships while retaining the participating nodes). Both require disentangling the "information web" created by GNN's iterative message passing. SISA-based approaches adapted for graphs partition the graph into shards — but graph sharding without violating the structural integrity of the graph is itself non-trivial, and naive sharding may destroy the very graph structure that makes GNN-based predictions useful.</p>
+
+    <p>Graph unlearning has direct practical applications in social networks (user data removal), fraud detection (removing poisoned training examples introduced by adversarial actors), drug discovery (revising molecular interaction graphs as experimental results invalidate prior data), and financial systems (regulatory-compliance removal of transaction histories).</p>
+
+    <h2 id="safety">Machine Unlearning for AI Safety and Alignment</h2>
+
+    <p>Machine unlearning has increasingly been incorporated into the AI safety and alignment discourse — and this may prove to be its most consequential application domain.</p>
+
+    <p>The core insight is that standard safety alignment techniques — RLHF, DPO, refusal training — teach a model to <em>avoid outputting</em> harmful content, but do not necessarily remove the underlying knowledge that could generate it. A jailbreak is evidence of this: a sufficiently creative prompt can often bypass surface-level safety training to access capabilities the model "knows" but was trained not to use. Unlearning offers a complementary approach: rather than teaching refusal, it removes the harmful knowledge from the weights entirely, leaving nothing to jailbreak.</p>
+
+    <p>Work on Constrained Knowledge Unlearning (CKU, 2025) approaches safety alignment through neuron-level unlearning. By scoring neurons in MLP layers to identify those associated with harmful knowledge, CKU surgically suppresses only the implicated neurons while preserving utility. This is substantially more targeted than gradient ascent approaches that operate across all weights.</p>
+
+    <p>The dual-use nature of this research is worth emphasizing. A 2025 USENIX Security paper with the blunt title "Refusal Is Not an Option: Unlearning Safety Alignment of Large Language Models" examined the adversarial side of the same coin — demonstrating that legitimate-looking unlearning requests could potentially be weaponized to remove safety alignment from deployed models. The paper modeled an "adversarial unlearning" scenario in which an attacker submits seemingly valid unlearning requests specifically designed to remove safety behaviors. This underscores that unlearning systems themselves must be secured, not just the underlying models.</p>
+
+    <h2 id="competition">The Google NeurIPS Challenge: Unlearning Goes Mainstream</h2>
+
+    <p>The NeurIPS 2023 Machine Unlearning Challenge, organized by Google, was a watershed moment for the field. It was the first standardized machine unlearning competition and explicitly aimed to do two things: unify evaluation metrics, and open the research problem to a global community.</p>
+
+    <p>The challenge scenario was deliberately concrete: an age predictor had been trained on face images, and a subset of those images needed to be forgotten to protect the privacy of the individuals depicted. Participants submitted unlearning algorithms that were evaluated using membership inference attacks (MIAs) — statistical tests that probe whether a given data point was in the training set. If the MIA failed to distinguish unlearned samples from samples never in the training set, the model was deemed to have passed. Scoring balanced forgetting quality against post-unlearning model utility.</p>
+
+    <p>The results were striking: 1,338 individuals from 72 countries participated, resulting in 1,121 teams and 1,923 submissions. A subsequent analysis paper, titled "Are We Making Progress in Unlearning?", examined the winning submissions and found a nuanced picture — many novel algorithms were proposed, but it remained unclear whether the field's best methods were producing genuine forgetting or artifacts that fooled the evaluation metrics without achieving true removal. This productive ambiguity has since driven substantial methodological work on unlearning evaluation itself.</p>
+
+    <h2 id="evaluation">The Verification Problem: How Do You Know It Actually Forgot?</h2>
+
+    <p>Perhaps the deepest challenge in machine unlearning is not the forgetting itself — it is proving that the forgetting happened. Membership inference attacks (MIAs) are the dominant tool for unlearning verification: if an attacker cannot determine whether a given sample was in the training set, the model is deemed to have forgotten it. But recent research has fundamentally challenged this assumption.</p>
+
+    <p>A 2025 paper "Statistical MIA: Rethinking Membership Inference Attack for Reliable Unlearning Auditing" showed that MIA-based auditing is structurally flawed as a verification mechanism. The key insight: a failed membership inference does not imply true forgetting. MIAs formulated as binary classification problems inevitably incur statistical errors, and these errors can lead to systematically overoptimistic assessments of unlearning performance. A model may fool a membership inference attack not because it has genuinely forgotten the data, but because the MIA's statistical power is insufficient to detect residual traces.</p>
+
+    <p>This paper proposed SMIA (Statistical Membership Inference Attack), which directly compares distributions of member and non-member data using statistical hypothesis tests, eliminating the need for trained attack models and providing both a forgetting rate and a confidence interval. This moves unlearning verification toward a more rigorous statistical framework.</p>
+
+    <p>A separate ICLR 2025 paper found that machine unlearning fails to mitigate data poisoning attacks — that even models which pass MIA-based unlearning verification may still carry adversarially poisoned behaviors that can be reactivated. This suggests that the evaluation gap between "appears unlearned" and "is genuinely unlearned" remains one of the fundamental open problems in the field.</p>
+
+    <h2 id="challenges">Open Challenges Across the Field</h2>
+
+    <p>Across all domains, several cross-cutting challenges recur in the unlearning literature:</p>
+
+    <ul class="challenge-list">
+      <li><strong>The utility–forgetting tradeoff.</strong> Every unlearning method faces the fundamental tension between thorough forgetting and preserving the model's usefulness. Methods that aggressively forget tend to degrade overall performance; methods that preserve utility tend to leave residual traces. No method has yet achieved both simultaneously across all settings.</li>
+      <li><strong>Scalability to very large models.</strong> Most unlearning research has been conducted on relatively small models. Scaling unlearning to frontier-scale LLMs — with hundreds of billions of parameters — remains largely uncharted. The computational cost of even approximate unlearning grows with model size, and the relationship between model scale and unlearning difficulty is not well understood.</li>
+      <li><strong>Verification and auditability.</strong> As described above, proving that a model has genuinely forgotten data — not merely suppressed outputs — remains an open problem. Without reliable auditing, regulatory compliance claims become difficult to substantiate.</li>
+      <li><strong>Sequential unlearning.</strong> Real-world deployment will involve repeated, sequential unlearning requests. Most current methods are designed for single or batch forgetting operations. The effect of repeated unlearning on model integrity over time is understudied.</li>
+      <li><strong>The "fundamental concepts" problem.</strong> As noted in Wikipedia's own treatment of the subject, just as early experiences in humans shape later ones, some concepts are more fundamental and harder to unlearn. In an LLM, foundational concepts — basic grammar, common facts, physical intuitions — are reinforced by countless training examples. Attempting to unlearn them selectively risks undermining the model's core capabilities.</li>
+      <li><strong>Adversarial robustness of unlearning itself.</strong> Both unlearning methods and unlearning evaluations are susceptible to adversarial manipulation — by parties trying to abuse unlearning requests to remove safety behaviors, or by models that appear to unlearn while hiding residual knowledge.</li>
+    </ul>
+
+    <h2 id="regulatory">The Regulatory Landscape: GDPR, CCPA, and the EU AI Act</h2>
+
+    <p>The legal pressure driving machine unlearning has only intensified since the GDPR's enactment. The California Consumer Privacy Act (CCPA) grants similar data erasure rights to California residents. And crucially, the EU AI Act — which entered force in 2024 — adds a new layer of requirements specifically targeting high-risk AI systems, including provisions that implicitly require data governance mechanisms with unlearning implications.</p>
+
+    <p>The IAPP published an analysis in February 2026 noting that the right to be forgotten, originally conceived as a privacy safeguard, now functions as an instrument of self-determination — "the individual's authority to decide when their past ceases to define their present." Generative AI undermines that autonomy by making "memory" probabilistic rather than deterministic. This philosophical framing has moved machine unlearning from a purely technical problem into the domain of digital rights scholarship.</p>
+
+    <p>Regulators have increasingly begun treating model weights themselves as personal data when those weights are demonstrably influenced by identifiable personal information. This interpretation, if it solidifies into case law, would mean that deploying a model trained on personal data without the ability to implement unlearning requests would be a per se GDPR violation — regardless of whether the original training data was deleted.</p>
+
+    <h2 id="future">The Road Ahead: Agents, Continual Learning, and Beyond</h2>
+
+    <p>The frontier of machine unlearning research is moving toward several adjacent problems that will shape the next several years of the field.</p>
+
+    <h3>Unlearning in AI Agents</h3>
+
+    <p>Autonomous AI agents — systems that operate over extended periods, maintaining memory, taking actions, and accumulating experience — present a novel unlearning challenge. Unlike a static trained model, an agent's "knowledge" is dynamic: it includes not just pre-training data but episodic memory, tool-use history, and learned behavioral patterns from deployment. As agentic AI moves toward Gartner's projected 33% enterprise adoption by 2028, the question of how to selectively erase an agent's memory of specific interactions, users, or operational contexts becomes practically urgent. Current unlearning methods, designed for static trained models, do not directly transfer to this setting.</p>
+
+    <h3>Continual Learning and Unlearning</h3>
+
+    <p>Continual learning systems — models that keep learning from new data after deployment — interact with unlearning in complex ways. Naive continual learning tends to suffer from "catastrophic forgetting" of old knowledge; unlearning intentionally induces a controlled version of this forgetting. Research is beginning to explore their intersection: systems that can learn new information, selectively forget outdated or impermissible information, and do both without catastrophic interference — a kind of principled memory management for AI.</p>
+
+    <h3>Unlearning in Reasoning Models</h3>
+
+    <p>The emergence of large reasoning models — systems that generate extended chains of thought before producing a final answer — adds new complexity. A reasoning model might "remember" a piece of information not in its final output but in its intermediate reasoning steps. Ensuring that unlearning genuinely removes knowledge from reasoning chains, not just from final outputs, is an open problem. The SafeMLRM paper (2025) is among the first to examine safety and unlearning in multi-modal reasoning models specifically.</p>
+
+    <h3>Toward Formal Guarantees</h3>
+
+    <p>The long-term direction for the field is toward unlearning methods with formal mathematical guarantees — systems that can be audited and certified, not merely heuristically evaluated. This connects machine unlearning to differential privacy and cryptographic approaches to data deletion. Work on certified unlearning, influence functions, and statistical auditing frameworks represents the most theoretically rigorous strand of current research, and it is the direction most likely to satisfy future regulatory requirements.</p>
+
+    <hr class="section-rule">
+
+    <h2 id="conclusion">Conclusion: The Delete Button That Doesn't Exist Yet</h2>
+
+    <p>Machine unlearning began as a response to a legal inconvenience — a privacy regulation that assumed data could be deleted cleanly, applied to systems where clean deletion is technically impossible. It has grown into something far larger: a fundamental challenge about the nature of machine learning itself, the ownership of knowledge encoded in model weights, and the rights of individuals in an age of pervasive AI.</p>
+
+    <p>The field today is simultaneously rich with progress and honest about how much remains unsolved. Researchers have developed a taxonomy of methods — exact and approximate, gradient-based and architecture-based, weight-level and inference-level — and deployed them across every domain where machine learning operates: text, images, graphs, multimodal systems, federated networks. Standardized benchmarks and competitions have moved evaluation from ad hoc to rigorous. Regulatory frameworks have given the problem institutional urgency.</p>
+
+    <p>And yet the core challenge persists. Neural networks do not store information in retrievable units. They compress experience into weight configurations that encode patterns, relationships, and inferences in ways that resist atomic erasure. The dream of a reliable, efficient, verifiable AI delete button — one that removes exactly what it should, leaves everything else intact, and can prove it did so — remains elusive. It is not clear whether such a button is even theoretically possible without accepting some approximation. What is clear is that the field is not going to stop trying to build it. The legal mandates are real, the safety stakes are high, and the intellectual challenge is deep enough to attract some of the best researchers in the world.</p>
+
+    <p>The machines are learning to forget. They are not there yet. But they are getting closer.</p>
+
+    <!-- Engagement Section (Likes, Shares, Comments) -->
+    <div id="engagement-section"></div>
+
+  </main>
+
+  <aside class="sidebar">
+    <nav class="toc">
+      <div class="toc-title">In this article</div>
+      <ul>
+        <li><a href="#origins">Origins & the GDPR</a></li>
+        <li><a href="#what">What unlearning actually is</a></li>
+        <li><a href="#llms">Unlearning in LLMs</a></li>
+        <li><a href="#images">Image generation (concept erasure)</a></li>
+        <li><a href="#multimodal">Multimodal models</a></li>
+        <li><a href="#federated">Federated unlearning</a></li>
+        <li><a href="#graphs">Graph neural networks</a></li>
+        <li><a href="#safety">AI safety & alignment</a></li>
+        <li><a href="#competition">The NeurIPS challenge</a></li>
+        <li><a href="#evaluation">The verification problem</a></li>
+        <li><a href="#challenges">Open challenges</a></li>
+        <li><a href="#regulatory">Regulatory landscape</a></li>
+        <li><a href="#future">The road ahead</a></li>
+        <li><a href="#conclusion">Conclusion</a></li>
+      </ul>
+    </nav>
+
+    <div class="stat-box">
+      <div class="stat-num">1,338</div>
+      <div class="stat-label">Participants in Google's NeurIPS 2023 machine unlearning competition, from 72 countries</div>
+    </div>
+
+    <div class="stat-box" style="background: var(--accent);">
+      <div class="stat-num">2015</div>
+      <div class="stat-label">Year the term "machine unlearning" was coined by Cao and Yang at IEEE S&P</div>
+    </div>
+
+    <div class="callout-box">
+      <strong>Key tension</strong>
+      Every unlearning method faces the tradeoff between thorough forgetting and preserving the model's overall usefulness. No method has fully resolved this tradeoff.
+    </div>
+
+    <div class="callout-box" style="border-color: var(--accent2); background: var(--accent2-light);">
+      <strong style="color: var(--accent2);">Regulatory driver</strong>
+      GDPR Article 17, California's CCPA, and the EU AI Act all create legal pressure for deployable machine unlearning. Regulators are beginning to treat model weights as personal data.
+    </div>
+
+    <div class="callout-box" style="border-color: var(--green); background: var(--green-light);">
+      <strong style="color: var(--green);">Active benchmarks</strong>
+      TOFU · RWKU · MLLMU-Bench · UnlearnCanvas · NeurIPS 2023 Challenge metric (open-sourced May 2024)
+    </div>
+  </aside>
+</div>
+
+<footer class="footer-section">
+  <p>This article is based on peer-reviewed research, arxiv preprints, and conference proceedings through May 2026. All claims cite or paraphrase primary sources.</p>
+</footer>
+
+<script src="js/engagement.js"></script>
+</body>
+</html>

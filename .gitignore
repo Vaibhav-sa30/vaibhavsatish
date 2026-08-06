@@ -32,6 +32,9 @@ dist/
 .Trashes
 ehthumbs.db
 Thumbs.db
+desktop.ini
+.vercel/
+.kiro/
 
 # Logs
 logs

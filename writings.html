@@ -4,178 +4,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description"
-        content="Writings & Articles - Vaibhav Satish | Data Science, Responsible AI, and Technology">
-    <meta name="keywords" content="data science blog, responsible AI writings, technology articles, Vaibhav Satish">
-    <meta name="author" content="Vaibhav Satish">
+    <meta name="description" content="Vaibhav Satish - Writings & Essays">
+    <title>Vaibhav Satish | Writings</title>
 
-    <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="Writings - Vaibhav Satish">
-    <meta property="og:description" content="Thoughts and articles on data science, responsible AI, and technology.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://[username].github.io/writings.html">
-
-    <title>Writings - Vaibhav Satish</title>
-
-    <!-- Preconnect to Google Fonts for performance -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <!-- Google Fonts -->
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
-        rel="stylesheet">
-
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/components.css">
-    <link rel="stylesheet" href="css/responsive.css">
-
-    <!-- Simple Icons -->
-    <script src="https://unpkg.com/simple-icons@latest/icons.js"></script>
-
-    <!-- Favicon -->
+    <link rel="stylesheet" href="css/research.css">
     <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
-
-    <!-- Web App Manifest -->
-    <link rel="manifest" href="manifest.json">
 </head>
 
 <body>
-    <!-- Fluid Background Canvas -->
-    <canvas id="fluid-canvas"></canvas>
-
-    <!-- Preloader -->
-    <div id="preloader">
-        <div class="loader-content">
-            <svg class="loader-logo" viewBox="0 0 100 100" width="80" height="80">
-                <circle cx="50" cy="50" r="45" stroke="currentColor" stroke-width="2" fill="none"
-                    class="loader-circle" />
-                <text x="50" y="55" text-anchor="middle" font-family="'Inter', sans-serif" font-weight="bold"
-                    font-size="24" fill="currentColor">VS</text>
-            </svg>
-            <div class="loader-text">Loading...</div>
+    <header class="masthead">
+        <a href="index.html" class="masthead-label">Vaibhav Satish &nbsp;·&nbsp; Portfolio</a>
+        <div class="nav-tabs">
+            <!-- <a href="index.html" class="nav-tab-btn">Home</a> -->
+            <a href="research.html" class="nav-tab-btn">Research</a>
+            <a href="writings.html" class="nav-tab-btn active">Writings</a>
         </div>
-    </div>
-
-    <!-- Navigation Header -->
-    <header class="header" id="header">
-        <nav class="nav container">
-            <div class="nav__brand">
-                <a href="index.html" class="nav__logo">Vaibhav Satish</a>
-            </div>
-
-            <div class="nav__menu" id="nav-menu">
-                <ul class="nav__list">
-                    <li class="nav__item">
-                        <a href="index.html#home" class="nav__link">Home</a>
-                    </li>
-                    <li class="nav__item">
-                        <a href="index.html#about" class="nav__link">About</a>
-                    </li>
-                    <li class="nav__item">
-                        <a href="index.html#projects" class="nav__link">Projects</a>
-                    </li>
-                    <li class="nav__item">
-                        <a href="index.html#research" class="nav__link">Research</a>
-                    </li>
-                    <li class="nav__item">
-                        <a href="#" class="nav__link active-link">Writings</a>
-                    </li>
-                    <li class="nav__item">
-                        <a href="index.html#startup" class="nav__link">Startup</a>
-                    </li>
-                    <li class="nav__item">
-                        <a href="index.html#contact" class="nav__link">Contact</a>
-                    </li>
-                </ul>
-
-                <div class="nav__close" id="nav-close">
-                    <svg class="nav__close-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                </div>
-            </div>
-
-            <div class="nav__toggle" id="nav-toggle">
-                <svg class="nav__toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <line x1="3" y1="6" x2="21" y2="6"></line>
-                    <line x1="3" y1="12" x2="21" y2="12"></line>
-                    <line x1="3" y1="18" x2="21" y2="18"></line>
-                </svg>
-            </div>
-        </nav>
     </header>
 
-    <!-- Main Content -->
-    <main class="main">
-        <section class="section">
-            <div class="container">
-                <h2 class="section__title">Writings</h2>
-                <span class="section__subtitle">Thoughts, Articles & Technical Guides</span>
+    <main class="main-content">
+        <h1 class="section-title">Writings</h1>
 
-                <div class="writings__container grid"
-                    style="margin-top: 3rem; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
-
-                    <!-- Placeholder Article 1 -->
-                    <article class="card" style="padding: 2rem; display: flex; flex-direction: column; gap: 1rem;">
-                        <span class="research__date">Coming Soon</span>
-                        <h3 class="research__title">The Future of Responsible AI</h3>
-                        <p class="research__description">
-                            Exploring the ethical implications of large language models and how we can build safer AI
-                            systems.
-                        </p>
-                        <a href="#" class="button button--small button--disabled"
-                            style="align-self: flex-start; opacity: 0.7; pointer-events: none;">Read More</a>
-                    </article>
-
-                    <!-- Placeholder Article 2 -->
-                    <article class="card" style="padding: 2rem; display: flex; flex-direction: column; gap: 1rem;">
-                        <span class="research__date">Coming Soon</span>
-                        <h3 class="research__title">Building Secure Web Apps</h3>
-                        <p class="research__description">
-                            A guide to implementing security best practices in modern web development frameworks.
-                        </p>
-                        <a href="#" class="button button--small button--disabled"
-                            style="align-self: flex-start; opacity: 0.7; pointer-events: none;">Read More</a>
-                    </article>
-
-                    <!-- Placeholder Article 3 -->
-                    <article class="card" style="padding: 2rem; display: flex; flex-direction: column; gap: 1rem;">
-                        <span class="research__date">Coming Soon</span>
-                        <h3 class="research__title">Machine Unlearning Explained</h3>
-                        <p class="research__description">
-                            Deep dive into the techniques and importance of removing data influence from trained models.
-                        </p>
-                        <a href="#" class="button button--small button--disabled"
-                            style="align-self: flex-start; opacity: 0.7; pointer-events: none;">Read More</a>
-                    </article>
-
+        <ul class="pub-list">
+            <!-- Machine Unlearning Essay -->
+            <li class="pub-item">
+                <span class="kicker" style="color: var(--accent);">AI Safety & Technical Essay</span>
+                <span class="pub-title">
+                    <a href="machine-unlearning.html" class="pub-title-link">Everything Happening in Machine Unlearning As of May 2026</a>
+                </span>
+                <span class="pub-venue">May 2026 &nbsp;·&nbsp; ~22 min read</span>
+                <p class="pub-description">
+                    AI models are trained to learn. But what happens when they need to forget? From privacy law to diffusion models to autonomous agents, machine unlearning has quietly become one of the most consequential battlegrounds in AI research.
+                </p>
+                <div class="pub-links" style="align-items: center; justify-content: space-between;">
+                    <a href="machine-unlearning.html" class="pub-link">Read Essay →</a>
+                    <div class="card-engagement-stats" data-article-id="machine-unlearning"></div>
                 </div>
-            </div>
-        </section>
+            </li>
+
+            <!-- Neuroscience & Philosophy of Mind Essay -->
+            <li class="pub-item">
+                <span class="kicker" style="color: #7c3aed;">Neuroscience & Philosophy of Mind</span>
+                <span class="pub-title">
+                    <a href="brain-consciousness.html" class="pub-title-link">What is it about our Brains that we still don't Understand?</a>
+                </span>
+                <span class="pub-venue">August 2026 &nbsp;·&nbsp; ~24 min read</span>
+                <p class="pub-description">
+                    Neuroscience has mapped every region, decoded every neurotransmitter, and charted synaptic plasticity in microscopic detail. And yet consciousness, memory, thought, and free will remain as mysterious as ever. Here is everything science knows, and everything it still cannot explain.
+                </p>
+                <div class="pub-links" style="align-items: center; justify-content: space-between;">
+                    <a href="brain-consciousness.html" class="pub-link" style="color: #7c3aed; background: #f5f3ff;">Read Essay →</a>
+                    <div class="card-engagement-stats" data-article-id="brain-consciousness"></div>
+                </div>
+            </li>
+        </ul>
     </main>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer__content">
-                <p class="footer__copy">
-                    &copy; 2024 Vaibhav Satish. Built with passion for responsible AI.
-                </p>
-            </div>
-        </div>
+    <footer class="site-footer">
+        <ul class="links">
+            <li><a href="https://github.com/Vaibhav-sa30" target="_blank">GitHub</a></li>
+            <li><a href="https://linkedin.com/in/vaibhavsatish" target="_blank">LinkedIn</a></li>
+            <li><a href="mailto:v.satish.30@gmail.com">Email</a></li>
+            <li><a href="https://drive.google.com/file/d/1JEvCQ1r67CyYyBiOwGrq206Ipfk5-3BC/view?usp=sharing"
+                    target="_blank">CV</a></li>
+        </ul>
+        <div class="footer-copy">&copy; 2026 Vaibhav Satish</div>
     </footer>
 
-    <!-- Scripts -->
-    <script src="js/components/fluid.js"></script>
-    <script src="js/main.js"></script>
-    <script src="js/components/navigation.js"></script>
-
-    <!-- Retain only necessary components for this page -->
-    <!--  <script src="js/components/animations.js"></script> -->
-
+    <script src="js/engagement.js"></script>
 </body>
 
 </html>

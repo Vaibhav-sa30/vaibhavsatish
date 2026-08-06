@@ -3,6 +3,7 @@
 // DOM Content Loaded Event
 document.addEventListener('DOMContentLoaded', function () {
     // Initialize all components
+    initGateScreen();
     initNavigation();
     initTypingEffect();
     initScrollAnimations();
@@ -10,30 +11,34 @@ document.addEventListener('DOMContentLoaded', function () {
     initSkillsInteraction();
 });
 
-// Remove Preloader when everything is loaded
-window.addEventListener('load', function () {
-    const preloader = document.getElementById('preloader');
-    if (preloader) {
-        setTimeout(() => {
-            preloader.classList.add('fade-out');
-            setTimeout(() => {
-                preloader.style.display = 'none'; // Ensure it's gone
-            }, 500);
-        }, 500);
-    }
-});
+/* ===== GATE SCREEN ===== */
+function initGateScreen() {
+    const gateScreen = document.getElementById('gate-screen');
+    const btnRegular = document.getElementById('btn-regular');
+    const btnResearcher = document.getElementById('btn-researcher');
 
-// Safety fallback: Force remove loader after 5 seconds if window.load doesn't fire
-setTimeout(() => {
-    const preloader = document.getElementById('preloader');
-    if (preloader && !preloader.classList.contains('fade-out')) {
-        console.warn('Loader timed out, forcing removal');
-        preloader.classList.add('fade-out');
-        setTimeout(() => {
-            preloader.style.display = 'none';
-        }, 500);
+    if (!gateScreen) return;
+
+    if (btnRegular) {
+        btnRegular.addEventListener('click', function () {
+            gateScreen.classList.add('fade-out');
+            setTimeout(() => {
+                gateScreen.style.display = 'none';
+                // Trigger any entry animations for the main site if needed
+            }, 800);
+        });
     }
-}, 5000);
+
+    if (btnResearcher) {
+        btnResearcher.addEventListener('click', function () {
+            // Smooth transition before redirect
+            gateScreen.style.opacity = '0';
+            setTimeout(() => {
+                window.location.href = 'research.html';
+            }, 500);
+        });
+    }
+}
 
 /* ===== TYPING EFFECT ===== */
 function initTypingEffect() {

@@ -289,7 +289,7 @@ cleancss -o styles.min.css combined.css
 cat js/main.js js/components/*.js > combined.js
 terser combined.js -o scripts.min.js --compress --mangle
 
-# HTML Optimization
+# HTML Optimizationgithu
 html-minifier-terser --collapse-whitespace --remove-comments \
   --minify-css --minify-js -o index.min.html index.html
 

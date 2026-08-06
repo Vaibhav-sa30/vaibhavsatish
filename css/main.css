@@ -109,50 +109,92 @@
   opacity: 0.6; /* Subtle effect */
 }
 
-#preloader {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: var(--body-color);
-  z-index: 9999;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+#gate-screen {
+  display: none !important;
 }
 
-#preloader.fade-out {
+#gate-screen.fade-out {
   opacity: 0;
   visibility: hidden;
 }
 
-.loader-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--spacing-md);
+.gate-content {
+  text-align: center;
+  animation: fadeInDown 1s ease-out;
 }
 
-.loader-logo {
-  color: var(--primary-color);
-  animation: pulse 2s infinite ease-in-out;
-}
-
-.loader-circle {
-  stroke-dasharray: 283; /* 2 * PI * 45 */
-  stroke-dashoffset: 283;
-  animation: dash 2s ease-in-out infinite;
-  transform-origin: center;
-}
-
-.loader-text {
-  font-family: var(--code-font);
-  font-size: var(--small-font-size);
-  color: var(--text-color-light);
+.gate-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 400;
+  color: var(--title-color);
+  margin-bottom: 3rem;
   letter-spacing: 2px;
-  text-transform: uppercase;
+  text-transform: lowercase;
+  font-variant: small-caps;
+}
+
+.gate-buttons {
+  display: flex;
+  gap: 3rem;
+  justify-content: center;
+}
+
+.gate-btn {
+  padding: 1rem 2.5rem;
+  background: transparent;
+  color: var(--title-color);
+  border: 1px solid var(--title-color);
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  position: relative;
+  overflow: hidden;
+  min-width: 180px;
+}
+
+.gate-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background-color: var(--title-color);
+  transition: left 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  z-index: -1;
+}
+
+.gate-btn:hover {
+  color: var(--body-color);
+  letter-spacing: 2px;
+}
+
+.gate-btn:hover::before {
+  left: 0;
+}
+
+@media screen and (max-width: 767px) {
+  .gate-buttons {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .gate-title {
+    font-size: 1.5rem;
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes dash {
