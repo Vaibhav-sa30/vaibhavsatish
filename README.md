@@ -17,6 +17,7 @@ Personal portfolio and technical essay platform for **Vaibhav Satish**, focusing
 ├── writings.html             # Essays & Articles index with live engagement stats
 ├── machine-unlearning.html   # Technical Essay: Machine Unlearning
 ├── brain-consciousness.html  # Technical Essay: Neuroscience & Philosophy of Mind
+├── social-cognition-agi.html # Technical Essay: Social Cognition & AGI Evaluation
 ├── regular.html              # Preserved full interactive portfolio codebase
 │
 ├── css/
