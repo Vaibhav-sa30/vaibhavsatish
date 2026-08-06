@@ -275,7 +275,7 @@ h1, h2, h3 {
 
 /* ===== VIEW FORMAT MODES ===== */
 
-/* 1. DEFAULT VIEW MODE: view-links (LessWrong / Alignment Forum Minimal Style) */
+/* 1. DEFAULT VIEW MODE: view-links (JUST Link Titles) */
 .pub-list.view-links {
   display: flex;
   flex-direction: column;
@@ -290,31 +290,28 @@ h1, h2, h3 {
   border-radius: 0;
   padding: 0.85rem 0;
   margin-bottom: 0;
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 1.5rem;
-  transition: background 0.15s ease;
+  display: block;
 }
 
 .pub-list.view-links .pub-item:hover {
   transform: none;
-  border-color: var(--border);
   background: rgba(243, 241, 236, 0.4);
 }
 
 .pub-list.view-links .kicker,
 .pub-list.view-links .pub-description,
+.pub-list.view-links .pub-venue,
+.pub-list.view-links .pub-links,
 .pub-list.view-links .card-engagement-stats {
   display: none !important;
 }
 
 .pub-list.view-links .pub-title {
   font-family: var(--font-serif);
-  font-size: 1.12rem;
+  font-size: 1.15rem;
   font-weight: 500;
   margin-bottom: 0;
-  line-height: 1.4;
+  line-height: 1.45;
 }
 
 .pub-list.view-links .pub-title-link {
@@ -324,37 +321,6 @@ h1, h2, h3 {
 
 .pub-list.view-links .pub-title-link:hover {
   color: var(--accent);
-  text-decoration: underline;
-}
-
-.pub-list.view-links .pub-venue {
-  margin-top: 0;
-  font-family: var(--font-sans);
-  font-size: 12px;
-  color: var(--ink-faint);
-  white-space: nowrap;
-}
-
-.pub-list.view-links .pub-links {
-  margin-top: 0;
-  display: inline-flex;
-  gap: 0.6rem;
-  flex-shrink: 0;
-}
-
-.pub-list.view-links .pub-link {
-  background: transparent;
-  padding: 0;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--accent);
-  border-radius: 0;
-}
-
-.pub-list.view-links .pub-link:hover {
-  background: transparent;
-  color: var(--ink);
   text-decoration: underline;
 }
 
