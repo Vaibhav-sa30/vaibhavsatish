@@ -279,10 +279,20 @@
                     <span id="share-toast" class="share-toast">Link copied!</span>
                 </div>
 
-                <div id="like-handle-toast" class="like-handle-toast">
-                    <span>Liked! Tag your X handle / name (optional):</span>
-                    <input type="text" id="like-handle-input" placeholder="@handle or Name">
-                    <button id="like-handle-save-btn">Save</button>
+                <!-- Floating Glass Modal for Post-Like Handle -->
+                <div id="like-handle-modal" class="like-handle-modal">
+                    <div class="like-modal-backdrop" id="like-modal-backdrop"></div>
+                    <div class="like-modal-content">
+                        <button class="like-modal-close" id="like-modal-close-btn">&times;</button>
+                        <div class="like-modal-icon">👏</div>
+                        <h4 class="like-modal-title">Thanks for liking!</h4>
+                        <p class="like-modal-desc">Want to tag your X handle or name with your like? (Optional)</p>
+                        <input type="text" id="like-handle-input" class="like-modal-input" placeholder="@yourhandle or Name">
+                        <div class="like-modal-actions">
+                            <button id="like-handle-save-btn" class="like-modal-save-btn">Save Handle</button>
+                            <button id="like-modal-skip-btn" class="like-modal-skip-btn">Skip</button>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Comments Section -->
@@ -330,18 +340,38 @@
             localStorage.setItem('is_author_admin', 'true');
         }
 
-        // Global shortcut Alt+P to enter secret PIN
-        window.addEventListener('keydown', (e) => {
-            if (e.altKey && (e.key === 'p' || e.key === 'P')) {
-                const pin = prompt('Enter Author Secret PIN:');
-                if (pin === '7777') {
-                    localStorage.setItem('is_author_admin', 'true');
-                    alert('👑 Author Admin Mode Unlocked!');
-                    location.reload();
-                } else if (pin !== null) {
-                    alert('Incorrect Secret PIN');
-                }
+        function unlockAuthorAdmin() {
+            const pin = prompt('Enter Author Secret PIN:');
+            if (pin === '7777') {
+                localStorage.setItem('is_author_admin', 'true');
+                alert('👑 Author Admin Mode Unlocked!');
+                location.reload();
+            } else if (pin !== null) {
+                alert('Incorrect Secret PIN');
             }
+        }
+
+        // Global Unique Shortcut: Ctrl + Alt + Shift + A to enter secret PIN
+        window.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.altKey && e.shiftKey && (e.key === 'a' || e.key === 'A')) {
+                e.preventDefault();
+                unlockAuthorAdmin();
+            }
+        });
+
+        // Secret Footer Triple-Click to unlock Author Mode
+        let clickCount = 0;
+        let clickTimer = null;
+        document.querySelectorAll('.site-footer, .footer-section, .footer-copy').forEach(el => {
+            el.addEventListener('click', () => {
+                clickCount++;
+                if (clickCount === 3) {
+                    clickCount = 0;
+                    unlockAuthorAdmin();
+                }
+                clearTimeout(clickTimer);
+                clickTimer = setTimeout(() => { clickCount = 0; }, 800);
+            });
         });
 
         const isAdmin = localStorage.getItem('is_author_admin') === 'true';
@@ -358,12 +388,20 @@
 
             setTimeout(() => likeBtn.classList.remove('pop'), 300);
 
-            // Show Optional Post-Like Handle Toast
-            const toast = document.getElementById('like-handle-toast');
-            if (toast && !localStorage.getItem(`handle_saved_${articleId}`)) {
-                toast.classList.add('show');
+            // Show Optional Post-Like Handle Modal
+            const modal = document.getElementById('like-handle-modal');
+            if (modal && !localStorage.getItem(`handle_saved_${articleId}`)) {
+                modal.classList.add('show');
             }
         });
+
+        // Handle Modal Controls
+        const handleModal = document.getElementById('like-handle-modal');
+        const closeModal = () => { if (handleModal) handleModal.classList.remove('show'); };
+
+        if (document.getElementById('like-modal-close-btn')) document.getElementById('like-modal-close-btn').onclick = closeModal;
+        if (document.getElementById('like-modal-backdrop')) document.getElementById('like-modal-backdrop').onclick = closeModal;
+        if (document.getElementById('like-modal-skip-btn')) document.getElementById('like-modal-skip-btn').onclick = closeModal;
 
         // Save Optional Handle for Like
         const saveHandleBtn = document.getElementById('like-handle-save-btn');
@@ -378,8 +416,7 @@
                     }]);
                     localStorage.setItem(`handle_saved_${articleId}`, 'true');
                 }
-                const toast = document.getElementById('like-handle-toast');
-                if (toast) toast.classList.remove('show');
+                closeModal();
             });
         }
 
@@ -456,18 +493,20 @@
 
             await postComment(articleId, name, content);
 
-            // Send Email Notification to Author (vaibhavsatish9@gmail.com)
+            // Send Instant Email Notification to Author (vaibhavsatish9@gmail.com)
             try {
-                fetch('https://formspree.io/f/xknkyjqn', {
+                fetch('https://formsubmit.co/ajax/vaibhavsatish9@gmail.com', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
                     body: JSON.stringify({
-                        email: 'vaibhavsatish9@gmail.com',
-                        subject: `New Comment on "${document.title}"`,
-                        article: articleId,
-                        author: name,
-                        comment: content,
-                        time: new Date().toLocaleString()
+                        _subject: `💬 New Comment on "${document.title}"`,
+                        Article: articleId,
+                        Commenter: name,
+                        Comment: content,
+                        Time: new Date().toLocaleString()
                     })
                 }).catch(() => {});
             } catch (e) {}

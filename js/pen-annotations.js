@@ -100,8 +100,11 @@
         svgContainer.setAttribute('viewBox', `0 0 ${totalWidth} ${totalHeight}`);
     }
 
-    // Create Floating Trigger Button
+    // Create Floating Trigger Button (Only for Author Admin)
     function createTriggerButton() {
+        const isAdmin = localStorage.getItem('is_author_admin') === 'true' || new URLSearchParams(window.location.search).get('admin') === '7777';
+        if (!isAdmin) return;
+
         const btn = document.createElement('button');
         btn.className = 'pen-trigger-btn';
         btn.innerHTML = `
