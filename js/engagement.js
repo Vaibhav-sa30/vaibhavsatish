@@ -279,6 +279,12 @@
                     <span id="share-toast" class="share-toast">Link copied!</span>
                 </div>
 
+                <div id="like-handle-toast" class="like-handle-toast">
+                    <span>Liked! Tag your X handle / name (optional):</span>
+                    <input type="text" id="like-handle-input" placeholder="@handle or Name">
+                    <button id="like-handle-save-btn">Save</button>
+                </div>
+
                 <!-- Comments Section -->
                 <div class="comments-container">
                     <h3 class="comments-title">Discussion & Comments</h3>
@@ -318,6 +324,28 @@
             likeCountLabel.textContent = count;
         });
 
+        // Check Secret PIN / Admin status
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('admin') === '7777') {
+            localStorage.setItem('is_author_admin', 'true');
+        }
+
+        // Global shortcut Alt+P to enter secret PIN
+        window.addEventListener('keydown', (e) => {
+            if (e.altKey && (e.key === 'p' || e.key === 'P')) {
+                const pin = prompt('Enter Author Secret PIN:');
+                if (pin === '7777') {
+                    localStorage.setItem('is_author_admin', 'true');
+                    alert('👑 Author Admin Mode Unlocked!');
+                    location.reload();
+                } else if (pin !== null) {
+                    alert('Incorrect Secret PIN');
+                }
+            }
+        });
+
+        const isAdmin = localStorage.getItem('is_author_admin') === 'true';
+
         likeBtn.addEventListener('click', async () => {
             likeBtn.disabled = true;
             likeBtn.classList.add('pop');
@@ -329,7 +357,31 @@
             if (topLikeCount) topLikeCount.textContent = newCount;
 
             setTimeout(() => likeBtn.classList.remove('pop'), 300);
+
+            // Show Optional Post-Like Handle Toast
+            const toast = document.getElementById('like-handle-toast');
+            if (toast && !localStorage.getItem(`handle_saved_${articleId}`)) {
+                toast.classList.add('show');
+            }
         });
+
+        // Save Optional Handle for Like
+        const saveHandleBtn = document.getElementById('like-handle-save-btn');
+        if (saveHandleBtn) {
+            saveHandleBtn.addEventListener('click', async () => {
+                const handleInput = document.getElementById('like-handle-input');
+                const handleVal = handleInput ? handleInput.value.trim() : '';
+                if (handleVal && supabaseClient) {
+                    await supabaseClient.from('article_like_handles').insert([{
+                        article_id: articleId,
+                        reader_handle: handleVal
+                    }]);
+                    localStorage.setItem(`handle_saved_${articleId}`, 'true');
+                }
+                const toast = document.getElementById('like-handle-toast');
+                if (toast) toast.classList.remove('show');
+            });
+        }
 
         shareBtn.addEventListener('click', () => {
             if (navigator.share) {
@@ -362,14 +414,32 @@
             }
 
             commentsList.innerHTML = comments.map(c => `
-                <div class="comment-card">
+                <div class="comment-card" data-id="${c.id}">
                     <div class="comment-header">
                         <span class="comment-author">${escapeHTML(c.author_name)}</span>
-                        <span class="comment-date">${timeAgo(c.created_at)}</span>
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <span class="comment-date">${timeAgo(c.created_at)}</span>
+                            ${isAdmin ? `<button class="delete-comment-btn" data-id="${c.id}" title="Delete comment (Admin)">🗑️ Delete</button>` : ''}
+                        </div>
                     </div>
                     <div class="comment-body">${escapeHTML(c.content)}</div>
                 </div>
             `).join('');
+
+            // Attach Delete Event Listeners if Admin
+            if (isAdmin) {
+                commentsList.querySelectorAll('.delete-comment-btn').forEach(btn => {
+                    btn.onclick = async () => {
+                        const commentId = btn.getAttribute('data-id');
+                        if (confirm('Delete this comment permanently?')) {
+                            if (supabaseClient) {
+                                await supabaseClient.from('article_comments').delete().eq('id', commentId);
+                            }
+                            loadComments();
+                        }
+                    };
+                });
+            }
         }
 
         loadComments();
@@ -385,6 +455,22 @@
             submitBtn.textContent = 'Posting...';
 
             await postComment(articleId, name, content);
+
+            // Send Email Notification to Author (vaibhavsatish9@gmail.com)
+            try {
+                fetch('https://formspree.io/f/xknkyjqn', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: 'vaibhavsatish9@gmail.com',
+                        subject: `New Comment on "${document.title}"`,
+                        article: articleId,
+                        author: name,
+                        comment: content,
+                        time: new Date().toLocaleString()
+                    })
+                }).catch(() => {});
+            } catch (e) {}
 
             commentContent.value = '';
             submitBtn.disabled = false;

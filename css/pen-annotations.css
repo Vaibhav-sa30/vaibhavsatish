@@ -1,0 +1,221 @@
+/* ==========================================================================
+   PEN TABLET ANNOTATION ENGINE - STYLES (FIXED)
+   ========================================================================== */
+
+/* Full Page SVG Canvas Container */
+.pen-annotation-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+    overflow: hidden;
+}
+
+.pen-annotation-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    touch-action: none; /* CRITICAL: Prevents browser scrolling from hijacking pen tablet strokes */
+}
+
+/* Enable pointer events when actively drawing */
+body.pen-drawing-mode .pen-annotation-container {
+    pointer-events: auto !important;
+    cursor: crosshair !important;
+}
+
+/* SVG Path Stroke Styling */
+.pen-stroke {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+    pointer-events: visibleStroke;
+}
+
+/* Floating Trigger Button (Bottom Right) */
+.pen-trigger-btn {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 10000;
+    background: #1c1917;
+    color: #faf9f6;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 10px 16px;
+    border-radius: 30px;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.25), 0 4px 10px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    backdrop-filter: blur(8px);
+}
+
+.pen-trigger-btn:hover {
+    transform: translateY(-2px) scale(1.02);
+    background: #000;
+    box-shadow: 0 14px 30px -5px rgba(0, 0, 0, 0.35);
+}
+
+.pen-trigger-btn .badge {
+    background: #c2410c;
+    color: #fff;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-weight: 700;
+}
+
+/* Floating Glassmorphic Pen Toolbar */
+.pen-toolbar {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(120%);
+    z-index: 10001;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(226, 223, 215, 0.9);
+    padding: 8px 14px;
+    border-radius: 40px;
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.2), 0 8px 16px -4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+    opacity: 0;
+    pointer-events: none;
+    user-select: none;
+}
+
+.pen-toolbar.visible {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.pen-toolbar-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.pen-toolbar-divider {
+    width: 1px;
+    height: 24px;
+    background: #e2dfd7;
+}
+
+/* Tool Buttons */
+.pen-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid transparent;
+    background: transparent;
+    color: #5a5955;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    position: relative;
+}
+
+.pen-btn:hover {
+    background: #f3f1ec;
+    color: #1a1a18;
+}
+
+.pen-btn.active {
+    background: #1c1917;
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Color Swatches */
+.color-swatch {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 1px #e2dfd7;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.color-swatch:hover {
+    transform: scale(1.15);
+}
+
+.color-swatch.active {
+    transform: scale(1.25);
+    box-shadow: 0 0 0 2px #1c1917;
+}
+
+/* Stroke Size Options */
+.size-btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 12px;
+    border: 1px solid #e2dfd7;
+    background: #fff;
+    color: #5a5955;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.size-btn:hover {
+    background: #f3f1ec;
+    color: #1a1a18;
+}
+
+.size-btn.active {
+    background: #c2410c;
+    color: #fff;
+    border-color: #c2410c;
+}
+
+/* Action Pill Buttons (Save/Clear/Exit) */
+.action-pill {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1px solid #e2dfd7;
+    background: #fff;
+    color: #1a1a18;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.15s ease;
+}
+
+.action-pill:hover {
+    background: #1c1917;
+    color: #fff;
+    border-color: #1c1917;
+}
+
+.action-pill.accent-pill {
+    background: #c2410c;
+    color: #fff;
+    border-color: #c2410c;
+}
+
+.action-pill.accent-pill:hover {
+    background: #9a3412;
+}
