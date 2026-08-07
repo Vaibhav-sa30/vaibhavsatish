@@ -334,16 +334,70 @@
             likeCountLabel.textContent = count;
         });
 
-        // Check Secret PIN / Admin status (Session-only, expires on tab close)
+        // Check Secret PIN / Admin status
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('admin') === '7777') {
             sessionStorage.setItem('is_author_admin', 'true');
+            localStorage.setItem('is_author_admin', 'true');
+        }
+
+        const isAdmin = sessionStorage.getItem('is_author_admin') === 'true' || 
+                        localStorage.getItem('is_author_admin') === 'true' || 
+                        urlParams.get('admin') === '7777';
+
+        if (isAdmin) {
+            const adminBadge = document.createElement('div');
+            adminBadge.className = 'author-admin-status-badge';
+            adminBadge.style.cssText = `
+                position: fixed;
+                top: 14px;
+                right: 14px;
+                z-index: 10000;
+                background: #1c1917;
+                color: #f5f5f4;
+                font-family: 'DM Sans', sans-serif;
+                font-size: 11px;
+                font-weight: 600;
+                padding: 6px 12px;
+                border-radius: 20px;
+                box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                border: 1px solid rgba(255,255,255,0.2);
+            `;
+            adminBadge.innerHTML = `
+                <span>👑 Author Mode Active</span>
+                <button id="lock-admin-btn" style="background: rgba(255,255,255,0.2); border: none; color: #fff; font-size: 10px; padding: 2px 8px; border-radius: 10px; cursor: pointer; font-weight: 500;">Lock / Exit</button>
+            `;
+            document.body.appendChild(adminBadge);
+
+            setTimeout(() => {
+                const lockBtn = document.getElementById('lock-admin-btn');
+                if (lockBtn) {
+                    lockBtn.onclick = () => {
+                        sessionStorage.removeItem('is_author_admin');
+                        localStorage.removeItem('is_author_admin');
+                        location.href = location.pathname;
+                    };
+                }
+            }, 100);
         }
 
         function unlockAuthorAdmin() {
+            if (isAdmin) {
+                if (confirm('🔒 Lock Author Admin Mode and return to Visitor View?')) {
+                    sessionStorage.removeItem('is_author_admin');
+                    localStorage.removeItem('is_author_admin');
+                    location.href = location.pathname;
+                }
+                return;
+            }
+
             const pin = prompt('Enter Author Secret PIN:');
             if (pin === '7777') {
                 sessionStorage.setItem('is_author_admin', 'true');
+                localStorage.setItem('is_author_admin', 'true');
                 alert('👑 Author Admin Mode Unlocked!');
                 location.reload();
             } else if (pin !== null) {
@@ -360,7 +414,7 @@
             }
         });
 
-        // Triple-click on © 2026 Vaibhav Satish text in footer to unlock Author Mode
+        // Triple-click on © 2026 Vaibhav Satish text in footer to toggle Author/Visitor Mode
         let footerClickCount = 0;
         let footerClickTimer = null;
         document.addEventListener('click', (e) => {
@@ -376,8 +430,6 @@
                 footerClickTimer = setTimeout(() => { footerClickCount = 0; }, 600);
             }
         });
-
-        const isAdmin = sessionStorage.getItem('is_author_admin') === 'true';
 
         likeBtn.addEventListener('click', async () => {
             likeBtn.disabled = true;

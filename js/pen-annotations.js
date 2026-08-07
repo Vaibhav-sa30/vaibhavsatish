@@ -58,24 +58,33 @@
         window.addEventListener('resize', updateSvgDimensions);
     }
 
-    // Measure exact content height ignoring the annotation overlay itself
+    // Measure exact static content height ignoring sticky sidebars and overlays
     function getContentDimensions() {
         let maxBottom = 0;
-        const children = document.body.children;
-        for (let i = 0; i < children.length; i++) {
-            const el = children[i];
-            if (el.classList.contains('pen-annotation-container') || 
-                el.classList.contains('pen-toolbar') || 
-                el.classList.contains('pen-trigger-btn')) continue;
-            
-            const rect = el.getBoundingClientRect();
-            const bottom = rect.bottom + window.scrollY;
+        const elements = document.querySelectorAll('header, main, footer, .layout, .hero, .article-body, .footer-section, .site-footer');
+        elements.forEach(el => {
+            if (getComputedStyle(el).position === 'fixed') return;
+
+            let top = 0;
+            let current = el;
+            while (current && current !== document.body) {
+                top += current.offsetTop || 0;
+                current = current.offsetParent;
+            }
+            const bottom = top + (el.offsetHeight || 0);
             if (bottom > maxBottom) maxBottom = bottom;
-        }
-        
+        });
+
         const width = document.documentElement.clientWidth || window.innerWidth;
         const height = Math.max(Math.ceil(maxBottom), window.innerHeight);
         return { width, height };
+    }
+
+    function checkIsAdmin() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return sessionStorage.getItem('is_author_admin') === 'true' || 
+               localStorage.getItem('is_author_admin') === 'true' || 
+               urlParams.get('admin') === '7777';
     }
 
     // Create SVG Overlay over Document Body
@@ -111,11 +120,7 @@
     // Create Floating Trigger Button (Only for Author Admin)
     function createTriggerButton() {
         if (document.querySelector('.pen-trigger-btn')) return;
-
-        const isAdmin = sessionStorage.getItem('is_author_admin') === 'true' || 
-                        localStorage.getItem('is_author_admin') === 'true' ||
-                        new URLSearchParams(window.location.search).get('admin') === '7777';
-        if (!isAdmin) return;
+        if (!checkIsAdmin()) return;
 
         const btn = document.createElement('button');
         btn.className = 'pen-trigger-btn';
