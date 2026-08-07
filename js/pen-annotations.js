@@ -54,12 +54,28 @@
             }
         });
 
-        // Resize & Mutation Observer to ensure full page height coverage
+        // Window Resize: Update SVG viewBox
         window.addEventListener('resize', updateSvgDimensions);
-        window.addEventListener('scroll', updateSvgDimensions);
+    }
+
+    // Measure exact content height ignoring the annotation overlay itself
+    function getContentDimensions() {
+        let maxBottom = 0;
+        const children = document.body.children;
+        for (let i = 0; i < children.length; i++) {
+            const el = children[i];
+            if (el.classList.contains('pen-annotation-container') || 
+                el.classList.contains('pen-toolbar') || 
+                el.classList.contains('pen-trigger-btn')) continue;
+            
+            const rect = el.getBoundingClientRect();
+            const bottom = rect.bottom + window.scrollY;
+            if (bottom > maxBottom) maxBottom = bottom;
+        }
         
-        const observer = new ResizeObserver(updateSvgDimensions);
-        observer.observe(document.body);
+        const width = document.documentElement.clientWidth || window.innerWidth;
+        const height = Math.max(Math.ceil(maxBottom), window.innerHeight);
+        return { width, height };
     }
 
     // Create SVG Overlay over Document Body
@@ -85,10 +101,11 @@
 
     function updateSvgDimensions() {
         if (!svgContainer || !overlayDiv) return;
-        const totalHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
-        const totalWidth = document.documentElement.clientWidth || document.body.clientWidth;
+        const { width, height } = getContentDimensions();
 
-        svgContainer.setAttribute('viewBox', `0 0 ${totalWidth} ${totalHeight}`);
+        overlayDiv.style.height = `${height}px`;
+        overlayDiv.style.width = `${width}px`;
+        svgContainer.setAttribute('viewBox', `0 0 ${width} ${height}`);
     }
 
     // Create Floating Trigger Button (Only for Author Admin)
