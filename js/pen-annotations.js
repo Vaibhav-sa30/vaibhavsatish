@@ -69,6 +69,7 @@
         
         svgContainer = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         svgContainer.setAttribute('class', 'pen-annotation-svg');
+        svgContainer.setAttribute('preserveAspectRatio', 'none');
         
         overlayDiv.appendChild(svgContainer);
         document.body.appendChild(overlayDiv);
@@ -84,16 +85,19 @@
 
     function updateSvgDimensions() {
         if (!svgContainer || !overlayDiv) return;
-        const rect = document.body.getBoundingClientRect();
-        const totalHeight = Math.max(document.body.clientHeight, Math.round(rect.height));
-        const totalWidth = Math.round(rect.width);
+        const totalHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
+        const totalWidth = document.documentElement.clientWidth || document.body.clientWidth;
 
         svgContainer.setAttribute('viewBox', `0 0 ${totalWidth} ${totalHeight}`);
     }
 
-    // Create Floating Trigger Button (Only for Author Admin - Session-only)
+    // Create Floating Trigger Button (Only for Author Admin)
     function createTriggerButton() {
-        const isAdmin = sessionStorage.getItem('is_author_admin') === 'true' || new URLSearchParams(window.location.search).get('admin') === '7777';
+        if (document.querySelector('.pen-trigger-btn')) return;
+
+        const isAdmin = sessionStorage.getItem('is_author_admin') === 'true' || 
+                        localStorage.getItem('is_author_admin') === 'true' ||
+                        new URLSearchParams(window.location.search).get('admin') === '7777';
         if (!isAdmin) return;
 
         const btn = document.createElement('button');
@@ -109,6 +113,8 @@
         btn.onclick = toggleDrawingMode;
         document.body.appendChild(btn);
     }
+
+    window.addEventListener('author-admin-unlocked', createTriggerButton);
 
     // Create Glassmorphic Toolbar
     function createToolbar() {
