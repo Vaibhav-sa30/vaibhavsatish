@@ -351,28 +351,21 @@
             }
         }
 
-        // Multiple Keyboard Shortcuts: Ctrl+Shift+A OR Alt+Shift+A
+        // Bulletproof Keyboard Shortcut: Alt+A OR Ctrl+A OR Ctrl+Shift+A
         window.addEventListener('keydown', (e) => {
-            if ((e.ctrlKey && e.shiftKey && (e.key === 'a' || e.key === 'A')) ||
-                (e.altKey && e.shiftKey && (e.key === 'a' || e.key === 'A'))) {
+            const isA = e.code === 'KeyA' || (e.key && e.key.toLowerCase() === 'a');
+            if (isA && (e.altKey || (e.ctrlKey && e.shiftKey))) {
                 e.preventDefault();
                 unlockAuthorAdmin();
             }
         });
 
-        // Automatically inject an explicit "Admin" link into the footer
-        const footers = document.querySelectorAll('footer, .site-footer, .footer-section');
-        footers.forEach(f => {
-            if (!f.querySelector('.admin-unlock-link')) {
-                const adminBtn = document.createElement('span');
-                adminBtn.className = 'admin-unlock-link';
-                adminBtn.style.cssText = 'font-size:11px; color:var(--ink-faint); margin-left:8px; cursor:pointer; opacity:0.6; font-family:sans-serif;';
-                adminBtn.innerHTML = ' · <a href="#" style="color:inherit; text-decoration:none;">Admin</a>';
-                adminBtn.onclick = (e) => {
-                    e.preventDefault();
-                    unlockAuthorAdmin();
-                };
-                f.appendChild(adminBtn);
+        // Attach click listener to all Admin buttons/links
+        document.addEventListener('click', (e) => {
+            const target = e.target.closest('.author-admin-btn, .admin-unlock-link, #author-admin-btn');
+            if (target) {
+                e.preventDefault();
+                unlockAuthorAdmin();
             }
         });
 
