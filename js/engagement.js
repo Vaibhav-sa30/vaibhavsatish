@@ -351,27 +351,29 @@
             }
         }
 
-        // Global Unique Shortcut: Ctrl + Alt + Shift + A to enter secret PIN
+        // Multiple Keyboard Shortcuts: Ctrl+Shift+A OR Alt+Shift+A
         window.addEventListener('keydown', (e) => {
-            if (e.ctrlKey && e.altKey && e.shiftKey && (e.key === 'a' || e.key === 'A')) {
+            if ((e.ctrlKey && e.shiftKey && (e.key === 'a' || e.key === 'A')) ||
+                (e.altKey && e.shiftKey && (e.key === 'a' || e.key === 'A'))) {
                 e.preventDefault();
                 unlockAuthorAdmin();
             }
         });
 
-        // Secret Footer Triple-Click to unlock Author Mode
-        let clickCount = 0;
-        let clickTimer = null;
-        document.querySelectorAll('.site-footer, .footer-section, .footer-copy').forEach(el => {
-            el.addEventListener('click', () => {
-                clickCount++;
-                if (clickCount === 3) {
-                    clickCount = 0;
+        // Automatically inject an explicit "Admin" link into the footer
+        const footers = document.querySelectorAll('footer, .site-footer, .footer-section');
+        footers.forEach(f => {
+            if (!f.querySelector('.admin-unlock-link')) {
+                const adminBtn = document.createElement('span');
+                adminBtn.className = 'admin-unlock-link';
+                adminBtn.style.cssText = 'font-size:11px; color:var(--ink-faint); margin-left:8px; cursor:pointer; opacity:0.6; font-family:sans-serif;';
+                adminBtn.innerHTML = ' · <a href="#" style="color:inherit; text-decoration:none;">Admin</a>';
+                adminBtn.onclick = (e) => {
+                    e.preventDefault();
                     unlockAuthorAdmin();
-                }
-                clearTimeout(clickTimer);
-                clickTimer = setTimeout(() => { clickCount = 0; }, 800);
-            });
+                };
+                f.appendChild(adminBtn);
+            }
         });
 
         const isAdmin = localStorage.getItem('is_author_admin') === 'true';
