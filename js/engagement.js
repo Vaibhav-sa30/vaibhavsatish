@@ -360,11 +360,10 @@
             }
         });
 
-        // Attach click listener to all Admin buttons/links
+        // Attach click listener to © 2026 Vaibhav Satish text in footer
         document.addEventListener('click', (e) => {
-            const target = e.target.closest('.author-admin-btn, .admin-unlock-link, #author-admin-btn');
+            const target = e.target.closest('.footer-copy, .author-admin-btn');
             if (target) {
-                e.preventDefault();
                 unlockAuthorAdmin();
             }
         });
