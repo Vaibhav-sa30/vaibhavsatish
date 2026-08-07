@@ -360,11 +360,20 @@
             }
         });
 
-        // Attach click listener to © 2026 Vaibhav Satish text in footer
+        // Triple-click on © 2026 Vaibhav Satish text in footer to unlock Author Mode
+        let footerClickCount = 0;
+        let footerClickTimer = null;
         document.addEventListener('click', (e) => {
             const target = e.target.closest('.footer-copy, .author-admin-btn');
             if (target) {
-                unlockAuthorAdmin();
+                footerClickCount++;
+                if (footerClickCount === 3) {
+                    footerClickCount = 0;
+                    clearTimeout(footerClickTimer);
+                    unlockAuthorAdmin();
+                }
+                clearTimeout(footerClickTimer);
+                footerClickTimer = setTimeout(() => { footerClickCount = 0; }, 600);
             }
         });
 
