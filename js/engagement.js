@@ -334,16 +334,16 @@
             likeCountLabel.textContent = count;
         });
 
-        // Check Secret PIN / Admin status
+        // Check Secret PIN / Admin status (Session-only, expires on tab close)
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('admin') === '7777') {
-            localStorage.setItem('is_author_admin', 'true');
+            sessionStorage.setItem('is_author_admin', 'true');
         }
 
         function unlockAuthorAdmin() {
             const pin = prompt('Enter Author Secret PIN:');
             if (pin === '7777') {
-                localStorage.setItem('is_author_admin', 'true');
+                sessionStorage.setItem('is_author_admin', 'true');
                 alert('👑 Author Admin Mode Unlocked!');
                 location.reload();
             } else if (pin !== null) {
@@ -377,7 +377,7 @@
             }
         });
 
-        const isAdmin = localStorage.getItem('is_author_admin') === 'true';
+        const isAdmin = sessionStorage.getItem('is_author_admin') === 'true';
 
         likeBtn.addEventListener('click', async () => {
             likeBtn.disabled = true;

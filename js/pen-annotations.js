@@ -84,25 +84,16 @@
 
     function updateSvgDimensions() {
         if (!svgContainer || !overlayDiv) return;
-        const totalHeight = Math.max(
-            document.body.scrollHeight,
-            document.documentElement.scrollHeight,
-            document.body.offsetHeight
-        );
-        const totalWidth = Math.max(
-            document.body.scrollWidth,
-            document.documentElement.scrollWidth,
-            document.body.offsetWidth
-        );
+        const rect = document.body.getBoundingClientRect();
+        const totalHeight = Math.max(document.body.clientHeight, Math.round(rect.height));
+        const totalWidth = Math.round(rect.width);
 
-        overlayDiv.style.height = `${totalHeight}px`;
-        overlayDiv.style.width = `${totalWidth}px`;
         svgContainer.setAttribute('viewBox', `0 0 ${totalWidth} ${totalHeight}`);
     }
 
-    // Create Floating Trigger Button (Only for Author Admin)
+    // Create Floating Trigger Button (Only for Author Admin - Session-only)
     function createTriggerButton() {
-        const isAdmin = localStorage.getItem('is_author_admin') === 'true' || new URLSearchParams(window.location.search).get('admin') === '7777';
+        const isAdmin = sessionStorage.getItem('is_author_admin') === 'true' || new URLSearchParams(window.location.search).get('admin') === '7777';
         if (!isAdmin) return;
 
         const btn = document.createElement('button');
