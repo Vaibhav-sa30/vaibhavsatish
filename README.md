@@ -67,3 +67,4 @@ Includes real-time article engagement features:
 - **GitHub**: [github.com/Vaibhav-sa30](https://github.com/Vaibhav-sa30)
 - **LinkedIn**: [linkedin.com/in/vaibhavsatish](https://linkedin.com/in/vaibhavsatish)
 - **Email**: [vaibhavsatish9@gmail.com](mailto:vaibhavsatish9@gmail.com)
+- **Meeting**: [cal.com/vaibhav-satish/30min](https://cal.com/vaibhav-satish/30min)
