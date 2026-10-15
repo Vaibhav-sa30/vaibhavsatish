@@ -12,14 +12,10 @@
 </head>
 
 <body class="home-page">
-    <!-- <header class="masthead">
-        <span class="masthead-label">Vaibhav Satish &nbsp;·&nbsp; Portfolio</span>
-        <div class="nav-tabs">
-            <a href="index.html" class="nav-tab-btn active">Home</a>
-            <a href="research.html" class="nav-tab-btn">Research</a>
-            <a href="writings.html" class="nav-tab-btn">Writings</a>
-        </div>
-    </header> -->
+    <!-- 3D Mars background viewport -->
+    <div class="mars-viewport" id="mars-viewport" aria-hidden="true">
+        <canvas id="mars-canvas" class="mars-canvas"></canvas>
+    </div>
 
     <main class="home-container">
         <span class="kicker">AGI Safety Researcher</span>
@@ -45,5 +41,13 @@
         <div class="footer-copy">&copy; 2026 Vaibhav Satish</div>
     </footer>
 </body>
+
+    <script src="js/three.js"></script>
+    <script>
+        if (typeof THREE === 'undefined') {
+            document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>');
+        }
+    </script>
+    <script src="js/mars.js" defer></script>
 
 </html>
