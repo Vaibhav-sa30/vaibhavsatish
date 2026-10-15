@@ -650,6 +650,17 @@ h1, h2, h3 {
   margin-bottom: 2.5rem;
 }
 
+.like-sync-status {
+  min-height: 1.2em;
+  margin: 0.35rem 0 0;
+  color: var(--ink-faint);
+  font: 12px var(--font-sans);
+}
+
+.like-sync-status.error {
+  color: #b42318;
+}
+
 .engagement-btn {
   font-family: var(--font-sans);
   font-size: 13px;

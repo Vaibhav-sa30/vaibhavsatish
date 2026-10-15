@@ -58,33 +58,56 @@
                     .from('article_likes')
                     .select('like_count')
                     .eq('article_id', articleId)
-                    .single();
-                if (data && !error) return data.like_count;
-            } catch (e) {}
+                    .maybeSingle();
+                if (error) throw error;
+                return data ? data.like_count : 0;
+            } catch (error) {
+                console.error('Could not load shared article likes:', error);
+                return null;
+            }
         }
-        const localLikes = localStorage.getItem(`likes_${articleId}`);
-        return localLikes ? parseInt(localLikes, 10) : 0;
+        return null;
     }
 
     async function addLike(articleId) {
-        let newCount = 0;
-        if (supabaseClient) {
-            try {
-                const { data, error } = await supabaseClient.rpc('increment_like', { target_article_id: articleId });
-                if (!error && data !== null) {
-                    newCount = data;
-                }
-            } catch (e) {}
-        }
-
-        if (!newCount) {
-            const current = parseInt(localStorage.getItem(`likes_${articleId}`) || '0', 10);
-            newCount = current + 1;
-            localStorage.setItem(`likes_${articleId}`, newCount);
-        }
-
+        if (!supabaseClient) throw new Error('Shared likes service is unavailable. Please try again later.');
+        const { data, error } = await supabaseClient.rpc('increment_like', { target_article_id: articleId });
+        if (error) throw error;
+        if (!Number.isFinite(Number(data))) throw new Error('The likes service returned an invalid count.');
         localStorage.setItem(`liked_${articleId}`, 'true');
-        return newCount;
+        return Number(data);
+    }
+
+    function setLikeSyncStatus(message, isError) {
+        const status = document.getElementById('like-sync-status');
+        if (!status) return;
+        status.textContent = message;
+        status.classList.toggle('error', Boolean(isError));
+    }
+
+    async function refreshArticleLikeCount(articleId) {
+        const count = await fetchLikes(articleId);
+        if (count === null) {
+            setLikeSyncStatus('Likes could not sync. Please refresh or try again later.', true);
+            return;
+        }
+        const mainCount = document.getElementById('like-count-label');
+        const topCount = document.getElementById('top-like-count');
+        if (mainCount) mainCount.textContent = count;
+        if (topCount) topCount.textContent = count;
+        setLikeSyncStatus('', false);
+    }
+
+    function watchArticleLikeCount(articleId) {
+        if (!document.getElementById('engagement-section')) return;
+        refreshArticleLikeCount(articleId);
+        window.setInterval(() => {
+            if (!document.hidden) refreshArticleLikeCount(articleId);
+        }, 15000);
+        window.addEventListener('focus', () => refreshArticleLikeCount(articleId));
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) refreshArticleLikeCount(articleId);
+        });
     }
 
     async function fetchComments(articleId) {
@@ -195,21 +218,32 @@
             topLikeBtn.classList.add('liked');
         }
 
-        fetchLikes(articleId).then(count => {
-            topLikeCount.textContent = count;
-        });
-
         fetchComments(articleId).then(comments => {
             topCommentCount.textContent = comments.length;
         });
 
         topLikeBtn.addEventListener('click', async () => {
             topLikeBtn.disabled = true;
-            const newCount = await addLike(articleId);
-            topLikeCount.textContent = newCount;
-            topLikeBtn.classList.add('liked');
-            const mainLikeLabel = document.getElementById('like-count-label');
-            if (mainLikeLabel) mainLikeLabel.textContent = newCount;
+            try {
+                const newCount = await addLike(articleId);
+                topLikeCount.textContent = newCount;
+                topLikeBtn.classList.add('liked');
+                topLikeBtn.disabled = true;
+                const mainLikeLabel = document.getElementById('like-count-label');
+                if (mainLikeLabel) {
+                    mainLikeLabel.textContent = newCount;
+                    const mainLikeBtn = document.getElementById('like-btn');
+                    if (mainLikeBtn) {
+                        mainLikeBtn.classList.add('liked');
+                        mainLikeBtn.disabled = true;
+                    }
+                }
+                setLikeSyncStatus('', false);
+            } catch (error) {
+                console.error('Could not save article like:', error);
+                setLikeSyncStatus('Your like could not be saved. Please try again.', true);
+                topLikeBtn.disabled = false;
+            }
         });
 
         topShareBtn.addEventListener('click', () => {
@@ -235,7 +269,7 @@
             container.innerHTML = `
                 <span class="stat-badge" title="Likes">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-                    ${likes} Likes
+                    ${likes === null ? 'Likes unavailable' : `${likes} Likes`}
                 </span>
                 <span class="stat-badge" title="Comments">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
@@ -278,6 +312,7 @@
                     </button>
                     <span id="share-toast" class="share-toast">Link copied!</span>
                 </div>
+                <p id="like-sync-status" class="like-sync-status" role="status" aria-live="polite"></p>
 
                 <!-- Floating Glass Modal for Post-Like Handle -->
                 <div id="like-handle-modal" class="like-handle-modal">
@@ -328,11 +363,10 @@
 
         if (localStorage.getItem(`liked_${articleId}`) === 'true') {
             likeBtn.classList.add('liked');
+            likeBtn.disabled = true;
+            const topLikeBtn = document.getElementById('top-like-btn');
+            if (topLikeBtn) topLikeBtn.disabled = true;
         }
-
-        fetchLikes(articleId).then(count => {
-            likeCountLabel.textContent = count;
-        });
 
         // Check Secret PIN / Admin status
         const urlParams = new URLSearchParams(window.location.search);
@@ -434,19 +468,31 @@
         likeBtn.addEventListener('click', async () => {
             likeBtn.disabled = true;
             likeBtn.classList.add('pop');
-            const newCount = await addLike(articleId);
-            likeCountLabel.textContent = newCount;
-            likeBtn.classList.add('liked');
+            try {
+                const newCount = await addLike(articleId);
+                likeCountLabel.textContent = newCount;
+                likeBtn.classList.add('liked');
 
-            const topLikeCount = document.getElementById('top-like-count');
-            if (topLikeCount) topLikeCount.textContent = newCount;
+                const topLikeCount = document.getElementById('top-like-count');
+                if (topLikeCount) topLikeCount.textContent = newCount;
+                const topLikeBtn = document.getElementById('top-like-btn');
+                if (topLikeBtn) {
+                    topLikeBtn.classList.add('liked');
+                    topLikeBtn.disabled = true;
+                }
+                setLikeSyncStatus('', false);
 
-            setTimeout(() => likeBtn.classList.remove('pop'), 300);
-
-            // Show Optional Post-Like Handle Modal
-            const modal = document.getElementById('like-handle-modal');
-            if (modal && !localStorage.getItem(`handle_saved_${articleId}`)) {
-                modal.classList.add('show');
+                // Show Optional Post-Like Handle Modal
+                const modal = document.getElementById('like-handle-modal');
+                if (modal && !localStorage.getItem(`handle_saved_${articleId}`)) {
+                    modal.classList.add('show');
+                }
+            } catch (error) {
+                console.error('Could not save article like:', error);
+                setLikeSyncStatus('Your like could not be saved. Please try again.', true);
+                likeBtn.disabled = false;
+            } finally {
+                setTimeout(() => likeBtn.classList.remove('pop'), 300);
             }
         });
 
@@ -633,6 +679,7 @@
             renderTopArticleEngagement();
             renderEngagementUI();
             renderWritingsPageStats();
+            watchArticleLikeCount(getArticleId());
         });
     });
 })();

@@ -50,6 +50,10 @@ CREATE POLICY "Allow public read on article_likes" ON article_likes FOR SELECT U
 CREATE POLICY "Allow public insert on article_likes" ON article_likes FOR INSERT WITH CHECK (true);
 CREATE POLICY "Allow public update on article_likes" ON article_likes FOR UPDATE USING (true);
 
+-- Explicit grants ensure public visitors can read counts and call the RPC.
+GRANT USAGE ON SCHEMA public TO anon, authenticated;
+GRANT SELECT ON TABLE public.article_likes TO anon, authenticated;
+
 -- Like Handles Policies
 DROP POLICY IF EXISTS "Allow public read on article_like_handles" ON article_like_handles;
 DROP POLICY IF EXISTS "Allow public insert on article_like_handles" ON article_like_handles;
@@ -77,6 +81,7 @@ CREATE OR REPLACE FUNCTION increment_like(target_article_id TEXT)
 RETURNS INTEGER
 LANGUAGE plpgsql
 SECURITY DEFINER
+SET search_path = public, pg_temp
 AS $$
 DECLARE
   new_count INTEGER;
@@ -92,3 +97,5 @@ BEGIN
   RETURN new_count;
 END;
 $$;
+
+GRANT EXECUTE ON FUNCTION public.increment_like(TEXT) TO anon, authenticated;
