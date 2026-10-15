@@ -36,7 +36,7 @@
       console.warn('WebGL is unavailable for the homepage planet background:', error);
       return;
     }
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 3));
     renderer.setClearColor(0x000000, 0);
 
     const planetGroup = new THREE.Group();
@@ -44,14 +44,14 @@
     planetGroup.rotation.x = THREE.MathUtils.degToRad(7);
     scene.add(planetGroup);
 
-    const sphereGeometry = new THREE.SphereGeometry(1, 80, 80);
+    const sphereGeometry = new THREE.SphereGeometry(1, 128, 128);
     const material = new THREE.MeshStandardMaterial({ roughness: 0.92, metalness: 0.01 });
     const planetMesh = new THREE.Mesh(sphereGeometry, material);
     planetGroup.add(planetMesh);
 
     function makeTexture() {
-      const width = 1024;
-      const height = 512;
+      const width = 2048;
+      const height = 1024;
       const textureCanvas = document.createElement('canvas');
       textureCanvas.width = width;
       textureCanvas.height = height;
@@ -70,11 +70,11 @@
       context.fillRect(0, 0, width, height);
 
       if (planet.surface === 'bands' || planet.surface === 'soft-bands') {
-        const bandCount = planet.surface === 'bands' ? 100 : 50;
+        const bandCount = planet.surface === 'bands' ? 210 : 110;
         for (let i = 0; i < bandCount; i++) {
           const y = random() * height;
           const bandHeight = 1 + random() * (planet.surface === 'bands' ? 10 : 5);
-          const opacity = planet.surface === 'bands' ? 0.035 + random() * 0.09 : 0.025 + random() * 0.045;
+          const opacity = planet.surface === 'bands' ? 0.045 + random() * 0.12 : 0.035 + random() * 0.07;
           context.fillStyle = random() > 0.5
             ? `rgba(255,245,220,${opacity})`
             : `rgba(20,35,60,${opacity})`;
@@ -131,10 +131,26 @@
         context.stroke();
       }
 
+      // Add fine, deterministic albedo variation so the enlarged globe keeps surface detail.
+      const grainCount = planet.surface === 'craters' ? 26000 : 18000;
+      for (let i = 0; i < grainCount; i++) {
+        const x = random() * width;
+        const y = random() * height;
+        const radius = 0.25 + random() * 1.35;
+        const light = random() > 0.5;
+        context.fillStyle = light ? 'rgba(255,248,230,0.10)' : 'rgba(15,20,28,0.09)';
+        context.beginPath();
+        context.arc(x, y, radius, 0, Math.PI * 2);
+        context.fill();
+      }
+
       const texture = new THREE.CanvasTexture(textureCanvas);
+      texture.generateMipmaps = true;
+      texture.minFilter = THREE.LinearMipmapLinearFilter;
+      texture.magFilter = THREE.LinearFilter;
       texture.wrapS = THREE.RepeatWrapping;
       texture.wrapT = THREE.ClampToEdgeWrapping;
-      texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+      texture.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
       return texture;
     }
 
