@@ -2,6 +2,9 @@
 (function () {
   'use strict';
 
+  // Flip this to true to restore the planet background without rebuilding it.
+  const PLANET_BACKGROUND_ENABLED = false;
+
   const planets = [
     { id: 'mercury', tilt: 0.03, stops: [[0, '#514f4d'], [0.2, '#89847c'], [0.45, '#555350'], [0.7, '#a09b92'], [1, '#565451']], surface: 'craters' },
     { id: 'venus', tilt: 177.4, stops: [[0, '#c98e40'], [0.2, '#e5bf76'], [0.42, '#b87937'], [0.68, '#e2b968'], [1, '#bd8039']], surface: 'clouds' },
@@ -13,6 +16,8 @@
   ];
 
   function initPlanetBackground() {
+    if (!PLANET_BACKGROUND_ENABLED) return;
+
     const canvas = document.getElementById('planet-canvas');
     if (!canvas || typeof THREE === 'undefined') return;
 
