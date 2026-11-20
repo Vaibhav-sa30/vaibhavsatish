@@ -356,21 +356,6 @@
   border-top: 1px solid rgba(226, 223, 215, 0.7);
 }
 
-.milestone-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-}
-
-.milestone-tag {
-  font-family: var(--font-sans);
-  font-size: 11px;
-  color: var(--ink-faint, #9a9890);
-  background: rgba(0, 0, 0, 0.03);
-  padding: 0.1rem 0.35rem;
-  border-radius: 3px;
-}
-
 .milestone-actions {
   display: flex;
   align-items: center;

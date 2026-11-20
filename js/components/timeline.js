@@ -464,10 +464,6 @@ function initJourneyTimeline() {
             ` : ''}
 
             <footer class="milestone-footer">
-              <div class="milestone-tags" aria-label="Topic tags">
-                ${item.tags.map(t => `<span class="milestone-tag">${t}</span>`).join('')}
-              </div>
-              
               <div class="milestone-actions">
                 ${hasDetails ? `
                   <button class="milestone-toggle-btn" 
