@@ -13,7 +13,7 @@ const TIMELINE_DATA = [
         organization: "AI Safety Canada Monthly Online Meetup",
         category: "Community & Talks",
         badge: "upcoming",
-        summary: "I am scheduled to present on AI controllability and whether internal model reasoning traces provide dependable monitoring signals.",
+        summary: "Scheduled presentation on AI controllability and whether internal model reasoning traces provide dependable monitoring signals.",
         details: [
           "Scheduled to present ongoing work on AI Controllability and Monitorability.",
           "Examines whether internal chain-of-thought traces and activation states offer dependable signals for monitoring and steering autonomous AI agent behavior.",
@@ -31,7 +31,7 @@ const TIMELINE_DATA = [
         title: "AI Tech Law Research Fellowship",
         organization: "Centre for Development of Intellectual Property and Research (CDIPR)",
         category: "Fellowship & Certifications",
-        summary: "I completed a fellowship examining AI governance, technology law, and the legal sufficiency of automated compliance attestations.",
+        summary: "Fellowship examining the intersection of AI governance, technology law, and the legal sufficiency of automated compliance attestations.",
         details: [
           "Completed the competitive research fellowship at CDIPR exploring technology law and AI governance boundaries.",
           "Investigated the legal sufficiency of automated compliance attestations under evolving global regulations.",
@@ -50,7 +50,7 @@ const TIMELINE_DATA = [
         title: "AI Research Intern & Student Point of Contact",
         organization: "Project Tenali, IIT Ropar",
         category: "Internship & Leadership",
-        summary: "I contributed to Vachana mathematics communication reasoning evaluation and coordinated 50–60 interns across cohorts.",
+        summary: "Contributed to Vachana mathematics communication reasoning evaluation and served as coordination lead for 50–60 interns across cohorts.",
         details: [
           "Contributed to Project Tenali, specifically Vachana (Mathematics Communication Exercises), focusing on structured reasoning evaluation and interactive problem-solving logic.",
           "Served as Student Point of Contact (SPOC) and coordination lead for approximately 50–60 research interns.",
@@ -69,7 +69,7 @@ const TIMELINE_DATA = [
         title: "RaiFlow: Compliance-as-Code Framework & CI/CD Guardrails",
         organization: "CDIPR & Open-Source Engineering",
         category: "Research",
-        summary: "I am developing RaiFlow, a research and systems initiative that turns EU AI Act and NIST AI RMF requirements into declarative CI/CD verification pipelines.",
+        summary: "A dual research and systems initiative operationalizing EU AI Act and NIST AI RMF regulatory requirements into declarative CI/CD verification pipelines.",
         details: [
           "Authored a working paper at CDIPR proposing a Compliance-as-Code framework bridging high-level regulatory statutes and production CI/CD software pipelines.",
           "Translated multi-jurisdictional AI safety mandates (EU AI Act, NIST AI RMF) into declarative YAML validation schemas.",
@@ -89,7 +89,7 @@ const TIMELINE_DATA = [
         title: "Benchmarking Social Cognition in LLMs",
         organization: "DeepMind Kaggle Hackathon: Tracking Progress Towards AGI",
         category: "Research",
-        summary: "I built a four-task procedural benchmark to evaluate functional Theory of Mind, epistemic failure modes, and reasoning parasitism in frontier models.",
+        summary: "Constructed a 4-task procedural benchmark evaluating functional Theory of Mind, epistemic failure modes, and reasoning parasitism in frontier models.",
         details: [
           "Developed for the DeepMind Kaggle Hackathon 'Tracking Progress Towards AGI'.",
           "Engineered a benchmark suite across 4 procedural social evaluation tasks measuring Spontaneous Theory of Mind and Cryptographic Theory of Mind.",
@@ -109,7 +109,7 @@ const TIMELINE_DATA = [
         title: "Privacy-Preserving XAI in IoMT Wearables",
         organization: "CDIPR Collaborative Research",
         category: "Research",
-        summary: "I co-authored an architecture that combines localized Gemma 4 LLM-as-a-Judge oversight with privacy-preserving telemetry for clinical wearable biosignals.",
+        summary: "Co-authored architecture uniting localized Gemma 4 LLM-as-a-Judge oversight with privacy-preserving telemetry for clinical wearable biosignals.",
         details: [
           "Co-authored working paper investigating explainable AI, telemetry privacy, and safety boundaries in Internet of Medical Things (IoMT) devices.",
           "Architected a privacy-preserving framework integrating on-device Gemma 4 models to generate longitudinal clinical summaries from sensitive continuous telemetry.",
@@ -128,7 +128,7 @@ const TIMELINE_DATA = [
         title: "Auditing Algorithmic Moderation in Digital Platforms",
         organization: "Centre for Development of Intellectual Property and Research (CDIPR)",
         category: "Research",
-        summary: "I formulated the “Transparency Gap Thesis” to examine accountability breakdowns in opaque platform moderation systems.",
+        summary: "Formulated the 'Transparency Gap Thesis' examining accountability breakdowns in opaque black-box platform moderation systems.",
         details: [
           "Authored a working paper at CDIPR establishing the 'Transparency Gap Thesis' on opacity and accountability breakdowns in large-scale platform enforcement.",
           "Analyzed trade-offs between predictive throughput maximization and ethical interpretability.",
@@ -148,7 +148,7 @@ const TIMELINE_DATA = [
         title: "Online Comment Toxicity Classification & Audit Pipeline",
         organization: "Kaggle Academic Competition & Research",
         category: "Engineering",
-        summary: "I engineered a multi-class moderation pipeline for 200,000+ comments, added SHAP interpretability audits, and achieved 0.82 Macro-F1.",
+        summary: "Engineered multi-class moderation pipeline across 200,000+ comments with SHAP interpretability audits, achieving 0.82 Macro-F1.",
         details: [
           "Constructed an end-to-end NLP classification pipeline processing a large-scale corpus of 200,000+ user comments.",
           "Classified multi-tiered linguistic severity across Neutral, Mild, Offensive, and Toxic categories.",
@@ -168,7 +168,7 @@ const TIMELINE_DATA = [
         title: "Independent AI Safety Research: CoT Monitorability & Evaluation",
         organization: "Aicademia Research & Independent Publication",
         category: "Writing & Publications",
-        summary: "I investigate whether internal chain-of-thought traces faithfully reveal agent reasoning, and I have published surveys on machine unlearning.",
+        summary: "Investigating whether internal chain-of-thought traces provide faithful signals for monitoring agent reasoning, alongside published surveys on unlearning.",
         details: [
           "Conducted independent research investigations into Chain-of-Thought (CoT) monitorability, model controllability, scalable oversight, and mechanistic interpretability.",
           "Published the foundational research article 'CoT Monitorability and Controllability', critiquing whether hidden reasoning traces can be reliably exploited for safety monitoring.",
@@ -187,7 +187,7 @@ const TIMELINE_DATA = [
         title: "NiuSy Neuro-Symbolic Library & Responsible AI MLOps Suite",
         organization: "Independent Open-Source Engineering",
         category: "Engineering",
-        summary: "I developed a neuro-symbolic logic engine with verifiable proof traces, a fair MLOps pipeline using AIF360 and Fairlearn, and a local-first research logger.",
+        summary: "Developed neuro-symbolic logic engine with verifiable proof traces, fair MLOps pipeline (AIF360/Fairlearn), and local-first research logger.",
         details: [
           "NiuSy Neuro-Symbolic Library: Built a Python library combining neural perception with forward/backward chaining probabilistic logic, generating explainable proof traces for agent reasoning.",
           "Responsible AI MLOps Pipeline: Implemented AIF360 Reweighing and Fairlearn disparity gates to enforce Demographic Parity Difference < 0.05, tracking bias-accuracy Pareto frontiers in MLflow.",
@@ -206,7 +206,7 @@ const TIMELINE_DATA = [
         title: "Responsible and Safe AI Certification — Top 5% Silver Elite",
         organization: "NPTEL & IIT Madras",
         category: "Fellowship & Certifications",
-        summary: "I ranked in the top 5% of about 14,000 candidates with a score of 79%, covering fairness, transparency, differential privacy, and unlearning.",
+        summary: "Ranked in top 5% of ~14,000 candidates with 79% score covering fairness metrics, transparency, differential privacy, and unlearning.",
         details: [
           "Completed rigorous NPTEL national certification examination in Responsible and Safe AI.",
           "Achieved final score of 79%, earning the prestigious Silver Certificate distinction.",
@@ -230,7 +230,7 @@ const TIMELINE_DATA = [
         title: "Machine Unlearning: NeuroReset Paper Replication",
         organization: "Independent Research",
         category: "Research",
-        summary: "I replicated and evaluated dual-phase LLM unlearning on OLMo-1B using LoRA, inverse-gradient optimization, and membership inference attacks.",
+        summary: "Empirical verification of dual-phase LLM unlearning on OLMo-1B with LoRA, inverse-gradient optimization, and MIA evaluation.",
         details: [
           "Replicated and empirically verified the NeuroReset dual-phase LLM unlearning architecture.",
           "Conducted experiments on OLMo-1B parameter weights using Low-Rank Adaptation (LoRA).",
@@ -250,7 +250,7 @@ const TIMELINE_DATA = [
         title: "Founded Aicademia & Technical Writing Portfolio",
         organization: "Aicademia Research Initiative & Substack",
         category: "Entrepreneurship",
-        summary: "I founded an independent AI Safety initiative and a Substack for technical alignment essays that have reached 400,000+ readers.",
+        summary: "Founded independent AI Safety venture initiative and Substack publishing technical alignment essays reaching an audience of 400,000+ readers.",
         details: [
           "Founded Aicademia with the mandate of bridging formal AI Safety theoretical alignment with concrete engineering implementations.",
           "Began developing open-source governance tools, transparent evaluation harnesses, and public-facing research communication.",
@@ -270,7 +270,7 @@ const TIMELINE_DATA = [
         title: "Operational Optimization in Industrial Supply Chains",
         organization: "Commercial Plywood & Interior Materials Enterprise",
         category: "Engineering",
-        summary: "I identified 148% overstock in low-demand seasons and modeled a 90% reduction in reorder frequency using Welch’s ANOVA, Games-Howell, and EOQ.",
+        summary: "Identified 148% overstock in low-demand seasons and modeled a 90% reorder frequency reduction via Welch's ANOVA, Games-Howell, and EOQ.",
         details: [
           "Executed comprehensive real-world business analytics on procurement cycles, sales distributions, and credit exposures.",
           "Conducted statistical hypothesis testing using Welch's ANOVA and Games-Howell post-hoc tests to isolate demand seasonality.",
@@ -290,7 +290,7 @@ const TIMELINE_DATA = [
         title: "Parking Management System (v1 Monolith → v2 SPA)",
         organization: "Modern Application Development Coursework",
         category: "Engineering",
-        summary: "I evolved a monolithic Flask/Jinja application into a decoupled REST API and Vue.js single-page app backed by SQLAlchemy.",
+        summary: "Evolved a monolithic Flask/Jinja application into a decoupled REST API with a Vue.js Single-Page Application and SQLAlchemy persistence.",
         details: [
           "Engineered a full-featured multi-tenant parking reservation management application.",
           "Version 1: Built monolithic architecture using Flask, Jinja2 templating, and server-side session management.",
@@ -314,7 +314,7 @@ const TIMELINE_DATA = [
         title: "ACM Summer School on Responsible AI: Machine Unlearning Project Lead",
         organization: "ACM India & IIT Madras",
         category: "Research",
-        summary: "I led a team replicating the Incompetent Teacher unlearning method across ResNet and CoAtNet on CIFAR-10.",
+        summary: "Pioneering milestone in responsible AI: led team replicating the Incompetent Teacher unlearning paradigm across ResNet and CoAtNet on CIFAR-10.",
         details: [
           "Selected for the competitive ACM Summer School on Responsible AI hosted at IIT Madras, marking the foundational transition into AI Safety.",
           "Appointed Project Lead for the Machine Unlearning team replicating the 'Incompetent Teacher' negative-gradient paradigm.",
@@ -339,7 +339,7 @@ const TIMELINE_DATA = [
         title: "BS in Data Science and Applications",
         organization: "Indian Institute of Technology Madras",
         category: "Education",
-        summary: "At IIT Madras, I am building a foundation in modern computation, algorithmic mathematics, machine learning theory, and data architecture.",
+        summary: "Foundational training in modern computation, algorithmic mathematics, machine learning theory, and data architecture.",
         details: [
           "Commenced rigorous undergraduate degree in Data Science and Applications at IIT Madras.",
           "Completed advanced coursework spanning Linear Algebra, Probability, Machine Learning Foundations, Deep Learning, Database Systems, and Application Development.",
@@ -362,7 +362,7 @@ const TIMELINE_DATA = [
         title: "BSc Statistics (Honours) — Quantitative Foundations",
         organization: "Aligarh Muslim University",
         category: "Education",
-        summary: "I built a strong academic foundation in mathematical analysis, probability theory, statistical inference, and quantitative methods.",
+        summary: "Core academic grounding in mathematical analysis, probability theory, statistical inference, and quantitative methods.",
         details: [
           "Enrolled in BSc Statistics (Honours) developing mathematical and quantitative foundations.",
           "Undertook intensive coursework in Real Analysis, Differential and Integral Calculus, Probability Theory, Descriptive and Inferential Statistics, and Hypothesis Testing.",
@@ -432,9 +432,15 @@ function initJourneyTimeline() {
     yearGroup.milestones.forEach((item) => {
       const isUpcoming = item.badge === "upcoming";
       const hasDetails = item.details && item.details.length > 0;
+      const summaryLink = item.link && item.link.url
+        ? `<a href="${item.link.url}" class="milestone-inline-link" ${item.link.url.startsWith('http') ? 'target="_blank" rel="noopener noreferrer"' : ''}>${item.link.label} ↗</a>`
+        : '';
       html += `
         <article class="milestone-card ${isUpcoming ? 'is-upcoming' : ''}" 
                  data-category="${item.category}" 
+                 role="group"
+                 tabindex="${hasDetails ? '0' : '-1'}"
+                 ${hasDetails ? `aria-expanded="false" aria-controls="details-${item.id}" aria-label="Expand milestone: ${item.title}"` : ''}
                  id="${item.id}">
           <div class="milestone-spine-node" aria-hidden="true">
             <span class="node-dot"></span>
@@ -450,7 +456,7 @@ function initJourneyTimeline() {
             </header>
 
             <div class="milestone-body">
-              <p class="milestone-summary">${item.summary}</p>
+              <p class="milestone-summary">${item.summary}${summaryLink ? ` <span aria-hidden="true">·</span> ${summaryLink}` : ''}</p>
             </div>
 
             ${hasDetails ? `
@@ -463,33 +469,6 @@ function initJourneyTimeline() {
               </div>
             ` : ''}
 
-            <footer class="milestone-footer">
-              <div class="milestone-actions">
-                ${hasDetails ? `
-                  <button class="milestone-toggle-btn" 
-                          aria-label="Show more about ${item.title}"
-                          title="Show more"
-                          aria-expanded="false" 
-                          aria-controls="details-${item.id}"
-                          data-target="details-${item.id}">
-                    <svg class="toggle-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-                      <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                  </button>
-                ` : ''}
-                
-                ${item.link && item.link.url ? `
-                  <a href="${item.link.url}" 
-                     class="milestone-external-link" 
-                     ${item.link.url.startsWith('http') ? 'target="_blank" rel="noopener noreferrer"' : ''}>
-                    ${item.link.label}
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-                      <path d="M3.5 8.5L8.5 3.5M8.5 3.5H4.5M8.5 3.5V7.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                  </a>
-                ` : ''}
-              </div>
-            </footer>
           </div>
         </article>
       `;
@@ -511,28 +490,27 @@ function initJourneyTimeline() {
 }
 
 function bindTimelineInteractions() {
-  // 1. Expand / Collapse individual cards
-  const toggleButtons = document.querySelectorAll(".milestone-toggle-btn");
-  toggleButtons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const targetId = btn.getAttribute("data-target");
-      const targetEl = document.getElementById(targetId);
-      if (!targetEl) return;
+  const cards = document.querySelectorAll(".milestone-card");
+  const setCardExpanded = (card, expanded) => {
+    const target = document.getElementById(card.getAttribute("aria-controls"));
+    if (!target) return;
+    target.hidden = !expanded;
+    card.setAttribute("aria-expanded", expanded.toString());
+    card.setAttribute("aria-label", `${expanded ? "Collapse" : "Expand"} milestone: ${card.querySelector(".milestone-title").textContent}`);
+    card.classList.toggle("expanded", expanded);
+  };
 
-      const isExpanded = btn.getAttribute("aria-expanded") === "true";
-      if (isExpanded) {
-        targetEl.hidden = true;
-        btn.setAttribute("aria-expanded", "false");
-        btn.setAttribute("aria-label", `Show more about ${btn.closest(".milestone-card").querySelector(".milestone-title").textContent}`);
-        btn.title = "Show more";
-        btn.classList.remove("active");
-      } else {
-        targetEl.hidden = false;
-        btn.setAttribute("aria-expanded", "true");
-        btn.setAttribute("aria-label", `Show less about ${btn.closest(".milestone-card").querySelector(".milestone-title").textContent}`);
-        btn.title = "Show less";
-        btn.classList.add("active");
-      }
+  // Clicking the card toggles its extra information; inline links still navigate normally.
+  cards.forEach((card) => {
+    if (!card.hasAttribute("aria-controls")) return;
+    card.addEventListener("click", (event) => {
+      if (event.target.closest("a, button, input, select, textarea")) return;
+      setCardExpanded(card, card.getAttribute("aria-expanded") !== "true");
+    });
+    card.addEventListener("keydown", (event) => {
+      if (event.target !== card || (event.key !== "Enter" && event.key !== " ")) return;
+      event.preventDefault();
+      setCardExpanded(card, card.getAttribute("aria-expanded") !== "true");
     });
   });
 
@@ -548,28 +526,12 @@ function bindTimelineInteractions() {
         ? `<span class="expand-icon" aria-hidden="true">−</span> Collapse all`
         : `<span class="expand-icon" aria-hidden="true">+</span> Expand all`;
 
-      toggleButtons.forEach((btn) => {
-        const targetId = btn.getAttribute("data-target");
-        const targetEl = document.getElementById(targetId);
-        if (targetEl) {
-          targetEl.hidden = !newExpandedState;
-          btn.setAttribute("aria-expanded", newExpandedState.toString());
-          const title = btn.closest(".milestone-card").querySelector(".milestone-title").textContent;
-          btn.setAttribute("aria-label", `${newExpandedState ? "Show less" : "Show more"} about ${title}`);
-          btn.title = newExpandedState ? "Show less" : "Show more";
-          if (newExpandedState) {
-            btn.classList.add("active");
-          } else {
-            btn.classList.remove("active");
-          }
-        }
-      });
+      cards.forEach((card) => setCardExpanded(card, newExpandedState));
     });
   }
 
   // 3. Category Filter Chips
   const filterChips = document.querySelectorAll(".filter-chip");
-  const cards = document.querySelectorAll(".milestone-card");
   const yearGroups = document.querySelectorAll(".timeline-year-group");
 
   filterChips.forEach((chip) => {

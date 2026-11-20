@@ -197,6 +197,7 @@
 
 .milestone-card {
   position: relative;
+  cursor: pointer;
   transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
               transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   opacity: 0;
@@ -258,6 +259,15 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
 }
 
+.milestone-card:focus-visible .milestone-card-inner {
+  outline: 2px solid var(--accent, #c2410c);
+  outline-offset: 3px;
+}
+
+.milestone-card.expanded .milestone-card-inner {
+  border-color: #d1cdc3;
+}
+
 /* Card Header */
 .milestone-header {
   margin-bottom: 0.3rem;
@@ -304,6 +314,22 @@
   font-size: 0.96rem;
   color: var(--ink-muted, #5a5955);
   line-height: 1.45;
+  margin: 0;
+}
+
+.milestone-inline-link {
+  display: inline-block;
+  margin-left: 0.15rem;
+  color: var(--accent, #c2410c);
+  font-family: var(--font-sans);
+  font-size: 0.82em;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.milestone-inline-link:hover {
+  text-decoration: underline;
 }
 
 /* Expandable Technical Details */
@@ -342,70 +368,6 @@
   top: 0;
   color: var(--accent, #c2410c);
   font-size: 1.1rem;
-}
-
-/* Card Footer (Tags and Action Buttons) */
-.milestone-footer {
-  margin-top: 0.6rem;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  padding-top: 0.5rem;
-  border-top: 1px solid rgba(226, 223, 215, 0.7);
-}
-
-.milestone-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-left: auto;
-}
-
-/* Expand / Collapse Button */
-.milestone-toggle-btn {
-  color: var(--ink-muted, #5a5955);
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 0;
-  padding: 0.25rem;
-  border-radius: 4px;
-  transition: color 0.15s ease, background 0.15s ease;
-}
-
-.milestone-toggle-btn:hover {
-  color: var(--ink, #1a1a18);
-  background: rgba(0, 0, 0, 0.04);
-}
-
-.milestone-toggle-btn.active .toggle-chevron {
-  transform: rotate(180deg);
-}
-
-.toggle-chevron {
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* External Link */
-.milestone-external-link {
-  font-family: var(--font-sans);
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--accent, #c2410c);
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  transition: color 0.15s ease;
-}
-
-.milestone-external-link:hover {
-  text-decoration: underline;
-  color: #9a3412;
 }
 
 /* Upcoming Milestone Variant */
