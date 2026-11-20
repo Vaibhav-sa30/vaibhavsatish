@@ -406,7 +406,7 @@ function initJourneyTimeline() {
           
           <div class="timeline-toggle-tools">
             <button class="timeline-expand-all-btn" id="timeline-expand-all" aria-expanded="false">
-              <span class="expand-icon" aria-hidden="true">+</span> Expand All Details
+              <span class="expand-icon" aria-hidden="true">+</span> Expand all
             </button>
           </div>
         </div>
@@ -423,7 +423,6 @@ function initJourneyTimeline() {
         <div class="year-marker-wrapper">
           <div class="year-marker" aria-hidden="true">
             <span class="year-num">${yearGroup.year}</span>
-            ${isProminentYear ? '<span class="year-tag">Independent AI Safety Research</span>' : ''}
           </div>
         </div>
         
@@ -457,7 +456,6 @@ function initJourneyTimeline() {
             ${hasDetails ? `
               <div class="milestone-expandable" id="details-${item.id}" hidden>
                 <div class="milestone-details-inner">
-                  <h4 class="details-heading">Key Technical Work &amp; Outcomes</h4>
                   <ul class="milestone-details-list">
                     ${item.details.map(d => `<li>${d}</li>`).join('')}
                   </ul>
@@ -473,10 +471,11 @@ function initJourneyTimeline() {
               <div class="milestone-actions">
                 ${hasDetails ? `
                   <button class="milestone-toggle-btn" 
+                          aria-label="Show more about ${item.title}"
+                          title="Show more"
                           aria-expanded="false" 
                           aria-controls="details-${item.id}"
                           data-target="details-${item.id}">
-                    <span class="toggle-text">Details</span>
                     <svg class="toggle-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
                       <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
@@ -528,12 +527,14 @@ function bindTimelineInteractions() {
       if (isExpanded) {
         targetEl.hidden = true;
         btn.setAttribute("aria-expanded", "false");
-        btn.querySelector(".toggle-text").textContent = "Details";
+        btn.setAttribute("aria-label", `Show more about ${btn.closest(".milestone-card").querySelector(".milestone-title").textContent}`);
+        btn.title = "Show more";
         btn.classList.remove("active");
       } else {
         targetEl.hidden = false;
         btn.setAttribute("aria-expanded", "true");
-        btn.querySelector(".toggle-text").textContent = "Hide Details";
+        btn.setAttribute("aria-label", `Show less about ${btn.closest(".milestone-card").querySelector(".milestone-title").textContent}`);
+        btn.title = "Show less";
         btn.classList.add("active");
       }
     });
@@ -548,8 +549,8 @@ function bindTimelineInteractions() {
 
       expandAllBtn.setAttribute("aria-expanded", newExpandedState.toString());
       expandAllBtn.innerHTML = newExpandedState 
-        ? `<span class="expand-icon" aria-hidden="true">−</span> Collapse All Details`
-        : `<span class="expand-icon" aria-hidden="true">+</span> Expand All Details`;
+        ? `<span class="expand-icon" aria-hidden="true">−</span> Collapse all`
+        : `<span class="expand-icon" aria-hidden="true">+</span> Expand all`;
 
       toggleButtons.forEach((btn) => {
         const targetId = btn.getAttribute("data-target");
@@ -557,7 +558,9 @@ function bindTimelineInteractions() {
         if (targetEl) {
           targetEl.hidden = !newExpandedState;
           btn.setAttribute("aria-expanded", newExpandedState.toString());
-          btn.querySelector(".toggle-text").textContent = newExpandedState ? "Hide Details" : "Details";
+          const title = btn.closest(".milestone-card").querySelector(".milestone-title").textContent;
+          btn.setAttribute("aria-label", `${newExpandedState ? "Show less" : "Show more"} about ${title}`);
+          btn.title = newExpandedState ? "Show less" : "Show more";
           if (newExpandedState) {
             btn.classList.add("active");
           } else {
