@@ -8,6 +8,7 @@
     <title>Vaibhav Satish</title>
 
     <link rel="stylesheet" href="css/research.css">
+    <link rel="stylesheet" href="css/timeline.css">
     <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
 </head>
 
@@ -26,8 +27,16 @@
             <a href="about.html" class="home-tab-btn">About</a>
             <a href="research.html" class="home-tab-btn">Research</a>
             <a href="writings.html" class="home-tab-btn">Writings</a>
+            <a href="#journey-timeline" class="home-tab-btn">Journey</a>
         </div>
     </main>
+
+    <!-- Chronological Journey Timeline Section -->
+    <section class="journey-timeline-section" id="journey-timeline">
+        <div id="journey-timeline-container">
+            <!-- Timeline will be rendered by js/components/timeline.js -->
+        </div>
+    </section>
 
     <footer class="site-footer">
         <ul class="links">
@@ -42,6 +51,7 @@
     </footer>
 </body>
 
+    <script src="js/components/timeline.js"></script>
     <script src="js/three.js"></script>
     <script>
         if (typeof THREE === 'undefined') {
