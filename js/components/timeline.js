@@ -423,11 +423,7 @@ function initJourneyTimeline() {
   let html = `
     <div class="timeline-wrapper">
       <div class="timeline-intro-block">
-        <span class="timeline-kicker">Chronological Trajectory</span>
-        <h2 class="timeline-section-title">Research Journey</h2>
-        <p class="timeline-lead">
-          From foundational mathematics and statistics to empirical machine unlearning, AI governance, and independent AGI safety research.
-        </p>
+        <h2 class="timeline-section-title">Research Timeline</h2>
         
         <!-- Controls: Category Filter & Expand/Collapse All -->
         <div class="timeline-controls" role="toolbar" aria-label="Timeline Filters and Controls">
