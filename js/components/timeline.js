@@ -12,7 +12,6 @@ const TIMELINE_DATA = [
         title: "AI Controllability and Monitorability Talk",
         organization: "AI Safety Canada Monthly Online Meetup",
         category: "Community & Talks",
-        badge: "upcoming",
         summary: "Scheduled presentation on AI controllability and whether internal model reasoning traces provide dependable monitoring signals.",
         details: [
           "Scheduled to present ongoing work on AI Controllability and Monitorability.",
@@ -446,34 +445,24 @@ function initJourneyTimeline() {
     `;
 
     yearGroup.milestones.forEach((item) => {
-      const isUpcoming = item.badge === "upcoming";
       const hasDetails = item.details && item.details.length > 0;
       const summaryLink = item.link && item.link.url
         ? `<a href="${item.link.url}" class="milestone-inline-link" ${item.link.url.startsWith('http') ? 'target="_blank" rel="noopener noreferrer"' : ''}>${item.link.label} ↗</a>`
         : '';
       html += `
-        <article class="milestone-card ${isUpcoming ? 'is-upcoming' : ''}" 
+        <article class="milestone-card" 
                  data-category="${item.category}" 
                  role="group"
                  tabindex="${hasDetails ? '0' : '-1'}"
-                 ${hasDetails ? `aria-expanded="false" aria-controls="details-${item.id}" aria-label="Expand milestone: ${item.title}"` : ''}
+                 ${hasDetails ? `aria-expanded="false" aria-controls="details-${item.id}" aria-label="Expand milestone from ${item.date}"` : ''}
                  id="${item.id}">
           <div class="milestone-spine-node" aria-hidden="true">
             <span class="node-dot"></span>
           </div>
           
           <div class="milestone-card-inner">
-            <header class="milestone-header">
-              <div class="milestone-meta">
-                <span class="milestone-date">${item.date}</span>
-              </div>
-              <h3 class="milestone-title">${item.title}</h3>
-              <div class="milestone-org">${item.organization}</div>
-            </header>
-
-            <div class="milestone-body">
-              <p class="milestone-summary">${item.summary}${summaryLink ? ` <span aria-hidden="true">·</span> ${summaryLink}` : ''}</p>
-            </div>
+            <time class="milestone-date">${item.date}</time>
+            <p class="milestone-summary">${item.summary}${summaryLink ? ` <span aria-hidden="true">·</span> ${summaryLink}` : ''}</p>
 
             ${hasDetails ? `
               <div class="milestone-expandable" id="details-${item.id}" hidden>
@@ -512,7 +501,7 @@ function bindTimelineInteractions() {
     if (!target) return;
     target.hidden = !expanded;
     card.setAttribute("aria-expanded", expanded.toString());
-    card.setAttribute("aria-label", `${expanded ? "Collapse" : "Expand"} milestone: ${card.querySelector(".milestone-title").textContent}`);
+    card.setAttribute("aria-label", `${expanded ? "Collapse" : "Expand"} milestone from ${card.querySelector(".milestone-date").textContent}`);
     card.classList.toggle("expanded", expanded);
   };
 
