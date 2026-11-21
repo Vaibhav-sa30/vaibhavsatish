@@ -12,7 +12,7 @@ const TIMELINE_DATA = [
         title: "AI Controllability and Monitorability Talk",
         organization: "AI Safety Canada Monthly Online Meetup",
         category: "Community & Talks",
-        summary: "Scheduled presentation on AI controllability and whether internal model reasoning traces provide dependable monitoring signals.",
+        summary: "Scheduled to present “AI Controllability and Monitorability” at the AI Safety Canada Monthly Online Meetup, examining whether internal model reasoning traces provide dependable monitoring signals.",
         details: [
           "Scheduled to present ongoing work on AI Controllability and Monitorability.",
           "Examines whether internal chain-of-thought traces and activation states offer dependable signals for monitoring and steering autonomous AI agent behavior.",
@@ -30,7 +30,7 @@ const TIMELINE_DATA = [
         title: "Built McCulloch–Pitts Neuron from Scratch",
         organization: "Independent Engineering",
         category: "Engineering",
-        summary: "Implemented a McCulloch–Pitts neuron from scratch as a threshold-based model of artificial neural computation.",
+        summary: "Built a McCulloch–Pitts neuron from scratch as an independent engineering project, using threshold logic to model artificial neural computation.",
         details: [
           "Built a McCulloch–Pitts neuron from scratch."
         ],
@@ -46,7 +46,7 @@ const TIMELINE_DATA = [
         title: "Independent AI Safety Research: CoT Monitorability & Evaluation",
         organization: "Aicademia Research & Independent Publication",
         category: "Writing & Publications",
-        summary: "Investigating whether internal chain-of-thought traces provide faithful signals for monitoring agent reasoning, alongside published surveys on unlearning.",
+        summary: "Independent AI Safety research at Aicademia examines whether chain-of-thought traces faithfully reveal agent reasoning and evaluates their monitorability, alongside published work on machine unlearning.",
         details: [
           "Conducted independent research investigations into Chain-of-Thought (CoT) monitorability, model controllability, scalable oversight, and mechanistic interpretability.",
           "Published the foundational research article 'CoT Monitorability and Controllability', critiquing whether hidden reasoning traces can be reliably exploited for safety monitoring.",
@@ -65,7 +65,7 @@ const TIMELINE_DATA = [
         title: "Responsible and Safe AI Certification — Top 5% Silver Elite",
         organization: "NPTEL & IIT Madras",
         category: "Fellowship & Certifications",
-        summary: "Ranked in top 5% of ~14,000 candidates with 79% score covering fairness metrics, transparency, differential privacy, and unlearning.",
+        summary: "Earned NPTEL and IIT Madras’s Responsible and Safe AI Silver Elite certification, scoring 79% and ranking in the top 5% of approximately 14,000 candidates.",
         details: [
           "Completed rigorous NPTEL national certification examination in Responsible and Safe AI.",
           "Achieved final score of 79%, earning the prestigious Silver Certificate distinction.",
@@ -84,7 +84,7 @@ const TIMELINE_DATA = [
         title: "AI Tech Law Research Fellowship",
         organization: "Centre for Development of Intellectual Property and Research (CDIPR)",
         category: "Fellowship & Certifications",
-        summary: "Fellowship examining the intersection of AI governance, technology law, and the legal sufficiency of automated compliance attestations.",
+        summary: "Completed the AI Tech Law Research Fellowship at the Centre for Development of Intellectual Property and Research (CDIPR), examining AI governance, technology law, and the legal sufficiency of automated compliance attestations.",
         details: [
           "Completed the competitive research fellowship at CDIPR exploring technology law and AI governance boundaries.",
           "Investigated the legal sufficiency of automated compliance attestations under evolving global regulations.",
@@ -103,7 +103,7 @@ const TIMELINE_DATA = [
         title: "AI Research Intern & Student Point of Contact",
         organization: "Project Tenali, IIT Ropar",
         category: "Internship & Leadership",
-        summary: "Contributed to Vachana mathematics communication reasoning evaluation and served as coordination lead for 50–60 interns across cohorts.",
+        summary: "As an AI Research Intern and Student Point of Contact for Project Tenali at IIT Ropar, contributed to Vachana reasoning evaluation and coordinated 50–60 interns across cohorts.",
         details: [
           "Contributed to Project Tenali, specifically Vachana (Mathematics Communication Exercises), focusing on structured reasoning evaluation and interactive problem-solving logic.",
           "Served as Student Point of Contact (SPOC) and coordination lead for approximately 50–60 research interns.",
@@ -122,7 +122,7 @@ const TIMELINE_DATA = [
         title: "NiuSy Neuro-Symbolic Library & Responsible AI MLOps Suite",
         organization: "Independent Open-Source Engineering",
         category: "Engineering",
-        summary: "Developed neuro-symbolic logic engine with verifiable proof traces, fair MLOps pipeline (AIF360/Fairlearn), and local-first research logger.",
+        summary: "Built NiuSy, a neuro-symbolic logic library, alongside a Responsible AI MLOps suite and local-first research tools as independent open-source engineering projects.",
         details: [
           "NiuSy Neuro-Symbolic Library: Built a Python library combining neural perception with forward/backward chaining probabilistic logic, generating explainable proof traces for agent reasoning.",
           "Responsible AI MLOps Pipeline: Implemented AIF360 Reweighing and Fairlearn disparity gates to enforce Demographic Parity Difference < 0.05, tracking bias-accuracy Pareto frontiers in MLflow.",
@@ -141,7 +141,7 @@ const TIMELINE_DATA = [
         title: "RaiFlow: Compliance-as-Code Framework & CI/CD Guardrails",
         organization: "CDIPR & Open-Source Engineering",
         category: "Research",
-        summary: "A dual research and systems initiative operationalizing EU AI Act and NIST AI RMF regulatory requirements into declarative CI/CD verification pipelines.",
+        summary: "Developed RaiFlow through CDIPR research and open-source engineering, translating EU AI Act and NIST AI RMF requirements into declarative CI/CD verification pipelines.",
         details: [
           "Authored a working paper at CDIPR proposing a Compliance-as-Code framework bridging high-level regulatory statutes and production CI/CD software pipelines.",
           "Translated multi-jurisdictional AI safety mandates (EU AI Act, NIST AI RMF) into declarative YAML validation schemas.",
@@ -161,7 +161,7 @@ const TIMELINE_DATA = [
         title: "Benchmarking Social Cognition in LLMs",
         organization: "DeepMind Kaggle Hackathon: Tracking Progress Towards AGI",
         category: "Research",
-        summary: "Constructed a 4-task procedural benchmark evaluating functional Theory of Mind, epistemic failure modes, and reasoning parasitism in frontier models.",
+        summary: "Built a four-task social cognition benchmark for DeepMind’s Kaggle “Tracking Progress Towards AGI” hackathon, evaluating Theory of Mind, epistemic failures, and reasoning parasitism in frontier models.",
         details: [
           "Developed for the DeepMind Kaggle Hackathon 'Tracking Progress Towards AGI'.",
           "Engineered a benchmark suite across 4 procedural social evaluation tasks measuring Spontaneous Theory of Mind and Cryptographic Theory of Mind.",
@@ -181,7 +181,7 @@ const TIMELINE_DATA = [
         title: "Privacy-Preserving XAI in IoMT Wearables",
         organization: "CDIPR Collaborative Research",
         category: "Research",
-        summary: "Co-authored architecture uniting localized Gemma 4 LLM-as-a-Judge oversight with privacy-preserving telemetry for clinical wearable biosignals.",
+        summary: "Co-authored a privacy-preserving XAI architecture through CDIPR collaborative research, combining localized Gemma 4 oversight with privacy-preserving telemetry for clinical wearable biosignals.",
         details: [
           "Co-authored working paper investigating explainable AI, telemetry privacy, and safety boundaries in Internet of Medical Things (IoMT) devices.",
           "Architected a privacy-preserving framework integrating on-device Gemma 4 models to generate longitudinal clinical summaries from sensitive continuous telemetry.",
@@ -200,7 +200,7 @@ const TIMELINE_DATA = [
         title: "Auditing Algorithmic Moderation in Digital Platforms",
         organization: "Centre for Development of Intellectual Property and Research (CDIPR)",
         category: "Research",
-        summary: "Formulated the 'Transparency Gap Thesis' examining accountability breakdowns in opaque black-box platform moderation systems.",
+        summary: "At CDIPR, formulated the “Transparency Gap Thesis” on accountability failures in opaque platform moderation and benchmarked moderation systems through an ablation study.",
         details: [
           "Authored a working paper at CDIPR establishing the 'Transparency Gap Thesis' on opacity and accountability breakdowns in large-scale platform enforcement.",
           "Analyzed trade-offs between predictive throughput maximization and ethical interpretability.",
@@ -220,7 +220,7 @@ const TIMELINE_DATA = [
         title: "Online Comment Toxicity Classification & Audit Pipeline",
         organization: "Kaggle Academic Competition & Research",
         category: "Engineering",
-        summary: "Engineered multi-class moderation pipeline across 200,000+ comments with SHAP interpretability audits, achieving 0.82 Macro-F1.",
+        summary: "Built an online comment toxicity classification and audit pipeline for a Kaggle academic competition, analyzing 200,000+ comments with SHAP audits and achieving 0.82 Macro-F1.",
         details: [
           "Constructed an end-to-end NLP classification pipeline processing a large-scale corpus of 200,000+ user comments.",
           "Classified multi-tiered linguistic severity across Neutral, Mild, Offensive, and Toxic categories.",
@@ -245,7 +245,7 @@ const TIMELINE_DATA = [
         title: "Machine Unlearning: NeuroReset Paper Replication",
         organization: "Independent Research",
         category: "Research",
-        summary: "Empirical verification of dual-phase LLM unlearning on OLMo-1B with LoRA, inverse-gradient optimization, and MIA evaluation.",
+        summary: "Independently replicated and evaluated the NeuroReset dual-phase LLM unlearning method on OLMo-1B using LoRA, inverse-gradient optimization, and membership inference attacks.",
         details: [
           "Replicated and empirically verified the NeuroReset dual-phase LLM unlearning architecture.",
           "Conducted experiments on OLMo-1B parameter weights using Low-Rank Adaptation (LoRA).",
@@ -265,7 +265,7 @@ const TIMELINE_DATA = [
         title: "Founded Aicademia & Technical Writing Portfolio",
         organization: "Aicademia Research Initiative & Substack",
         category: "Entrepreneurship",
-        summary: "Founded independent AI Safety venture initiative and Substack publishing technical alignment essays reaching an audience of 400,000+ readers.",
+        summary: "Founded Aicademia and its Substack to publish technical AI Safety and alignment essays, reaching an audience of 400,000+ readers.",
         details: [
           "Founded Aicademia with the mandate of bridging formal AI Safety theoretical alignment with concrete engineering implementations.",
           "Began developing open-source governance tools, transparent evaluation harnesses, and public-facing research communication.",
@@ -285,7 +285,7 @@ const TIMELINE_DATA = [
         title: "Operational Optimization in Industrial Supply Chains",
         organization: "Commercial Plywood & Interior Materials Enterprise",
         category: "Engineering",
-        summary: "Identified 148% overstock in low-demand seasons and modeled a 90% reorder frequency reduction via Welch's ANOVA, Games-Howell, and EOQ.",
+        summary: "For a commercial plywood and interior materials enterprise, identified 148% overstock in low-demand seasons and modeled a 90% reorder-frequency reduction using Welch’s ANOVA, Games–Howell, and EOQ.",
         details: [
           "Executed comprehensive real-world business analytics on procurement cycles, sales distributions, and credit exposures.",
           "Conducted statistical hypothesis testing using Welch's ANOVA and Games-Howell post-hoc tests to isolate demand seasonality.",
@@ -305,7 +305,7 @@ const TIMELINE_DATA = [
         title: "Parking Management System (v1 Monolith → v2 SPA)",
         organization: "Modern Application Development Coursework",
         category: "Engineering",
-        summary: "Evolved a monolithic Flask/Jinja application into a decoupled REST API with a Vue.js Single-Page Application and SQLAlchemy persistence.",
+        summary: "Built a parking management system for modern application development coursework, evolving a Flask/Jinja monolith into a Vue.js single-page app with a REST API and SQLAlchemy persistence.",
         details: [
           "Engineered a full-featured multi-tenant parking reservation management application.",
           "Version 1: Built monolithic architecture using Flask, Jinja2 templating, and server-side session management.",
@@ -329,7 +329,7 @@ const TIMELINE_DATA = [
         title: "ACM Summer School on Responsible AI: Machine Unlearning Project Lead",
         organization: "ACM India & IIT Madras",
         category: "Research",
-        summary: "Pioneering milestone in responsible AI: led team replicating the Incompetent Teacher unlearning paradigm across ResNet and CoAtNet on CIFAR-10.",
+        summary: "Led the ACM India and IIT Madras Summer School responsible AI project, replicating the Incompetent Teacher unlearning method across ResNet and CoAtNet on CIFAR-10.",
         details: [
           "Selected for the competitive ACM Summer School on Responsible AI hosted at IIT Madras, marking the foundational transition into AI Safety.",
           "Appointed Project Lead for the Machine Unlearning team replicating the 'Incompetent Teacher' negative-gradient paradigm.",
@@ -354,7 +354,7 @@ const TIMELINE_DATA = [
         title: "BS in Data Science and Applications",
         organization: "Indian Institute of Technology Madras",
         category: "Education",
-        summary: "Foundational training in modern computation, algorithmic mathematics, machine learning theory, and data architecture.",
+        summary: "Pursuing a BS in Data Science and Applications at IIT Madras, with training in modern computation, algorithmic mathematics, machine learning theory, and data architecture.",
         details: [
           "Commenced rigorous undergraduate degree in Data Science and Applications at IIT Madras.",
           "Completed advanced coursework spanning Linear Algebra, Probability, Machine Learning Foundations, Deep Learning, Database Systems, and Application Development.",
@@ -377,7 +377,7 @@ const TIMELINE_DATA = [
         title: "BSc Statistics (Honours) — Quantitative Foundations",
         organization: "Aligarh Muslim University",
         category: "Education",
-        summary: "Core academic grounding in mathematical analysis, probability theory, statistical inference, and quantitative methods.",
+        summary: "Earned a BSc in Statistics (Honours) from Aligarh Muslim University, building a foundation in mathematical analysis, probability, statistical inference, and quantitative methods.",
         details: [
           "Enrolled in BSc Statistics (Honours) developing mathematical and quantitative foundations.",
           "Undertook intensive coursework in Real Analysis, Differential and Integral Calculus, Probability Theory, Descriptive and Inferential Statistics, and Hypothesis Testing.",
