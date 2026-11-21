@@ -9,7 +9,7 @@ const TIMELINE_DATA = [
       {
         id: "ai-safety-canada-2026",
         date: "December 2026",
-        title: "AI Controllability and Monitorability",
+        title: "AI Controllability and Monitorability Talk",
         organization: "AI Safety Canada Monthly Online Meetup",
         category: "Community & Talks",
         badge: "upcoming",
@@ -20,6 +20,60 @@ const TIMELINE_DATA = [
           "Upcoming presentation scheduled for the monthly online community seminar."
         ],
         tags: ["Controllability", "Monitorability", "AI Safety", "Upcoming"],
+        link: {
+          url: null,
+          label: null
+        }
+      },
+      {
+        id: "mcculloch-pitts-neuron-2026",
+        date: "November 2026",
+        title: "Built McCulloch–Pitts Neuron from Scratch",
+        organization: "Independent Engineering",
+        category: "Engineering",
+        summary: "Implemented a McCulloch–Pitts neuron from scratch as a threshold-based model of artificial neural computation.",
+        details: [
+          "Built a McCulloch–Pitts neuron from scratch."
+        ],
+        tags: ["McCulloch–Pitts Neuron", "Neural Networks", "Foundations"],
+        link: {
+          url: null,
+          label: null
+        }
+      },
+      {
+        id: "independent-ai-safety-writing-2026",
+        date: "October 2026",
+        title: "Independent AI Safety Research: CoT Monitorability & Evaluation",
+        organization: "Aicademia Research & Independent Publication",
+        category: "Writing & Publications",
+        summary: "Investigating whether internal chain-of-thought traces provide faithful signals for monitoring agent reasoning, alongside published surveys on unlearning.",
+        details: [
+          "Conducted independent research investigations into Chain-of-Thought (CoT) monitorability, model controllability, scalable oversight, and mechanistic interpretability.",
+          "Published the foundational research article 'CoT Monitorability and Controllability', critiquing whether hidden reasoning traces can be reliably exploited for safety monitoring.",
+          "Authored exhaustive field guides: 'Everything Happening in Machine Unlearning As of May 2026' and 'Ground Up Understanding of Transformers'.",
+          "Active participant in technical reading groups, mechanistic interpretability seminars, and safety community discussions."
+        ],
+        tags: ["CoT Monitorability", "Scalable Oversight", "Machine Unlearning", "Mechanistic Interpretability"],
+        link: {
+          url: "writings.html",
+          label: "View Writings"
+        }
+      },
+      {
+        id: "responsible-ai-nptel-2026",
+        date: "July – October 2026",
+        title: "Responsible and Safe AI Certification — Top 5% Silver Elite",
+        organization: "NPTEL & IIT Madras",
+        category: "Fellowship & Certifications",
+        summary: "Ranked in top 5% of ~14,000 candidates with 79% score covering fairness metrics, transparency, differential privacy, and unlearning.",
+        details: [
+          "Completed rigorous NPTEL national certification examination in Responsible and Safe AI.",
+          "Achieved final score of 79%, earning the prestigious Silver Certificate distinction.",
+          "Ranked within the top 5% percentile nationwide among approximately 14,000 participating students and practitioners.",
+          "Demonstrated competency in algorithmic fairness, differential privacy, robust optimization, and interpretability mechanisms."
+        ],
+        tags: ["NPTEL", "IIT Madras", "Silver Elite", "Top 5%", "Responsible AI"],
         link: {
           url: null,
           label: null
@@ -46,7 +100,7 @@ const TIMELINE_DATA = [
       },
       {
         id: "iit-ropar-internship-2026",
-        date: "May – July 2026 (Extended)",
+        date: "May – December 2026 (Extended)",
         title: "AI Research Intern & Student Point of Contact",
         organization: "Project Tenali, IIT Ropar",
         category: "Internship & Leadership",
@@ -64,8 +118,27 @@ const TIMELINE_DATA = [
         }
       },
       {
+        id: "responsible-mlops-niui-logger-2026",
+        date: "April 2026",
+        title: "NiuSy Neuro-Symbolic Library & Responsible AI MLOps Suite",
+        organization: "Independent Open-Source Engineering",
+        category: "Engineering",
+        summary: "Developed neuro-symbolic logic engine with verifiable proof traces, fair MLOps pipeline (AIF360/Fairlearn), and local-first research logger.",
+        details: [
+          "NiuSy Neuro-Symbolic Library: Built a Python library combining neural perception with forward/backward chaining probabilistic logic, generating explainable proof traces for agent reasoning.",
+          "Responsible AI MLOps Pipeline: Implemented AIF360 Reweighing and Fairlearn disparity gates to enforce Demographic Parity Difference < 0.05, tracking bias-accuracy Pareto frontiers in MLflow.",
+          "Obsidian Research Logger: Created a local-first research pipeline leveraging on-device Gemma 2 to extract structured academic synthesis and cross-domain concept bridges without cloud telemetry.",
+          "Agicademia Research Dispatch: Automated serverless curation engine filtering ArXiv and frontier lab publications via a Signal Quality Gate."
+        ],
+        tags: ["Neurosymbolic AI", "Fairlearn", "AIF360", "MLOps", "Gemma 2", "Local LLM"],
+        link: {
+          url: "https://github.com/Vaibhav-sa30",
+          label: "View GitHub"
+        }
+      },
+      {
         id: "raiflow-governance-2026",
-        date: "April 2026 – Present",
+        date: "April 2026",
         title: "RaiFlow: Compliance-as-Code Framework & CI/CD Guardrails",
         organization: "CDIPR & Open-Source Engineering",
         category: "Research",
@@ -105,7 +178,7 @@ const TIMELINE_DATA = [
       },
       {
         id: "privacy-xai-iomt-2026",
-        date: "February 2026 – Present",
+        date: "February – June 2026",
         title: "Privacy-Preserving XAI in IoMT Wearables",
         organization: "CDIPR Collaborative Research",
         category: "Research",
@@ -124,7 +197,7 @@ const TIMELINE_DATA = [
       },
       {
         id: "algorithmic-moderation-cdipr-2026",
-        date: "January – April 2026",
+        date: "January – March 2026",
         title: "Auditing Algorithmic Moderation in Digital Platforms",
         organization: "Centre for Development of Intellectual Property and Research (CDIPR)",
         category: "Research",
@@ -144,7 +217,7 @@ const TIMELINE_DATA = [
       },
       {
         id: "toxicity-classification-2026",
-        date: "January – April 2026",
+        date: "January – March 2026",
         title: "Online Comment Toxicity Classification & Audit Pipeline",
         organization: "Kaggle Academic Competition & Research",
         category: "Engineering",
@@ -160,63 +233,6 @@ const TIMELINE_DATA = [
         link: {
           url: "https://github.com/Vaibhav-sa30",
           label: "GitHub Profile"
-        }
-      },
-      {
-        id: "independent-ai-safety-writing-2026",
-        date: "2026",
-        title: "Independent AI Safety Research: CoT Monitorability & Evaluation",
-        organization: "Aicademia Research & Independent Publication",
-        category: "Writing & Publications",
-        summary: "Investigating whether internal chain-of-thought traces provide faithful signals for monitoring agent reasoning, alongside published surveys on unlearning.",
-        details: [
-          "Conducted independent research investigations into Chain-of-Thought (CoT) monitorability, model controllability, scalable oversight, and mechanistic interpretability.",
-          "Published the foundational research article 'CoT Monitorability and Controllability', critiquing whether hidden reasoning traces can be reliably exploited for safety monitoring.",
-          "Authored exhaustive field guides: 'Everything Happening in Machine Unlearning As of May 2026' and 'Ground Up Understanding of Transformers'.",
-          "Active participant in technical reading groups, mechanistic interpretability seminars, and safety community discussions."
-        ],
-        tags: ["CoT Monitorability", "Scalable Oversight", "Machine Unlearning", "Mechanistic Interpretability"],
-        link: {
-          url: "writings.html",
-          label: "View Writings"
-        }
-      },
-      {
-        id: "responsible-mlops-niui-logger-2026",
-        date: "2026",
-        title: "NiuSy Neuro-Symbolic Library & Responsible AI MLOps Suite",
-        organization: "Independent Open-Source Engineering",
-        category: "Engineering",
-        summary: "Developed neuro-symbolic logic engine with verifiable proof traces, fair MLOps pipeline (AIF360/Fairlearn), and local-first research logger.",
-        details: [
-          "NiuSy Neuro-Symbolic Library: Built a Python library combining neural perception with forward/backward chaining probabilistic logic, generating explainable proof traces for agent reasoning.",
-          "Responsible AI MLOps Pipeline: Implemented AIF360 Reweighing and Fairlearn disparity gates to enforce Demographic Parity Difference < 0.05, tracking bias-accuracy Pareto frontiers in MLflow.",
-          "Obsidian Research Logger: Created a local-first research pipeline leveraging on-device Gemma 2 to extract structured academic synthesis and cross-domain concept bridges without cloud telemetry.",
-          "Agicademia Research Dispatch: Automated serverless curation engine filtering ArXiv and frontier lab publications via a Signal Quality Gate."
-        ],
-        tags: ["Neurosymbolic AI", "Fairlearn", "AIF360", "MLOps", "Gemma 2", "Local LLM"],
-        link: {
-          url: "https://github.com/Vaibhav-sa30",
-          label: "View GitHub"
-        }
-      },
-      {
-        id: "responsible-ai-nptel-2026",
-        date: "2026",
-        title: "Responsible and Safe AI Certification — Top 5% Silver Elite",
-        organization: "NPTEL & IIT Madras",
-        category: "Fellowship & Certifications",
-        summary: "Ranked in top 5% of ~14,000 candidates with 79% score covering fairness metrics, transparency, differential privacy, and unlearning.",
-        details: [
-          "Completed rigorous NPTEL national certification examination in Responsible and Safe AI.",
-          "Achieved final score of 79%, earning the prestigious Silver Certificate distinction.",
-          "Ranked within the top 5% percentile nationwide among approximately 14,000 participating students and practitioners.",
-          "Demonstrated competency in algorithmic fairness, differential privacy, robust optimization, and interpretability mechanisms."
-        ],
-        tags: ["NPTEL", "IIT Madras", "Silver Elite", "Top 5%", "Responsible AI"],
-        link: {
-          url: null,
-          label: null
         }
       }
     ]
