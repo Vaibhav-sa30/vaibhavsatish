@@ -1,0 +1,86 @@
+.home-tabs {
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.home-tabs .home-tab-btn {
+  padding: 0.75rem 1.15rem;
+}
+
+.about-copy {
+  max-width: 780px;
+}
+
+.about-copy > .pub-description {
+  margin-bottom: 1.25rem;
+}
+
+.about-position {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+}
+
+.about-position > .pub-description {
+  margin-bottom: 1rem;
+}
+
+.about-definitions {
+  display: grid;
+  gap: 0.85rem;
+  margin: 1.1rem 0 1.25rem;
+}
+
+.about-definitions .pub-description {
+  margin: 0;
+  padding-left: 1rem;
+  border-left: 2px solid var(--border);
+}
+
+.about-definitions strong {
+  color: var(--accent);
+  font-family: var(--font-sans);
+  font-size: 0.82em;
+}
+
+.interest-page-intro {
+  max-width: 700px;
+  color: var(--ink-muted);
+  margin-top: 0.75rem;
+}
+
+.interest-empty-state {
+  margin-top: 2rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--ink-muted);
+}
+
+.interest-empty-state p + p {
+  margin-top: 0.4rem;
+}
+
+.interest-empty-state strong {
+  color: var(--ink);
+}
+
+.interest-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+@media (max-width: 700px) {
+  .home-tabs {
+    gap: 0.5rem;
+  }
+
+  .home-tabs .home-tab-btn {
+    padding: 0.65rem 0.8rem;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+  }
+}
