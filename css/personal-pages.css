@@ -112,6 +112,79 @@
   font-size: 0.8rem;
 }
 
+.coursework-sections {
+  margin-top: 1.75rem;
+}
+
+.coursework-group + .coursework-group {
+  margin-top: 2rem;
+}
+
+.coursework-group > h2 {
+  padding-bottom: 0.55rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-size: 1.45rem;
+  font-weight: 400;
+}
+
+.coursework-list {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 0.85rem;
+  list-style: none;
+}
+
+.coursework-item {
+  padding: 1rem 1.15rem;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--surface);
+}
+
+.coursework-item-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.35rem 1rem;
+}
+
+.coursework-item h3 {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+.coursework-item h3 a {
+  color: var(--ink);
+  text-decoration-color: var(--border);
+  text-underline-offset: 0.2em;
+}
+
+.coursework-item h3 a:hover {
+  color: var(--accent);
+}
+
+.coursework-provider,
+.coursework-code {
+  color: var(--ink-faint);
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.coursework-meta {
+  margin-top: 0.2rem;
+  color: var(--ink-muted);
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+}
+
 .interest-nav {
   display: flex;
   flex-wrap: wrap;
