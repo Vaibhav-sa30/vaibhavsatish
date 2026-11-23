@@ -7,6 +7,45 @@ const TIMELINE_DATA = [
     year: "2026",
     milestones: [
       {
+        id: "mcculloch-pitts-neuron-2026",
+        date: "November 2026",
+        title: "Built McCulloch–Pitts Neuron from Scratch",
+        organization: "Independent Engineering",
+        category: "Engineering",
+        summary: "Built a McCulloch–Pitts neuron from scratch as an independent engineering project, using threshold logic to model artificial neural computation.",
+        details: [
+          "Built a McCulloch–Pitts neuron from scratch."
+        ],
+        tags: ["McCulloch–Pitts Neuron", "Neural Networks", "Foundations"],
+        link: {
+          url: null,
+          label: null
+        }
+      },
+      {
+        id: "technology-law-research-fellowship-2026",
+        date: "November 2026",
+        title: "Technology Law Research Fellowship — Class of 2026",
+        organization: "Technology Law Research Fellowship",
+        category: "Fellowship & Certifications",
+        summary: "Successfully completed the Technology Law Research Fellowship — Class of 2026, where I studied and presented my work on “Legal Sufficiency of Automated Compliance Attestations | Attestation Without Adjudication Under the EU AI Act and India's AI Governance Architecture | Compliance-as-Code in AI Governance.”",
+        details: [
+          "Studied and presented research on the legal sufficiency of automated compliance attestations.",
+          "Examined attestation without adjudication under the EU AI Act and India's AI governance architecture, including compliance-as-code."
+        ],
+        tags: ["Technology Law", "AI Governance", "Compliance-as-Code", "Fellowship"],
+        links: [
+          {
+            url: "https://drive.google.com/file/d/1ee-Uvi_DpzwOTxNVplMuciPA6wi34NJ6/view?usp=sharing",
+            label: "View Certificate"
+          },
+          {
+            url: "https://docs.google.com/presentation/d/18ed5S3-G7T66WRtclPFI8PVhriPualG0/edit?usp=sharing&ouid=104211545336322804054&rtpof=true&sd=true",
+            label: "View Presentation Slides"
+          }
+        ]
+      },
+      {
         id: "ai-safety-canada-2026",
         date: "December 2026",
         title: "AI Controllability and Monitorability Talk",
@@ -19,22 +58,6 @@ const TIMELINE_DATA = [
           "Upcoming presentation scheduled for the monthly online community seminar."
         ],
         tags: ["Controllability", "Monitorability", "AI Safety", "Upcoming"],
-        link: {
-          url: null,
-          label: null
-        }
-      },
-      {
-        id: "mcculloch-pitts-neuron-2026",
-        date: "November 2026",
-        title: "Built McCulloch–Pitts Neuron from Scratch",
-        organization: "Independent Engineering",
-        category: "Engineering",
-        summary: "Built a McCulloch–Pitts neuron from scratch as an independent engineering project, using threshold logic to model artificial neural computation.",
-        details: [
-          "Built a McCulloch–Pitts neuron from scratch."
-        ],
-        tags: ["McCulloch–Pitts Neuron", "Neural Networks", "Foundations"],
         link: {
           url: null,
           label: null
@@ -446,9 +469,10 @@ function initJourneyTimeline() {
 
     yearGroup.milestones.forEach((item) => {
       const hasDetails = item.details && item.details.length > 0;
-      const summaryLink = item.link && item.link.url
-        ? `<a href="${item.link.url}" class="milestone-inline-link" ${item.link.url.startsWith('http') ? 'target="_blank" rel="noopener noreferrer"' : ''}>${item.link.label} ↗</a>`
-        : '';
+      const summaryLinks = [item.link, ...(Array.isArray(item.links) ? item.links : [])]
+        .filter((link) => link && link.url)
+        .map((link) => `<a href="${link.url}" class="milestone-inline-link" ${link.url.startsWith('http') ? 'target="_blank" rel="noopener noreferrer"' : ''}>${link.label} ↗</a>`)
+        .join(' <span aria-hidden="true">·</span> ');
       html += `
         <article class="milestone-card" 
                  data-category="${item.category}" 
@@ -462,7 +486,7 @@ function initJourneyTimeline() {
           
           <div class="milestone-card-inner">
             <time class="milestone-date">${item.date}</time>
-            <p class="milestone-summary">${item.summary}${summaryLink ? ` <span aria-hidden="true">·</span> ${summaryLink}` : ''}</p>
+            <p class="milestone-summary">${item.summary}${summaryLinks ? ` <span aria-hidden="true">·</span> ${summaryLinks}` : ''}</p>
 
             ${hasDetails ? `
               <div class="milestone-expandable" id="details-${item.id}" hidden>
