@@ -266,6 +266,44 @@
   color: var(--accent2);
 }
 
+.coursework-arena-finished {
+  margin-top: 0.85rem;
+  padding: 0.7rem 0.9rem;
+  border-left: 2px solid var(--border);
+  background: var(--page);
+}
+
+.coursework-arena-finished h4 {
+  margin-bottom: 0.4rem;
+  color: var(--ink-faint);
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.coursework-arena-finished ul {
+  display: grid;
+  gap: 0.3rem;
+  list-style: none;
+}
+
+.coursework-arena-finished li {
+  color: var(--ink-muted);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.coursework-arena-finished li a {
+  color: var(--accent2);
+  font-size: 0.84rem;
+}
+
+.coursework-arena-finished li span::before {
+  content: " — ";
+}
+
 .coursework-date {
   color: var(--ink-faint);
   font-family: var(--font-sans);
