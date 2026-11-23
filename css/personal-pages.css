@@ -104,8 +104,6 @@
 }
 
 .reading-comment-link {
-  display: inline-block;
-  margin-top: 0.3rem;
   font-family: var(--font-sans);
   font-size: 0.8rem;
 }
