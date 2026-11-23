@@ -30,7 +30,7 @@ const TIMELINE_DATA = [
         title: "Technology Law Research Fellowship — Class of 2026",
         organization: "Technology Law Research Fellowship",
         category: "Fellowship & Certifications",
-        summary: "Successfully completed the Technology Law Research Fellowship — Class of 2026, where I studied and presented my work on “Legal Sufficiency of Automated Compliance Attestations | Attestation Without Adjudication Under the EU AI Act and India's AI Governance Architecture | Compliance-as-Code in AI Governance.”",
+        summary: "Successfully completed the July-Sept run Technology Law Research Fellowship — Class of 2026, where I studied and presented my work on “Legal Sufficiency of Automated Compliance Attestations | Attestation Without Adjudication Under the EU AI Act and India's AI Governance Architecture | Compliance-as-Code in AI Governance.”",
         details: [
           "Studied and presented research on the legal sufficiency of automated compliance attestations.",
           "Examined attestation without adjudication under the EU AI Act and India's AI governance architecture, including compliance-as-code."
