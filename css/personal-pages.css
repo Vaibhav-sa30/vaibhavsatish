@@ -103,6 +103,10 @@
   margin-top: 0.25rem;
 }
 
+.reading-entry-copy {
+  font-size: 0.9rem;
+}
+
 .reading-comment-link {
   font-family: var(--font-sans);
   font-size: 0.8rem;
