@@ -138,10 +138,31 @@
 .coursework-subgroup > h3 {
   color: var(--ink-muted);
   font-family: var(--font-sans);
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.coursework-subgroup .coursework-list {
+  gap: 0.45rem;
+  margin-top: 0.55rem;
+}
+
+.coursework-subgroup .coursework-item {
+  padding: 0.65rem 0.85rem;
+  background: transparent;
+}
+
+.coursework-subgroup .coursework-item h4 {
+  font-size: 0.98rem;
+}
+
+.coursework-subgroup .coursework-meta,
+.coursework-subgroup .coursework-description {
+  margin-top: 0.25rem;
+  font-size: 0.82rem;
+  line-height: 1.45;
 }
 
 .coursework-list {
