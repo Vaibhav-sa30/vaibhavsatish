@@ -7,16 +7,18 @@ const TIMELINE_DATA = [
     year: "2026",
     milestones: [
       {
-        id: "mcculloch-pitts-neuron-2026",
-        date: "November 2026",
-        title: "Built McCulloch–Pitts Neuron from Scratch",
-        organization: "Independent Engineering",
-        category: "Engineering",
-        summary: "Built a McCulloch–Pitts neuron from scratch as an independent engineering project, using threshold logic to model artificial neural computation.",
+        id: "ai-safety-canada-2026",
+        date: "December 2026",
+        title: "AI Controllability and Monitorability Talk",
+        organization: "AI Safety Canada Monthly Online Meetup",
+        category: "Community & Talks",
+        summary: "Scheduled to present “AI Controllability and Monitorability” at the AI Safety Canada Monthly Online Meetup, examining whether internal model reasoning traces provide dependable monitoring signals.",
         details: [
-          "Built a McCulloch–Pitts neuron from scratch."
+          "Scheduled to present ongoing work on AI Controllability and Monitorability.",
+          "Examines whether internal chain-of-thought traces and activation states offer dependable signals for monitoring and steering autonomous AI agent behavior.",
+          "Upcoming presentation scheduled for the monthly online community seminar."
         ],
-        tags: ["McCulloch–Pitts Neuron", "Neural Networks", "Foundations"],
+        tags: ["Controllability", "Monitorability", "AI Safety", "Upcoming"],
         link: {
           url: null,
           label: null
@@ -46,18 +48,16 @@ const TIMELINE_DATA = [
         ]
       },
       {
-        id: "ai-safety-canada-2026",
-        date: "December 2026",
-        title: "AI Controllability and Monitorability Talk",
-        organization: "AI Safety Canada Monthly Online Meetup",
-        category: "Community & Talks",
-        summary: "Scheduled to present “AI Controllability and Monitorability” at the AI Safety Canada Monthly Online Meetup, examining whether internal model reasoning traces provide dependable monitoring signals.",
+        id: "mcculloch-pitts-neuron-2026",
+        date: "November 2026",
+        title: "Built McCulloch–Pitts Neuron from Scratch",
+        organization: "Independent Engineering",
+        category: "Engineering",
+        summary: "Built a McCulloch–Pitts neuron from scratch as an independent engineering project, using threshold logic to model artificial neural computation.",
         details: [
-          "Scheduled to present ongoing work on AI Controllability and Monitorability.",
-          "Examines whether internal chain-of-thought traces and activation states offer dependable signals for monitoring and steering autonomous AI agent behavior.",
-          "Upcoming presentation scheduled for the monthly online community seminar."
+          "Built a McCulloch–Pitts neuron from scratch."
         ],
-        tags: ["Controllability", "Monitorability", "AI Safety", "Upcoming"],
+        tags: ["McCulloch–Pitts Neuron", "Neural Networks", "Foundations"],
         link: {
           url: null,
           label: null
