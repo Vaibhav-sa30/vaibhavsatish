@@ -90,10 +90,16 @@ const TIMELINE_DATA = [
           "Completed the AI Tech Law Research Fellowship at the Centre for Development of Intellectual Property and Research (CDIPR), examining AI governance, technology law, and the legal sufficiency of automated compliance attestations."
         ],
         tags: ["AI Law", "AI Governance", "Compliance", "CDIPR"],
-        link: {
-          url: null,
-          label: null
-        }
+        links: [
+          {
+            url: "https://drive.google.com/file/d/1ee-Uvi_DpzwOTxNVplMuciPA6wi34NJ6/view?usp=sharing",
+            label: "View Certificate"
+          },
+          {
+            url: "https://docs.google.com/presentation/d/18ed5S3-G7T66WRtclPFI8PVhriPualG0/edit?usp=sharing&ouid=104211545336322804054&rtpof=true&sd=true",
+            label: "View Presentation Slides"
+          }
+        ]
       },
       {
         id: "iit-ropar-internship-2026",
