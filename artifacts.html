@@ -7,7 +7,10 @@
     <meta name="description" content="Research artifacts by Vaibhav Satish: AI safety, interpretability, oversight, and evaluation.">
     <title>Vaibhav Satish | Artifacts</title>
     <link rel="stylesheet" href="css/research.css">
+    <link rel="stylesheet" href="css/personal-pages.css">
     <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+    <script src="js/interests-tabs.js" defer></script>
+    <script src="js/artifact-subscribe.js" defer></script>
 </head>
 
 <body>
@@ -22,65 +25,36 @@
     </header>
 
     <main class="main-content artifacts-content">
-        <span class="kicker">Research, made tangible</span>
-        <h1 class="section-title">Artifacts</h1>
-        <p class="secondary-destination"><a href="ai-safety-reads.html">← Interests</a></p>
-        <p class="artifacts-intro">A growing collection of papers, evaluations, code, and other work on building AI systems we can understand and trust.</p>
-
-        <ul class="pub-list artifact-list">
-            <li class="pub-item">
-                <span class="kicker">Technical essay · May 2026</span>
-                <span class="pub-title"><a href="machine-unlearning.html" class="pub-title-link">Everything Happening in Machine Unlearning</a></span>
-                <p class="pub-description">A field guide to how AI systems can forget specific information while preserving what they know.</p>
-                <div class="pub-links"><a href="machine-unlearning.html" class="pub-link">Read the essay →</a></div>
-            </li>
-            <li class="pub-item">
-                <span class="kicker">Neuroscience · August 2026</span>
-                <span class="pub-title"><a href="brain-consciousness.html" class="pub-title-link">What Is It About Our Brains That We Still Don’t Understand?</a></span>
-                <p class="pub-description">A survey of open questions around consciousness, memory, thought, and the limits of current neuroscience.</p>
-                <div class="pub-links"><a href="brain-consciousness.html" class="pub-link">Read the essay →</a></div>
-            </li>
-            <li class="pub-item">
-                <span class="kicker">Evaluation · August 2026</span>
-                <span class="pub-title"><a href="social-cognition-agi.html" class="pub-title-link">The Social Blind Spot: Evaluating Social Cognition in AGI</a></span>
-                <p class="pub-description">An exploration of how to measure an AI system’s ability to reason about people, beliefs, and social pressure.</p>
-                <div class="pub-links"><a href="social-cognition-agi.html" class="pub-link">Read the essay →</a></div>
-            </li>
-            <li class="pub-item">
-                <span class="kicker">Research project · 2024</span>
-                <span class="pub-title"><a href="research.html" class="pub-title-link">Machine Unlearning: Privacy-Preserving Model Modification</a></span>
-                <p class="pub-description">Research on selectively removing data influences from trained models while preserving their broader capabilities.</p>
-                <div class="pub-links"><a href="research.html" class="pub-link">Research details →</a></div>
-            </li>
-            <li class="pub-item">
-                <span class="kicker">Research project · 2024</span>
-                <span class="pub-title"><a href="research.html" class="pub-title-link">NeuroReset: LLM Unlearning</a></span>
-                <p class="pub-description">A dual-phase approach to removing targeted information from language models while preserving general capabilities.</p>
-                <div class="pub-links"><a href="research.html" class="pub-link">Project details →</a></div>
-            </li>
-            <li class="pub-item">
-                <span class="kicker">Red teaming · 2024</span>
-                <span class="pub-title"><a href="https://github.com/Vaibhav-sa30/gpt5-red-teaming" class="pub-title-link" target="_blank" rel="noopener noreferrer">GPT-5 Vulnerability Assessment</a></span>
-                <p class="pub-description">A red-teaming project investigating safety vulnerabilities in a frontier language model.</p>
-                <div class="pub-links"><a href="https://github.com/Vaibhav-sa30/gpt5-red-teaming" class="pub-link" target="_blank" rel="noopener noreferrer">Explore on GitHub →</a></div>
-            </li>
-        </ul>
-
-        <section class="artifact-subscribe" aria-labelledby="subscribe-heading">
-            <span class="kicker">Stay in the loop</span>
-            <h2 id="subscribe-heading">New work, in your inbox.</h2>
-            <p>Get an email when I publish a new research artifact. No noise, just the work.</p>
-            <button class="home-tab-btn subscribe-toggle" type="button" aria-expanded="false" aria-controls="artifact-subscribe-form">Get updates by email</button>
-            <form id="artifact-subscribe-form" class="subscribe-form" hidden>
-                <label for="subscriber-email">Your email address</label>
-                <div class="subscribe-input-row">
-                    <input id="subscriber-email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
-                    <button class="home-tab-btn" type="submit">Subscribe</button>
-                </div>
-                <p class="subscribe-status">By subscribing, you agree to receive new artifact announcements. Unsubscribe anytime.</p>
-                <p class="subscribe-status" aria-live="polite"></p>
-            </form>
-        </section>
+        <h1 class="section-title">Research</h1>
+        <nav class="interest-subnav" data-tab-navigation aria-label="Research sections">
+            <a href="research.html">Papers</a>
+            <a href="research-implementations.html">Implementations</a>
+            <a href="research-writeups.html">Writeups</a>
+            <a href="artifacts.html" aria-current="page">Artifacts</a>
+        </nav>
+        <div id="interest-content" class="interest-content" data-tab-content aria-busy="false">
+            <span class="kicker">Research, made tangible</span>
+            <h2 class="section-title">Artifacts</h2>
+            <p class="artifacts-intro">A growing collection of papers, evaluations, code, and other work on building AI systems we can understand and trust.</p>
+            <div class="interest-empty-state">
+                <p>Standalone research artifacts will appear here as I publish them.</p>
+            </div>
+            <section class="artifact-subscribe" aria-labelledby="subscribe-heading">
+                <span class="kicker">Stay in the loop</span>
+                <h2 id="subscribe-heading">New work, in your inbox.</h2>
+                <p>Get an email when I publish a new research artifact. No noise, just the work.</p>
+                <button class="home-tab-btn subscribe-toggle" type="button" aria-expanded="false" aria-controls="artifact-subscribe-form">Get updates by email</button>
+                <form id="artifact-subscribe-form" class="subscribe-form" hidden>
+                    <label for="subscriber-email">Your email address</label>
+                    <div class="subscribe-input-row">
+                        <input id="subscriber-email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+                        <button class="home-tab-btn" type="submit">Subscribe</button>
+                    </div>
+                    <p class="subscribe-status">By subscribing, you agree to receive new artifact announcements. Unsubscribe anytime.</p>
+                    <p class="subscribe-status" aria-live="polite"></p>
+                </form>
+            </section>
+        </div>
     </main>
 
     <footer class="site-footer">
@@ -93,7 +67,6 @@
         </ul>
         <div class="footer-copy">&copy; 2026 Vaibhav Satish</div>
     </footer>
-    <script src="js/artifact-subscribe.js"></script>
 </body>
 
 </html>

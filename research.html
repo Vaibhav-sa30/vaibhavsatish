@@ -8,7 +8,10 @@
     <title>Vaibhav Satish | Research</title>
 
     <link rel="stylesheet" href="css/research.css">
+    <link rel="stylesheet" href="css/personal-pages.css">
     <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+    <script src="js/interests-tabs.js" defer></script>
+    <script src="js/artifact-subscribe.js" defer></script>
 </head>
 
 <body>
@@ -23,53 +26,18 @@
     </header>
 
     <main class="main-content">
-        <h1 class="section-title">Research & Papers</h1>
-
-        <ul class="pub-list">
-            <!-- Machine Unlearning -->
-            <li class="pub-item">
-                <span class="pub-title">
-                    <a href="machine-unlearning.html" class="pub-title-link">Machine Unlearning: Privacy-Preserving Model Modification</a>
-                </span>
-                <span class="pub-venue">ACM Responsible AI Summer School, IIT Madras | 2024</span>
-                <div class="pub-links">
-                    <a href="https://docs.google.com/presentation/d/1tMO61-KeBU8xgmbu_5IAUn2jyX4l_sHxMts6xDnpSaU/edit?usp=sharing"
-                        class="pub-link" target="_blank">Slides</a>
-                    <a href="https://github.com/Vaibhav-sa30/acm_project" class="pub-link" target="_blank">Repo</a>
-                    <a href="https://arxiv.org/abs/2205.08096" class="pub-link" target="_blank">Paper</a>
-                </div>
-            </li>
-
-            <!-- GPT-5 Red Teaming -->
-            <li class="pub-item">
-                <span class="pub-title">
-                    <a href="https://github.com/Vaibhav-sa30/gpt5-red-teaming" class="pub-title-link" target="_blank">AI Safety through Red Teaming: GPT-5 Vulnerability Assessment</a>
-                </span>
-                <span class="pub-venue">Vulnerability Research | 2024</span>
-                <div class="pub-links">
-                    <a href="https://github.com/Vaibhav-sa30/gpt5-red-teaming" class="pub-link" target="_blank">Repo</a>
-                </div>
-            </li>
-
-            <!-- NeuroReset -->
-            <li class="pub-item">
-                <span class="pub-title">
-                    <a href="https://github.com/Vaibhav-sa30/acm_project" class="pub-title-link" target="_blank">NeuroReset: LLM Unlearning via Dual Phase Mixed Methodology</a>
-                </span>
-                <span class="pub-venue">Academic Project | 2024</span>
-                <div class="pub-links">
-                    <a href="https://github.com/Vaibhav-sa30/acm_project" class="pub-link" target="_blank">Repo</a>
-                </div>
-            </li>
-
-            <!-- Content Moderation -->
-            <li class="pub-item">
-                <span class="pub-title">
-                    <a href="https://github.com/Vaibhav-sa30" class="pub-title-link" target="_blank">Automated Content Moderation System Analysis</a>
-                </span>
-                <span class="pub-venue">Ongoing Analysis | 2024</span>
-            </li>
-        </ul>
+        <h1 class="section-title">Research</h1>
+        <nav class="interest-subnav" data-tab-navigation aria-label="Research sections">
+            <a href="research.html" aria-current="page">Papers</a>
+            <a href="research-implementations.html">Implementations</a>
+            <a href="research-writeups.html">Writeups</a>
+            <a href="artifacts.html">Artifacts</a>
+        </nav>
+        <div id="interest-content" class="interest-content" data-tab-content aria-busy="false">
+            <div class="interest-empty-state">
+                <p>I don’t have any papers or preprints listed here yet.</p>
+            </div>
+        </div>
     </main>
 
     <footer class="site-footer">

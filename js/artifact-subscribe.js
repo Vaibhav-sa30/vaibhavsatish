@@ -1,21 +1,23 @@
 (function () {
-    const button = document.querySelector('.subscribe-toggle');
-    const form = document.querySelector('#artifact-subscribe-form');
-    const status = document.querySelector('.subscribe-status');
+    document.addEventListener('click', function (event) {
+        const button = event.target.closest('.subscribe-toggle');
+        if (!button) return;
 
-    if (!button || !form || !status) return;
-
-    button.addEventListener('click', function () {
+        const form = document.querySelector('#artifact-subscribe-form');
+        if (!form) return;
         const opening = form.hidden;
         form.hidden = !opening;
         button.setAttribute('aria-expanded', String(opening));
         if (opening) form.querySelector('input').focus();
     });
 
-    form.addEventListener('submit', async function (event) {
+    document.addEventListener('submit', async function (event) {
+        const form = event.target.closest('#artifact-subscribe-form');
+        if (!form) return;
         event.preventDefault();
         const submitButton = form.querySelector('button[type="submit"]');
         const email = new FormData(form).get('email').trim();
+        const status = form.querySelector('[aria-live="polite"]');
         status.textContent = 'Submitting…';
         submitButton.disabled = true;
 

@@ -1,6 +1,6 @@
 (() => {
-  const tabs = document.querySelector(".interest-subnav");
-  const content = document.getElementById("interest-content");
+  const tabs = document.querySelector("[data-tab-navigation], .interest-subnav");
+  const content = document.querySelector("[data-tab-content], #interest-content");
   if (!tabs || !content) return;
 
   const links = Array.from(tabs.querySelectorAll("a[href]"));
@@ -34,8 +34,8 @@
         const response = await fetch(url.href);
         if (!response.ok) throw new Error(`Could not load ${url.pathname}`);
         const documentCopy = new DOMParser().parseFromString(await response.text(), "text/html");
-        const incomingContent = documentCopy.getElementById("interest-content");
-        if (!incomingContent) throw new Error("The interests page has no content section");
+        const incomingContent = documentCopy.querySelector("[data-tab-content], #interest-content");
+        if (!incomingContent) throw new Error("The destination page has no tab content section");
         page = {
           html: incomingContent.innerHTML,
           title: documentCopy.title,
@@ -57,7 +57,7 @@
       updateActiveTab(url.pathname);
 
       if (addHistoryEntry) {
-        history.pushState({ interestsPath: url.pathname }, "", `${url.pathname}${url.search}${url.hash}`);
+        history.pushState({ sectionPath: url.pathname }, "", `${url.pathname}${url.search}${url.hash}`);
       }
     } catch (error) {
       if (token !== navigationToken) return;
