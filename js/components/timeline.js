@@ -248,7 +248,7 @@ const TIMELINE_DATA = [
         details: [],
         tags: [],
         link: {
-          url: "https://storage.googleapis.com/online-degree-app-production-documents/CERTIFICATE/COURSE_COMPLETED_CERTIFICATE/F1_2026/57e9e6e37e7f4f8f3ed14fc3a76ff6f02906f51aaa6ffadef656bcdf77f5d005.pdf?Expires=1795519598&GoogleAccessId=production-document-storage-si%40online-degree-app.iam.gserviceaccount.com&Signature=cTejIiT59iY%2BMkhQ1d%2FCiDHeTbYirJ%2Fz29qo4qA3pgfv1Nj32uEMqJAmgKaKElficjAWyJEwkrA33jT%2B64CxNHG2jXqdoNH8lNVbvYx9xB7O5mFuV81Kp%2B9AmTKSIzBztBUj929EL6D6wQYNziHgrdAx6g3X%2FIHGg0564ms3%2FSkT2KXSU8DjW0JGcoHp5Alvr7X4bqr8AWx1LlZITLi09MDjCghCsN6MnO1OL1Z4hd1MOinQYVgleP1Wdq8Lx3jokaKQtcS8h5y%2FMyKAg19Z9FVRstFtDie0ATtNDsldUC%2B7NcAP2q7uyh0OzKcKNPGD4zp30DPVZVXkaDnwBrplHw%3D%3D",
+          url: "https://drive.google.com/file/d/11xEBuC8MQGLFCY8YopJCAwj0Su85FqTy/view?usp=sharing",
           label: "View Certificate"
         }
       },
@@ -262,7 +262,7 @@ const TIMELINE_DATA = [
         details: [],
         tags: [],
         link: {
-          url: "https://storage.googleapis.com/online-degree-app-production-documents/CERTIFICATE/COURSE_COMPLETED_CERTIFICATE/F1_2026/caeb2eb9f107a933f670d0abac16c397c36336c76d445477b3e9bd74b6345abc.pdf?Expires=1795519548&GoogleAccessId=production-document-storage-si%40online-degree-app.iam.gserviceaccount.com&Signature=mUjymSiVzqT2dvrxze4NUvhT%2BR8MZTwIJALF8lbxsjklHdPxfA9yDbv1llDl4m1cBCAVcsyfGZrz1F7Ifx0prwPLMJsGZjrooCaoR8AuZyY%2Fz3kT38BuYTbxJmMy4SPLXxNCv9BMFORQ026FTowENrBnqR2sdz74kjup3L7HJkEeLMbE8%2B%2B0Z0W93qeTIP37nGZsG7fBxILp9OCBn%2Be8RKY%2FIuD5w88QycPylvp2BdwfoZf%2BA6x8EOKfFALVm5PggNt%2By%2Fj%2By%2BPG6JsZrdpTR%2F9%2BW2wJ9XQJHeNszhQVIwdJW4c%2B2tyOFcEMeJiZPDFvOTdiNQCY2mZo5yvQEBHU1w%3D%3D",
+          url: "https://drive.google.com/file/d/1DHkksxeMIwxjZTNi-TpbrfpljBsgIoYx/view?usp=sharing",
           label: "View Certificate"
         }
       }
@@ -281,7 +281,7 @@ const TIMELINE_DATA = [
         details: [],
         tags: [],
         link: {
-          url: "https://storage.googleapis.com/online-degree-app-production-documents/CERTIFICATE/ADVANCED_CERTIFICATE/F2_2024/f50da530da62a45b1ce786ce919d568a4572e96d56447ef2e4deca7097dceb4a.pdf?Expires=1795519753&GoogleAccessId=production-document-storage-si%40online-degree-app.iam.gserviceaccount.com&Signature=I%2FE5VKCX13BzprEMhung30KcDoTDapmmdanXme3TR2gI3Nu4YGgdgvjO7FxDo47AVndxA%2BLR69rTK6S22tooiFHl7qCQ0WALs1tnnKCXL7ZgqiRsuIBs7%2FT0XBTzjzPZ%2F6HVhZjiRc1Rukc03mO6stV4HhSvcriRk7%2B0bNwps%2Bn5d75WAHeprzz6qnz%2FiiNWuTLm0PCgfN%2FLdV5iGd4ZEX4g9CWWh2TpA8pAUU8BDlZsAPdpgXDCssjwfC4Qq1QfAlDbboVRo%2FcprhUfDZlRY7o9tfbLhRfQ%2Bmyo0%2BGSgomsAk81l1L8%2Fi77dBLxO%2FMxojkZFRwWEXUBKHQPPYVz9w%3D%3D",
+          url: "https://drive.google.com/file/d/1d3gtRuX9-Qy4gesK-e3Jv2PWZRapzRIY/view?usp=sharing",
           label: "View Certificate"
         }
       },
@@ -394,6 +394,20 @@ const TIMELINE_DATA = [
   {
     year: "2022",
     milestones: [
+      {
+        id: "foundation-certificate-data-science-programming-2022",
+        date: "December 2022",
+        title: "Foundation Certificate in Data Science and Programming",
+        organization: "Indian Institute of Technology Madras",
+        category: "Education",
+        summary: "Earned the Foundation Certificate in Data Science and Programming.",
+        details: [],
+        tags: [],
+        link: {
+          url: "https://drive.google.com/file/d/1p5AylAU_dQQqIMu4ETr_uD6AXYYX7cYu/view?usp=sharing",
+          label: "View Certificate"
+        }
+      },
       {
         id: "iit-madras-ds-2022",
         date: "2022 – Present",
