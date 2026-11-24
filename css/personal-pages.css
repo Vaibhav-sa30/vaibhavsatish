@@ -333,3 +333,153 @@
     letter-spacing: 0.05em;
   }
 }
+
+/* Shared, understated site navigation */
+.primary-nav .nav-tab-btn {
+  padding: 0.35rem 0.15rem;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink-muted);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: nowrap;
+}
+
+.primary-nav .nav-tab-btn:hover {
+  color: var(--accent);
+  background: transparent;
+}
+
+.primary-nav .nav-tab-btn.active {
+  color: var(--accent);
+  background: transparent;
+  border-color: var(--accent);
+}
+
+.primary-nav .nav-tab-btn:focus-visible,
+.home-tabs .home-tab-btn:focus-visible,
+.interest-subnav a:focus-visible,
+.interest-section-links a:focus-visible,
+.about-coursework-link a:focus-visible,
+.secondary-destination a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.home-tabs.primary-nav {
+  gap: clamp(1rem, 3vw, 2rem);
+  justify-content: center;
+}
+
+.home-tabs.primary-nav .home-tab-btn {
+  padding: 0.4rem 0.1rem;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink-muted);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.home-tabs.primary-nav .home-tab-btn:hover {
+  color: var(--accent);
+  background: transparent;
+  border-color: var(--accent);
+}
+
+.home-secondary-links,
+.secondary-destination,
+.about-coursework-link {
+  margin-top: 1.15rem;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+}
+
+.home-secondary-links a,
+.secondary-destination a,
+.about-coursework-link a {
+  color: inherit;
+  text-decoration-color: var(--border);
+  text-underline-offset: 0.2em;
+}
+
+.home-secondary-links a:hover,
+.secondary-destination a:hover,
+.about-coursework-link a:hover {
+  color: var(--accent);
+}
+
+.interest-subnav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.2rem;
+  margin: -1.1rem 0 2rem;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+}
+
+.interest-subnav a {
+  color: var(--ink-faint);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+
+.interest-subnav a:hover,
+.interest-subnav a[aria-current="page"] {
+  color: var(--accent);
+  border-color: currentColor;
+}
+
+.interest-section-links {
+  display: grid;
+  margin-top: 2.25rem;
+  border-top: 1px solid var(--border);
+}
+
+.interest-section-links a {
+  display: grid;
+  gap: 0.15rem;
+  padding: 1.15rem 0;
+  border-bottom: 1px solid var(--border);
+  text-decoration: none;
+}
+
+.interest-section-links a span:first-child {
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+}
+
+.interest-section-links a span:last-child {
+  color: var(--ink-faint);
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+}
+
+.interest-section-links a:hover span:first-child {
+  color: var(--accent);
+}
+
+@media (max-width: 700px) {
+  .masthead {
+    align-items: flex-start;
+  }
+
+  .primary-nav.nav-tabs {
+    width: 100%;
+    justify-content: center;
+    gap: 0.5rem 1rem;
+  }
+
+  .home-tabs.primary-nav {
+    gap: 0.45rem 1rem;
+  }
+}

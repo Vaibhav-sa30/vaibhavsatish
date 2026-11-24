@@ -397,36 +397,31 @@ const TIMELINE_DATA = [
   }
 ];
 
+const TIMELINE_FILTERS = {
+  research: ["Research", "Writing & Publications"],
+  engineering: ["Engineering", "Entrepreneurship"],
+  education: ["Education", "Fellowship & Certifications"],
+  other: ["Internship & Leadership", "Community & Talks"]
+};
+
 // Helper to render timeline component dynamically into DOM
 function initJourneyTimeline() {
   const container = document.getElementById("journey-timeline-container");
   if (!container) return;
-
-  const totalMilestones = TIMELINE_DATA.reduce((acc, y) => acc + y.milestones.length, 0);
 
   let html = `
     <div class="timeline-wrapper">
       <div class="timeline-intro-block">
         <h2 class="timeline-section-title">Research Timeline</h2>
         
-        <!-- Controls: Category Filter & Expand/Collapse All -->
-        <div class="timeline-controls" role="toolbar" aria-label="Timeline Filters and Controls">
+        <!-- Consolidated timeline filters -->
+        <div class="timeline-controls" role="toolbar" aria-label="Timeline filters">
           <div class="timeline-filters" id="timeline-filters">
-            <button class="filter-chip active" data-category="all" aria-pressed="true">All (${totalMilestones})</button>
-            <button class="filter-chip" data-category="Research" aria-pressed="false">Research</button>
-            <button class="filter-chip" data-category="Engineering" aria-pressed="false">Engineering</button>
-            <button class="filter-chip" data-category="Education" aria-pressed="false">Education</button>
-            <button class="filter-chip" data-category="Fellowship & Certifications" aria-pressed="false">Fellowship & Certifications</button>
-            <button class="filter-chip" data-category="Internship & Leadership" aria-pressed="false">Internship & Leadership</button>
-            <button class="filter-chip" data-category="Writing & Publications" aria-pressed="false">Writing & Publications</button>
-            <button class="filter-chip" data-category="Entrepreneurship" aria-pressed="false">Entrepreneurship</button>
-            <button class="filter-chip" data-category="Community & Talks" aria-pressed="false">Community & Talks</button>
-          </div>
-          
-          <div class="timeline-toggle-tools">
-            <button class="timeline-expand-all-btn" id="timeline-expand-all" aria-expanded="false">
-              <span class="expand-icon" aria-hidden="true">+</span> Expand all
-            </button>
+            <button type="button" class="filter-chip active" data-filter="all" aria-pressed="true">All</button>
+            <button type="button" class="filter-chip" data-filter="research" aria-pressed="false">Research</button>
+            <button type="button" class="filter-chip" data-filter="engineering" aria-pressed="false">Engineering</button>
+            <button type="button" class="filter-chip" data-filter="education" aria-pressed="false">Education</button>
+            <button type="button" class="filter-chip" data-filter="other" aria-pressed="false">Other</button>
           </div>
         </div>
       </div>
@@ -524,29 +519,14 @@ function bindTimelineInteractions() {
     });
   });
 
-  // 2. Expand All / Collapse All Toggle
-  const expandAllBtn = document.getElementById("timeline-expand-all");
-  if (expandAllBtn) {
-    expandAllBtn.addEventListener("click", () => {
-      const isAllExpanded = expandAllBtn.getAttribute("aria-expanded") === "true";
-      const newExpandedState = !isAllExpanded;
-
-      expandAllBtn.setAttribute("aria-expanded", newExpandedState.toString());
-      expandAllBtn.innerHTML = newExpandedState 
-        ? `<span class="expand-icon" aria-hidden="true">−</span> Collapse all`
-        : `<span class="expand-icon" aria-hidden="true">+</span> Expand all`;
-
-      cards.forEach((card) => setCardExpanded(card, newExpandedState));
-    });
-  }
-
-  // 3. Category Filter Chips
+  // Consolidated category filters
   const filterChips = document.querySelectorAll(".filter-chip");
   const yearGroups = document.querySelectorAll(".timeline-year-group");
 
   filterChips.forEach((chip) => {
     chip.addEventListener("click", () => {
-      const category = chip.getAttribute("data-category");
+      const filter = chip.getAttribute("data-filter");
+      const categories = TIMELINE_FILTERS[filter];
 
       filterChips.forEach((c) => {
         c.classList.remove("active");
@@ -557,7 +537,7 @@ function bindTimelineInteractions() {
 
       cards.forEach((card) => {
         const cardCat = card.getAttribute("data-category");
-        if (category === "all" || cardCat === category) {
+        if (filter === "all" || categories.includes(cardCat)) {
           card.classList.remove("filtered-out");
         } else {
           card.classList.add("filtered-out");
