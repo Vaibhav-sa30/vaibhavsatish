@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="A research notebook reconstructing selected constructions from McCulloch and Pitts’s 1943 neuron paper.">
+    <meta name="description" content="Vaibhav Satish’s first-principles reconstruction of McCulloch and Pitts’s 1943 neuron paper, with the full implementation through Stage 4 and references.">
     <title>McCulloch–Pitts Reconstruction | Vaibhav Satish</title>
     <link rel="stylesheet" href="css/research.css">
     <link rel="stylesheet" href="css/personal-pages.css">
@@ -21,472 +21,631 @@
     </header>
     <main class="research-writeup-page">
         <p class="writeup-return"><a href="research-implementations.html">← Back to Research Implementations</a></p>
-        <p class="writeup-repository"><a href="https://github.com/Vaibhav-sa30/mculloh-pitts-neuron-reconstruction" target="_blank" rel="noopener noreferrer">View the implementation repository ↗</a></p>
         <article class="mcculloch-writeup">
-<h1 id="mccullochpitts-reconstruction">McCulloch–Pitts
-Reconstruction</h1>
-<p>A small, educational, discrete-time simulator for reconstructing
-selected constructions from McCulloch and Pitts (1943), <em>A Logical
-Calculus of the Ideas Immanent in Nervous Activity</em>.</p>
-<figure class="mcculloch-figure"><img src="assets/images/research/mcculloch-pitts/neuron.png" alt="My hand-drawn sketch of a biological neuron." loading="lazy"><figcaption>My hand-drawn sketch of a biological neuron.</figcaption></figure>
-
-<h2 id="requirements">Requirements</h2>
-<ul>
-<li>Python 3.10 or newer</li>
-<li>No third-party packages</li>
-</ul>
-<h2 id="run-the-tests">Run the tests</h2>
-<p>From this directory:</p>
-<div class="sourceCode" id="cb1"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> unittest discover <span class="at">-s</span> tests <span class="at">-v</span></span></code></pre></div>
-<h2 id="run-the-figure-reconstructions">Run the figure
-reconstructions</h2>
-<div class="sourceCode" id="cb2"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> experiments.figure_1a</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> experiments.figure_1b</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> experiments.figure_1c</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> experiments.figure_1d</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> experiments.thermal_illusion</span></code></pre></div>
-<h2 id="model-conventions">Model conventions</h2>
-<ul>
-<li>Activity is binary.</li>
-<li>Synaptic delays are positive integer time steps.</li>
-<li>A synapse reads its source at <code>t - delay</code>.</li>
-<li>Updates are synchronous: all neuron states at time <code>t</code>
-are computed from already-recorded earlier states.</li>
-<li><code>Neuron.threshold</code> means the minimum number of active
-excitatory synapses required to fire. This is an integer-count
-convention. The paper phrases the condition as excitation exceeding a
-threshold.</li>
-<li>Any active inhibitory synapse vetoes firing at that time.</li>
-<li>Refractory dynamics, learning, variable thresholds, and
-recurrent-network theorem machinery are not implemented yet.</li>
-</ul>
-<div class="mcculloch-figure-grid">
-<figure class="mcculloch-figure"><img src="assets/images/research/mcculloch-pitts/assumptions.png" alt="Scan of the original paper’s five assumptions for nets without circles." loading="lazy"><figcaption>The original paper’s assumptions for nets without circles.</figcaption></figure>
-<figure class="mcculloch-figure"><img src="assets/images/research/mcculloch-pitts/neuron_logic.png" alt="A neuron represented by a proposition that is either 0 or 1." loading="lazy"><figcaption>Binary notation for a propositional neuron.</figcaption></figure>
-<figure class="mcculloch-figure"><img src="assets/images/research/mcculloch-pitts/excin.png" alt="A sketch distinguishing excitatory and inhibitory synapses." loading="lazy"><figcaption>A sketch distinguishing excitatory and inhibitory synapses.</figcaption></figure>
-<figure class="mcculloch-figure"><img src="assets/images/research/mcculloch-pitts/experiment2.png" alt="A threshold experiment showing input combinations and neuron outputs." loading="lazy"><figcaption>A threshold experiment showing input combinations and neuron outputs.</figcaption></figure>
-<figure class="mcculloch-figure"><img src="assets/images/research/mcculloch-pitts/inhibitory-experiments.png" alt="Threshold and inhibitory-input experiment tables." loading="lazy"><figcaption>Threshold and inhibitory-input experiment tables.</figcaption></figure>
-</div>
-
-<h2 id="what-the-scripts-represent">What the scripts represent</h2>
-<p>The Figure 1a–1d scripts implement the operations described in the
-proof of Theorem II:</p>
-<ul>
-<li>1a: one synaptic delay, <code>S(p1)</code>.</li>
-<li>1b: delayed disjunction, <code>S(p1 OR p2)</code>.</li>
-<li>1c: delayed conjunction, <code>S(p1 AND p2)</code>.</li>
-<li>1d: delayed conjoined negation, <code>S(p1 AND NOT p2)</code>.</li>
-</ul>
-<p>These are functional reconstructions of the operations described in
-the text. Before claiming a complete reproduction, compare each
-circuit's topology against the scanned original figure.</p>
-<div class="mcculloch-figure-grid">
-<figure class="mcculloch-figure"><img src="assets/images/research/mcculloch-pitts/direct-connection1.png" alt="A direct connection from an active source neuron to a target." loading="lazy"><figcaption>A direct connection from an active source neuron to a target.</figcaption></figure>
-<figure class="mcculloch-figure"><img src="assets/images/research/mcculloch-pitts/direct-connection2.png" alt="A hand-drawn direct-connection example with an active input." loading="lazy"><figcaption>A hand-drawn direct-connection example with an active input.</figcaption></figure>
-<figure class="mcculloch-figure"><img src="assets/images/research/mcculloch-pitts/OR1.png" alt="Input-output cases for the disjunction operation." loading="lazy"><figcaption>Input-output cases for the disjunction operation.</figcaption></figure>
-<figure class="mcculloch-figure"><img src="assets/images/research/mcculloch-pitts/OR2.png" alt="A hand-drawn network representation of disjunction." loading="lazy"><figcaption>A hand-drawn network representation of disjunction.</figcaption></figure>
-<figure class="mcculloch-figure"><img src="assets/images/research/mcculloch-pitts/AND.png" alt="Input-output cases for the conjunction operation." loading="lazy"><figcaption>Input-output cases for the conjunction operation.</figcaption></figure>
-<figure class="mcculloch-figure"><img src="assets/images/research/mcculloch-pitts/ANDNOT.png" alt="Input-output cases for conjunction with a vetoing input." loading="lazy"><figcaption>Input-output cases for conjunction with a vetoing input.</figcaption></figure>
-</div>
-
-<p>The thermal-illusion script implements the temporal conditions stated
-in the paper (printed pages 8–9). It is a formal reconstruction of that
-example, not a modern physiological model of thermoreception.</p>
-<h2 id="suggested-next-milestones">Suggested next milestones</h2>
-<ol type="1">
-<li>Verify the four Figure 1 constructions against the original
-diagrams.</li>
-<li>Add a translator from acyclic networks to TPE expression trees
-(Theorem I).</li>
-<li>Add a constructive TPE-to-network compiler (Theorem II).</li>
-<li>Add realizability checks for Theorem III.</li>
-<li>Only then extend the simulator to the paper's cyclic-network
-results.</li>
-</ol>
-<h2 id="primary-source">Primary source</h2>
-<p>W. S. McCulloch and W. Pitts (1943), <em>A Logical Calculus of the
-Ideas Immanent in Nervous Activity</em>, Bulletin of Mathematical
-Biophysics, 5, 115–133.</p>
+<h1 id="reconstructing-mcculloch-and-pitts-1943-a-computational-and-mathematical-exploration">Reconstructing McCulloch and Pitts (1943): A Computational and Mathematical Exploration</h1>
+<p><strong>A first-principles reconstruction of "A Logical Calculus of the Ideas Immanent in Nervous Activity"</strong></p>
+<p><strong>Original paper:</strong> Warren S. McCulloch and Walter H. Pitts (1943)<br />
+<strong>Publication:</strong> <em>The Bulletin of Mathematical Biophysics</em>, Volume 5, pp. 115–133<br />
+<strong>Paper:</strong> <a href="https://jontalle.web.engr.illinois.edu/uploads/410-NS.F22/McCulloch-Pitts-1943-neural-networks-ocr.pdf">A Logical Calculus of the Ideas Immanent in Nervous Activity</a></p>
 <hr />
-<h1 id="stage-5--implementing-temporal-propositional-logic">Stage 5 —
-Implementing temporal propositional logic</h1>
-<figure class="mcculloch-figure"><img src="assets/images/research/mcculloch-pitts/functor.png" alt="The source paper’s definition of the temporal shift functor S." loading="lazy"><figcaption>The source paper’s definition of the temporal shift functor S.</figcaption></figure>
-
-<p><strong>Directory:</strong> <code>logic/</code></p>
-<p><strong>Files:</strong></p>
+<h1 id="1-why-am-i-studying-this-paper">1. Why am I studying this paper?</h1>
+<p>When learning about artificial neural networks, it is easy to encounter concepts such as artificial neurons, activation functions, perceptrons, layers, weights, and eventually backpropagation without having a clear picture of how the underlying ideas developed. I have been studying deep learning for quite some time now, and while I and as anyone who is involved in this field of AI for good amount of time is well versed with these terminologies, I felt it essential to actually rediscover concepts myself from first principles.</p>
+<p>So, what did it mean to construct a mathematical model of a neuron in the first place? What even is a neuron? How did researchers begin connecting the activity of individual neurons to logical operations? And how did these early ideas lead to the possibility of representing increasingly complicated computations through networks of simple units?</p>
+<p>The founding paper that addresses these questions is McCulloch and Pitts' 1943 work, <em>A Logical Calculus of the Ideas Immanent in Nervous Activity</em>.</p>
+<p>I thought it would be a fruitful exercise to study this paper by attempting a computational and mathematical reconstruction of its central ideas. So this is exactly what in this repo I attempt to do.</p>
+<p>I made an attempt to understand the reasoning behind the assumptions in the paper, reconstruct the mathematical arguments as far as I could, and implement computational models that allow me to test the behavior being described.</p>
+<p>This repository serves as my research notebook throughout that process.</p>
+<p>I have documented the original paper's relevant passages, my interpretation of them, the decisions I made while implementing the model, the experiments I ran, and the limitations I encountered and what they meant.</p>
+<h1 id="2-what-am-i-trying-to-reconstruct">2. What am I trying to reconstruct?</h1>
+<p>The central idea of the paper is that, under a particular set of assumptions about neuronal activity, the behavior of neural networks can be described using propositional logic.</p>
+<p>The authors begin with a model in which neuronal activity is an all-or-none process. Meaning, a neuron either produces an impulse or it does not. This allows its activity to be represented using a proposition that is either true or false. The relationships between neurons can then be expressed through logical operations.</p>
+<p>For instance, depending on the arrangement of synapses and the excitation threshold of a neuron, its activity can depend on:</p>
 <ul>
-<li><code>logic/expressions.py</code></li>
-<li><code>logic/temporal_logic.py</code></li>
+<li>Whether another neuron fires.</li>
+<li>Whether at least one of several neurons fires.</li>
+<li>Whether multiple neurons fire together.</li>
+<li>Whether an excitatory condition is satisfied while an inhibitory condition is absent.</li>
+<li>Whether a particular event occurred one or more synaptic delays earlier.</li>
 </ul>
-<p><strong>Objective:</strong> Represent and evaluate the temporal
-propositional expressions introduced in the paper.</p>
-<p>At this point, I will have a working network simulator. I now want a
-separate representation of the logical expressions that describe network
-behavior.</p>
-<p>I will begin with the basic expression types:</p>
+<p>The paper develops a formal language for describing these relationships. It then investigates the relationship between logical expressions and networks capable of realizing them.</p>
+<p>I reconstruct this connection computationally.</p>
+<p>In particular, I investigated two complementary questions:</p>
+<ol type="1">
+<li>Given a neural network, how can I derive a logical expression describing its behavior?</li>
+<li>Given a suitable logical expression, how can I construct a neural network that realizes it?</li>
+</ol>
+<p>These questions guided much of the implementation.</p>
+<h2 id="21-what-will-count-as-a-reconstruction">2.1 What will count as a reconstruction?</h2>
+<p>For this project, I distinguished between three activities:</p>
+<p><strong>Understanding:</strong> Deriving the meaning of the paper's assumptions, definitions, equations, and theorems in my own words.</p>
+<p><strong>Mathematical reconstruction:</strong> Working through the reasoning behind selected results.</p>
+<p><strong>Computational reconstruction:</strong> Implementing the relevant mechanisms and constructions, then testing whether the resulting networks behave according to the mathematical descriptions.</p>
+<p>A successful simulation of a few logical operations will not, by itself, established that I have reproduced the entire paper. I therefore, kept track of exactly which results I have implemented, tested, or derived.</p>
+<h1 id="3-a-little-background-before-getting-started">3. A little background before getting started</h1>
+<p>Before looking at the paper's formal assumptions, I want to establish a few concepts that will appear repeatedly throughout the reconstruction. For obbvious reasons, these are not intended to be a comprehensive introduction to neuroscience or mathematical logic. They are the minimum conceptual foundations I need, to understand the model I am about to implement.</p>
+<h2 id="31-what-is-a-neuron">3.1 What is a neuron?</h2>
+<p>In biological sense, a neuron is a cell that receives signals from other neurons and can transmit an electrical impulse to other cells.</p>
+<p><img src="assets/images/research/mcculloch-pitts/neuron.png" alt="Hand-drawn diagram of a biological neuron" /> A handrawn diagram by me of a biological neuron (made with excalidraw)</p>
+<p>The goal for me is to focus on a simplified representation of this process. A neuron receives inputs through connections called synapses. The incoming signals contribute to whether the neuron becomes active and produces an impulse of its own.</p>
+<p>The model developed in the paper abstracts away many biological details. The purpose was to study the formal relationships between neuronal activity and the structure of a network. I will follow that abstraction.</p>
+<h2 id="32-what-is-a-synapse">3.2 What is a synapse?</h2>
+<p>A synapse is a junction through which one neuron influences another.</p>
+<p>In the model considered here, I want to distinguish between two types of synaptic influence:</p>
 <ul>
-<li>Variables.</li>
-<li>Temporal shifts.</li>
+<li><strong>Excitatory:</strong> Contributes toward causing the receiving neuron to fire. (Causes firing)</li>
+<li><strong>Inhibitory:</strong> Prevents the receiving neuron from firing under the relevant assumptions. (Prevents firing)</li>
+</ul>
+<p>A neuron can receive multiple excitatory and inhibitory inputs. Its activity depends on the arrangement of these inputs and its excitation threshold.</p>
+<h2 id="33-what-does-all-or-none-activity-mean">3.3 What does all-or-none activity mean?</h2>
+<p>For this model, neuronal activity is binary. Meaning, at a given time, a neuron either fires or does not fire.</p>
+<p>We can represent these two possibilities using Boolean values:</p>
+<table>
+<thead>
+<tr>
+<th>Neuronal activity</th>
+<th>Boolean representation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fires</td>
+<td><code>True</code></td>
+</tr>
+<tr>
+<td>Does not fire</td>
+<td><code>False</code></td>
+</tr>
+</tbody>
+</table>
+<p>Reasoning about neuronal activity becomes easier using the language of propositions.</p>
+<h2 id="34-what-is-an-excitation-threshold">3.4 What is an excitation threshold?</h2>
+<p>A neuron does not necessarily fire whenever it receives an excitatory signal. The model assumes that a sufficient number of excitatory synapses must be active within the relevant period for the neuron to fire. Representation of this requirement is done using a threshold.</p>
+<p>For instance, a neuron with three excitatory inputs and a threshold requiring two of them to be active gives us following:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">Active excitatory inputs</th>
+<th>Fires?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">0</td>
+<td>No</td>
+</tr>
+<tr>
+<td style="text-align: right;">1</td>
+<td>No</td>
+</tr>
+<tr>
+<td style="text-align: right;">2</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td style="text-align: right;">3</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+<p>This is only an illustrative example. The precise threshold convention used in the implementation will be documented separately.</p>
+<h2 id="35-why-does-time-matter">3.5 Why does time matter?</h2>
+<p>Up until now we have established that the model is like a collection of neurons evaluating Boolean inputs at one instant. However, signals travel through synapses, and synaptic transmission takes time. Consequently, <strong>the activity of a neuron at one time can depend on the activity of another neuron at an earlier time.</strong></p>
+<p>We represent this "time" using discrete <strong>steps</strong>.</p>
+<p>For example:</p>
+<ul>
+<li>At time (t=0), neuron A fires.</li>
+<li>At time (t=1), its signal reaches neuron B <strong>if</strong> the synaptic delay is one time step.</li>
+<li>At time (t=2), the signal may reach another neuron connected downstream.</li>
+</ul>
+<p>This will eventually allow me to represent temporal relationships using logical expressions.</p>
+<h2 id="36-a-brief-introduction-to-propositional-logic">3.6 A brief introduction to propositional logic</h2>
+<p>A proposition is a statement that can be either true or false. Is grass green? True. Is the sky red? False. For this project, a statement such as</p>
+<blockquote>
+<p>Does a neuron A fire at time (t)? can be represented by a proposition (A(t)).</p>
+</blockquote>
+<p>Some basic logical operations appear throughout the paper:</p>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Symbol</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Negation</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>¬</mo><mi>P</mi></mrow><annotation encoding="application/x-tex">\neg P</annotation></semantics></math></td>
+<td>P is false</td>
+</tr>
+<tr>
+<td>Disjunction</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo>∨</mo><mi>Q</mi></mrow><annotation encoding="application/x-tex">P \lor Q</annotation></semantics></math></td>
+<td>P or Q, or both</td>
+</tr>
+<tr>
+<td>Conjunction</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo>∧</mo><mi>Q</mi></mrow><annotation encoding="application/x-tex">P \land Q</annotation></semantics></math></td>
+<td>Both P and Q</td>
+</tr>
+</tbody>
+</table>
+<p>These operations provide a language for describing the conditions under which neurons fire.</p>
+<p>The paper extends this language to account for <strong>time</strong>.</p>
+<h1 id="4-the-papers-assumptions">4. The paper's assumptions</h1>
+<p><img src="assets/images/research/mcculloch-pitts/assumptions.png" alt="Original paper assumptions for nets without circles" /></p>
+<p><em>I will initially focus on the consequences of these assumptions for networks without cycles. Later, I will investigate what changes when networks contain circular paths.</em></p>
+<h1 id="5-from-neuronal-activity-to-logical-expressions">5. From neuronal activity to logical expressions</h1>
+<p>If a neuron either fires or does not fire, its activity can be represented as a proposition.</p>
+<p>Let:</p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>N</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">N_i(t)</annotation></semantics></math> represent the proposition that neuron <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math> fires at time <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>.</p>
+<p>Then:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>N</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><mn>1</mn></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if neuron </mtext><mspace width="0.333em"></mspace></mrow><mi>i</mi><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> fires at time </mtext><mspace width="0.333em"></mspace></mrow><mi>t</mi><mo>,</mo></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mn>0</mn></mtd><mtd columnalign="left" style="text-align: left"><mtext mathvariant="normal">otherwise</mtext><mi>.</mi></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">
+N_i(t) =
+\begin{cases}
+1 &amp; \text{if neuron } i \text{ fires at time } t,\\
+0 &amp; \text{otherwise}.
+\end{cases}
+</annotation></semantics></math></p>
+<p>This gives me a way to describe the activity of a network using Boolean-valued functions of time.</p>
+<p><img src="assets/images/research/mcculloch-pitts/neuron_logic.png" alt="Neuron Logic" /> Representation of a propositional neuron N.</p>
+<p>The next question is how the activity of one neuron depends on the activity of other neurons.</p>
+<p>Consider a few simple possibilities:</p>
+<div style="display: flex; gap: 20px; align-items: center;">
+  <img src="assets/images/research/mcculloch-pitts/direct-connection1.png" width="400">
+</div>
+
+<p><em>The neuron N fires if neuron A fires.</em></p>
+<div style="display: flex; gap: 20px; align-items: center;">
+  <img src="assets/images/research/mcculloch-pitts/OR1.png" width="355">
+</div>
+
+<p><em>The neuron N fires if either A or B fires.</em></p>
+<div style="display: flex; gap: 20px; align-items: center;">
+  <img src="assets/images/research/mcculloch-pitts/AND.png" width="355">
+</div>
+
+<p><em>The neuron N fires if both A and B fire.</em></p>
+<div style="display: flex; gap: 20px; align-items: center;">
+  <img src="assets/images/research/mcculloch-pitts/ANDNOT.png" width="355">
+</div>
+
+<p><em>The neuron N fires if A fires while B does not.</em></p>
+<p>Notice, in last case, B has veto here. Meaning it can prevent the firing of N even if A is firing. It's like a ANDNOT gate.</p>
+<p>These correspond to logical relationships.</p>
+<p>Now about timings. And the paper develops the idea by introducing a temporal operator.</p>
+<h2 id="51-the-temporal-shift-operator">5.1 The temporal shift operator</h2>
+<p>The paper introduces an operator (S).</p>
+<p>Informally, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>S</mi><mo stretchy="false" form="prefix">(</mo><mi>P</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(S(P))</annotation></semantics></math> represents a property that holds at the current time if <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>P</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(P)</annotation></semantics></math> held at the preceding time step.</p>
+<div style="display: flex; gap: 20px; align-items: center;">
+  <img src="assets/images/research/mcculloch-pitts/functor.png" width="500">
+</div>
+
+<p>I used the following modern notation to understand it:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo stretchy="false" form="prefix">(</mo><mi>P</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>P</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo>−</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">
+S(P)(t)=P(t-1)
+</annotation></semantics></math></p>
+<p>Repeated application of the operator allows me to refer to increasingly earlier events:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>S</mi><mn>2</mn></msup><mo stretchy="false" form="prefix">(</mo><mi>P</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>P</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo>−</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">
+S^2(P)(t)=P(t-2)
+</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>S</mi><mn>3</mn></msup><mo stretchy="false" form="prefix">(</mo><mi>P</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>P</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo>−</mo><mn>3</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">
+S^3(P)(t)=P(t-3)
+</annotation></semantics></math></p>
+<blockquote>
+<p>To reiterate, neuronal activity is not only dependent on <strong>which</strong> inputs are active, but also on <strong>when</strong> those inputs were active.</p>
+</blockquote>
+<p>This is the foundation of the temporal logic implementation. I will use it to decide how an expression should retrieve earlier neuronal activity from the simulation history.</p>
+<h2 id="52-temporal-propositional-expressions">5.2 Temporal propositional expressions</h2>
+<p>The authors define a formal class of expressions called temporal propositional expressions <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>T</mi><mi>P</mi><mi>E</mi><mi>s</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(TPEs)</annotation></semantics></math>.</p>
+<p>The grammar allows:</p>
+<ul>
+<li>A propositional variable.</li>
+<li>Temporal shifting.</li>
 <li>Disjunction.</li>
 <li>Conjunction.</li>
-<li>Conjunction with negation.</li>
+<li>Conjunction with negation of another expression.</li>
 </ul>
-<p>I will represent expressions using Python classes, forming an
-expression tree.</p>
-<p>The evaluator will need access to the activity history of the
-relevant neurons.</p>
-<p>For example:</p>
-<p>[ S(P\land\neg Q) ]</p>
-<p>should be evaluated using the values of (P) and (Q) at the preceding
-time step.</p>
-<p>I will also decide how to handle times before the beginning of a
-simulation. Initially, I may use a false-valued initial history, but I
-will document this as a simulation convention rather than assume that it
-is a universal rule of the original paper.</p>
-<p><strong>Deliverables:</strong></p>
-<ul>
-<li>Expression classes.</li>
-<li>Temporal shift evaluation.</li>
-<li>Boolean operator evaluation.</li>
-<li>Tests for nested temporal expressions.</li>
-</ul>
-<p><strong>Status:</strong> Not started.</p>
-<h1 id="stage-6--reconstructing-figures-1a1d">Stage 6 — Reconstructing
-Figures 1a–1d</h1>
-<p><strong>Directory:</strong> <code>experiments/</code></p>
-<p><strong>Files:</strong></p>
-<ul>
-<li><code>experiments/figure_1a.py</code></li>
-<li><code>experiments/figure_1b.py</code></li>
-<li><code>experiments/figure_1c.py</code></li>
-<li><code>experiments/figure_1d.py</code></li>
-</ul>
-<p><strong>Objective:</strong> Reconstruct the elementary network
-constructions used in Theorem II.</p>
-<p>Theorem II states that every TPE is realizable by a network of order
-zero.</p>
-<p>The authors use four fundamental network constructions in Figures
-1a–1d.</p>
-<p>These correspond to:</p>
-<table>
-<thead>
-<tr>
-<th>Figure</th>
-<th>Logical expression</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1a</td>
-<td>(S(P_1))</td>
-</tr>
-<tr>
-<td>1b</td>
-<td>(S(P_1\lor P_2))</td>
-</tr>
-<tr>
-<td>1c</td>
-<td>(S(P_1\land P_2))</td>
-</tr>
-<tr>
-<td>1d</td>
-<td>(S(P_1\land\neg P_2))</td>
-</tr>
-</tbody>
-</table>
-<p>I will reconstruct each one independently.</p>
-<p>For every figure, I will:</p>
+<p>For the sake of simplicity and align with modern notation, the basic constructions can be written as:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>P</mi><annotation encoding="application/x-tex">
+P
+</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo stretchy="false" form="prefix">(</mo><mi>P</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">
+S(P)
+</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo>∨</mo><mi>Q</mi></mrow><annotation encoding="application/x-tex">
+P\lor Q
+</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo>∧</mo><mi>Q</mi></mrow><annotation encoding="application/x-tex">
+P\land Q
+</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo>∧</mo><mo>¬</mo><mi>Q</mi></mrow><annotation encoding="application/x-tex">
+P\land\neg Q
+</annotation></semantics></math></p>
+<h1 id="6-code-implementation">6. Code Implementation</h1>
+<p>I began by translating the idea of an individual neuron. Where the questions I overall wanted to answer were:</p>
 <ol type="1">
-<li>Examine the original diagram.</li>
-<li>Identify its inputs, neurons, synapses, and delays.</li>
-<li>Write down the logical expression it is intended to realize.</li>
-<li>Construct the corresponding network.</li>
-<li>Test different input combinations.</li>
-<li>Evaluate the logical expression independently.</li>
-<li>Compare the network output with the logical output.</li>
+<li>What information is required to determine whether a neuron fires?</li>
+<li>How should excitatory inputs contribute to its activation?</li>
+<li>How should inhibitory inputs affect its activation?</li>
+<li>How should the excitation threshold be represented?</li>
+<li>How can I test the behavior independently?</li>
 </ol>
-<p>I will not assume that implementing the correct input-output function
-automatically means I have reproduced the exact topology shown in the
-original figure. I will compare my construction with the paper's
-diagrams and document any differences.</p>
-<p><strong>Local implementation illustrations:</strong> The diagrams
-below show the project’s functional reconstructions; they are not
-screenshots of the original paper’s figures.</p>
-<p><em>Why I am including this passage:</em> These diagrams provide the
-concrete network constructions that I will attempt to reproduce and
-test.</p>
-<p><strong>Deliverables:</strong></p>
-<ul>
-<li>Four network constructions.</li>
-<li>Tests for each construction.</li>
-<li>Comparisons between network outputs and logical evaluations.</li>
-<li>Notes on any differences from the original diagrams.</li>
-</ul>
-<p><strong>Status:</strong> Not started.</p>
-<h1 id="stage-7--reconstructing-the-thermal-illusion">Stage 7 —
-Reconstructing the thermal illusion</h1>
-<p><strong>File:</strong>
-<code>experiments/thermal_illusion.py</code></p>
-<p><strong>Objective:</strong> Reconstruct the paper's example of heat
-sensation produced by transient cooling.</p>
-<p>The paper provides an example involving two types of cutaneous
-receptors: one associated with heat and another associated with
-cold.</p>
-<p>The authors describe a situation in which briefly applying a cold
-object to the skin can produce a sensation of heat, whereas applying it
-for a longer period produces a sensation of cold.</p>
-<p>They express the required behavior using temporal propositional
-expressions and then construct a network using the fundamental elements
-from Figures 1a–1d.</p>
-<p>I will investigate this example as an integration test of the
-simulator and temporal logic implementation.</p>
-<p>The equations, expressed in modern notation, are:</p>
-<p>[ N_3(t)=N_1(t-1)\lor \left[N_2(t-3)\land\neg N_2(t-2)\right] ]</p>
-<p>[ N_4(t)=N_2(t-2)\land N_2(t-1) ]</p>
-<p>Here:</p>
-<ul>
-<li>(N_1) represents heat receptor activity.</li>
-<li>(N_2) represents cold receptor activity.</li>
-<li>(N_3) represents the heat-sensation output.</li>
-<li>(N_4) represents the cold-sensation output.</li>
-</ul>
-<p>I will first implement these equations directly using the temporal
-logic evaluator.</p>
-<p>Then I will construct a neural network that realizes the same
-behavior.</p>
-<p>This gives me two independent ways of calculating the expected
-output, which I can compare.</p>
-<p class="writeup-image-note">The local image set does not include a thermal-illusion figure, so this section remains a written reconstruction plan.</p>
+<p>I did this by creating a <code>neuron.py</code> file and implemented the behavior as a simple function (the noob way).</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> neuron(inputs, threshold):</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    total <span class="op">=</span> <span class="bu">sum</span>(inputs)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> total <span class="op">&gt;=</span> threshold:</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">1</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span></span></code></pre></div>
+<p>This is as simple as a neuron which takes inputs from some previous neurons and decides whether it will turn on or off on the basis of its threshold value. So we give <code>inputs</code> as previous neurons and <code>threshold</code> as a deciding factor as two parameter for this neuron function.</p>
+<p>For example, we can add three neuron's input and have a threshold that will, in some sense, tell us how many neurons are active. So, if we set a threshold as 2 and have the input sum and if the sum is equals to 1 then we can know that only 1 input neuron is active and other 2 our inactive. And our neuron won't fire. Or the function will return 0.</p>
+<p>I then introduced inhibitory inputs. As we know, unlike excitatory inputs, which contribute towards reaching the firing threshold, an active inhibitory input prevents the neuron from firing, regardless of the total excitatory input received. I do this by simply adding a new parameter <code>inhibitory</code> and set it as <code>False</code> as default. Made it return <code>0</code> when <code>True</code> (fired).</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> neuron(inputs, threshold, inhibitory<span class="op">=</span><span class="va">False</span>):</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> inhibitory:</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    total <span class="op">=</span> <span class="bu">sum</span>(inputs)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> total <span class="op">&gt;=</span> threshold:</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">1</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span></span></code></pre></div>
+<p>Before introducing a more structured neuron implementation, I wanted to experiment with the firing condition itself.</p>
+<p>I started with three binary inputs and enumerated all possible input combinations. By varying the threshold, I could observe how the neuron's output changed.</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><mn>1</mn></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>x</mi><mi>i</mi></msub><mo>≥</mo><mi>θ</mi><mo>,</mo></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mn>0</mn></mtd><mtd columnalign="left" style="text-align: left"><mtext mathvariant="normal">otherwise</mtext><mi>.</mi></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">
+N =
+\begin{cases}
+1 &amp; \text{if } \displaystyle\sum_i x_i \geq \theta,\\
+0 &amp; \text{otherwise}.
+\end{cases}
+</annotation></semantics></math></p>
+<p>I could reproduce familiar Boolean operations such as OR, AND, and the majority function.</p>
+<p>I then experimented with alternative firing conditions.</p>
+<p>Instead of requiring the input sum to exceed a threshold, I tried requiring it to equal or remain below a particular value.</p>
+<div style="display: flex; gap: 20px; align-items: center;">
+  <img src="assets/images/research/mcculloch-pitts/experiment2.png" width="5500">
+</div>
 
-<p><em>Why I am including this passage:</em> This example demonstrates
-how the authors use temporal logical expressions to specify a behavior
-and then construct a network that realizes it.</p>
-<p><strong>Deliverables:</strong></p>
+<p>This allowed me to explore additional functions, including exact-one detection, NOR, and NAND.</p>
+<p>One particularly interesting experiment was XOR. For two inputs, requiring the input sum to equal one reproduces XOR exactly. However, extending this to three inputs revealed an important distinction between detecting exactly one active input and detecting an odd number of active inputs (parity).</p>
+<p>Learning here was that the firing <strong>condition</strong> itself determines the class of Boolean functions a neuron can represent.</p>
+<p>Point that was solidified here was that even tho I was able to implement XOR gate using a "neuron", it wasn't really a neuron in the conventional sense. Because the activation function depends a lot. And the conventional activation that we actually use is <strong>&gt;=</strong> (greater than equals to). Circling back to our biological neuron definition: the neuron only fires when electrical impulses <strong>crosses</strong> certain threshold. Crossing actually defines the impossibility of implementing an XOR. Inequality matters for some reason.</p>
+<p>When activation function is defined as strictly some value. That is, for 2 boolean inputs, when setting threshold as strictly equal to 1, we get firing condition for either of input neuron being fired. XOR function implemented. However, here we would rather refer to this more like a computation unit instead of calling it a neuron.</p>
+<p>In this sense, I wondered then, whether a computational unit is actually limited in any way if we can manipulate the firing condition itself (the activation function)</p>
+<p>Anyways, the paper describes excitation as exceeding a threshold, whereas an implementation can represent the same integer-count rule using a minimum required input count. So we are gonna roll with that.</p>
+<p>Next, I made further enhancements in the neuron function: I gave <code>excitatory_inputs</code> and <code>inhibitory</code> inpust their distinct roles. Replaced if-else condition more sophisticatedly.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> neuron(name, excitatory_inputs, inhibitory<span class="op">=</span><span class="va">False</span>, threshold<span class="op">=</span><span class="dv">1</span>):</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> inhibitory:</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    total <span class="op">=</span> <span class="bu">sum</span>(excitatory_inputs)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">int</span>(total <span class="op">&gt;=</span> threshold)</span></code></pre></div>
+<p>Similar experiments but with an inhibitory input <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>I</mi><annotation encoding="application/x-tex">I</annotation></semantics></math>:</p>
+<div style="display: flex; gap: 20px; align-items: center;">
+  <img src="assets/images/research/mcculloch-pitts/inhibitory-experiments.png" width="550">
+</div>
+
+<p>Having experimented with the basic firing mechanism, I wanted to move towards a more structured representation of an individual neuron. I gave this neuron class its own properties such as its identity and excitation threshold, which should persist independently of each firing evaluation. I therefore introduced a Neuron class using Python's <code>dataclass</code> decorator. Each neuron now has a name and a threshold, while its <code>fires()</code> method determines whether it produces an impulse based on the number of active excitatory inputs and the presence of an inhibitory input.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataclasses <span class="im">import</span> dataclass</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span>(frozen<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Neuron:</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    name: <span class="bu">str</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    threshold: <span class="bu">int</span> <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> fires(<span class="va">self</span>, active_excitatory_count: <span class="bu">int</span>, inhibitory_active: <span class="bu">bool</span>) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> inhibitory_active:</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="va">False</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> active_excitatory_count <span class="op">&gt;=</span> <span class="va">self</span>.threshold</span></code></pre></div>
+<p>I also used <code>frozen=True</code> to prevent a neuron's defining properties from being modified after its creation. This is a small but important transition: instead of treating a neuron as a function that processes inputs, I am now representing it as an individual computational unit with its own properties and firing behaviour.</p>
+<hr />
+<h1 id="stage-2--implementing-synapses">Stage 2 — Implementing synapses</h1>
+<p>We understand that a neuron is not operating in isolation. It receives signals from other units through connections called synapses.</p>
+<div style="display: flex; gap: 20px; align-items: center;">
+  <img src="assets/images/research/mcculloch-pitts/excin.png" width="500">
+</div>
+For our simulation, a synapse represents a directed connection between two units (source and target):
+- A source: where the signal originates.
+- A target: where the signal is delivered.
+
+<p>Two additional properties a synapse possesses are its type and delay:</p>
 <ul>
-<li>Direct implementation of the equations.</li>
-<li>Short and long cooling input experiments.</li>
-<li>A network construction.</li>
-<li>Comparison between logical and simulated outputs.</li>
+<li>A type or kind: whether the connection is excitatory or inhibitory.</li>
+<li>A delay: how many time steps it takes for the signal to arrive.</li>
 </ul>
-<p><strong>Status:</strong> Not started.</p>
-<h1 id="stage-8--reconstructing-theorem-i">Stage 8 — Reconstructing
-Theorem I</h1>
-<p><strong>Objective:</strong> Translate a network of order zero into
-temporal propositional expressions.</p>
-<p>Theorem I states:</p>
-<blockquote>
-<p>Every net of order 0 can be solved in terms of temporal propositional
-expressions.</p>
-</blockquote>
-<p>I want to understand the proof before attempting to automate it.</p>
-<p>The central idea is to express the firing condition of a neuron in
-terms of the activity of the neurons connected to it.</p>
-<p>For a neuron with multiple excitatory inputs and inhibitory inputs,
-its firing condition can be represented as a finite disjunction of
-qualifying combinations of excitatory inputs, with inhibitory conditions
-accounted for.</p>
-<p>Because a network of order zero has no cycles, I should be able to
-repeatedly substitute expressions for upstream neurons until I obtain an
-expression in terms of the peripheral afferents.</p>
-<p>I will first work through a small example manually.</p>
-<p>Only after understanding the substitution process will I implement a
-network-to-expression translator.</p>
-<p class="writeup-image-note">Planned illustration: Original paper, page 6, Theorem I and its
-proof. The corresponding image is not in the local project assets yet.</p>
-<p><em>Why I am including this passage:</em> This is the central
-construction I need to understand before implementing the
-translator.</p>
-<p><strong>Deliverables:</strong></p>
+<p>Also, the connection from A to B is not necessarily equivalent to the connection from B to A. This means we must treat connections as directed edges.</p>
+<p>I created <code>synapse.py</code> and defined a class:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Synapses:</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> __innit__(<span class="va">self</span>, source, target, kind, delay):</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.source <span class="op">=</span> source</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.target <span class="op">=</span> target</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.kind <span class="op">=</span> kind</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.delay <span class="op">=</span> delay</span></code></pre></div>
+<p>I can instantiate this as:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>connection1 <span class="op">=</span> Synapse(<span class="st">&quot;N1&quot;</span>, <span class="st">&quot;N2&quot;</span>, <span class="st">&quot;excitatory&quot;</span>, <span class="dv">1</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>connection2 <span class="op">=</span> Synapse(<span class="st">&quot;N2&quot;</span>, <span class="st">&quot;N3&quot;</span>, <span class="st">&quot;inhibitory&quot;</span>, <span class="dv">2</span>)</span></code></pre></div>
+<p>I needed to make sure <code>kind</code> only takes restricted values (either <code>excitatory</code> or <code>inhibitory</code>) and use <code>frozen=True</code> of <code>@dataclass</code> decorator to prevent accidental modification.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> enum <span class="im">import</span> Enum</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> SynapseType(<span class="bu">str</span>, Enum):</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    EXCITATORY <span class="op">=</span> <span class="st">&quot;excitatory&quot;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    INHIBITORY <span class="op">=</span> <span class="st">&quot;inhibitory&quot;</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span>(frozen<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Synapse:</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    source: <span class="bu">str</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    target: <span class="bu">str</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    kind: SynapseType <span class="op">=</span> SynapseType.EXCITATORY</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    delay: <span class="bu">int</span> <span class="op">=</span> <span class="dv">1</span></span></code></pre></div>
+<p>There are still some invalid configurations I need to prevent.</p>
 <ul>
-<li>A manually derived example.</li>
-<li>An explanation of the substitution procedure.</li>
-<li>A network-to-TPE translator.</li>
-<li>Tests comparing the resulting expression with network behavior.</li>
+<li>A synapse cannot have an empty source or target.</li>
+<li>A synaptic delay must be atleast one time step.</li>
+<li>The synapse type must be one of our defined enum values.</li>
 </ul>
-<p><strong>Status:</strong> Not started.</p>
-<h1 id="stage-9--reconstructing-theorem-ii">Stage 9 — Reconstructing
-Theorem II</h1>
-<p><strong>Objective:</strong> Construct a network from a temporal
-propositional expression.</p>
-<p>Theorem II states:</p>
-<blockquote>
-<p>Every TPE is realizable by a net of order zero.</p>
-</blockquote>
-<p>This is the reverse direction of Theorem I.</p>
-<p>The four fundamental constructions from Figures 1a–1d provide the
-building blocks.</p>
-<p>I will investigate how larger expressions can be constructed by
-combining smaller networks.</p>
-<p>For example, if I can construct networks for two expressions, how can
-I combine them to construct a network for their conjunction or
-disjunction?</p>
-<p>I will begin with manually constructed examples before attempting to
-automate the process.</p>
-<p>The eventual goal is an expression-to-network compiler.</p>
-<p class="writeup-image-note">Planned illustration: Original paper, pages 6–7, Theorem II and
-its proof. The corresponding image is not in the local project assets yet.</p>
-<p><em>Why I am including this passage:</em> This proof explains how the
-fundamental network constructions can be combined to realize arbitrary
-expressions generated by the TPE grammar.</p>
-<p><strong>Deliverables:</strong></p>
+<p>I enforced these conditions using <code>__post_init__</code>, a special dataclass method that executes immediately after initialization.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">&quot;&quot;&quot;Synapses connecting source units to target neurons.&quot;&quot;&quot;</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataclasses <span class="im">import</span> dataclass</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> enum <span class="im">import</span> Enum</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> SynapseType(<span class="bu">str</span>, Enum):</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    EXCITATORY <span class="op">=</span> <span class="st">&quot;excitatory&quot;</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    INHIBITORY <span class="op">=</span> <span class="st">&quot;inhibitory&quot;</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span>(frozen<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Synapse:</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    source: <span class="bu">str</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    target: <span class="bu">str</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    kind: SynapseType <span class="op">=</span> SynapseType.EXCITATORY</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>    delay: <span class="bu">int</span> <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> __post_init__(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> <span class="va">self</span>.source <span class="kw">or</span> <span class="kw">not</span> <span class="va">self</span>.target:</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">&quot;Synapse source and target must be non-empty.&quot;</span>)</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.delay <span class="op">&lt;</span> <span class="dv">1</span>:</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">&quot;Synaptic delay must be at least one time step.&quot;</span>)</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">isinstance</span>(<span class="va">self</span>.kind, <span class="bu">str</span>):</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>            <span class="bu">object</span>.<span class="fu">__setattr__</span>(<span class="va">self</span>, <span class="st">&quot;kind&quot;</span>, SynapseType(<span class="va">self</span>.kind))</span></code></pre></div>
+<p>This Synapse currently represents the structure of a connection. The actual transmission of signals will be handled when we implement the network's simulation logic.</p>
+<p>I investigated how the delay affects the <strong>time</strong> at which a signal becomes available to the receiving neuron. For instance, if neuron A fires at time <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">t=0</annotation></semantics></math> and its synapse has a delay of one time step, the signal should be available to neuron B at time <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">t=1</annotation></semantics></math>.</p>
+<h1 id="stage-3--constructing-a-neural-network">Stage 3 — Constructing a neural network</h1>
+<p>So far I have constructed individual neurons and structure of the connections. Now I can connect individual neurons and synapses to form a network.</p>
+<p>The network will maintain:</p>
 <ul>
-<li>Manually constructed examples.</li>
-<li>A reusable composition procedure.</li>
-<li>An expression-to-network compiler.</li>
-<li>Tests comparing the compiled network with direct expression
-evaluation.</li>
+<li>A collection of neurons.</li>
+<li>A collection of synapses.</li>
+<li>The activity history of each neuron.</li>
+<li>The current simulation time.</li>
 </ul>
-<p><strong>Status:</strong> Not started.</p>
-<h1 id="stage-10--reconstructing-theorem-iii">Stage 10 — Reconstructing
-Theorem III</h1>
-<p><strong>Objective:</strong> Investigate the paper's characterization
-of temporal propositional expressions.</p>
-<p>Theorem III provides a condition for determining whether an
-expression built from propositional variables and logical operations
-qualifies as a TPE.</p>
-<p>The paper relates this condition to truth tables and Hilbert
-disjunctive normal form.</p>
-<p>I will work through the statement and proof before implementing any
-test.</p>
-<p>I want to understand:</p>
+<p>I implemented a discrete-time update procedure.</p>
+<p>At each time step, the network will:</p>
+<ol type="1">
+<li>Receive external inputs.</li>
+<li>Determine which incoming signals have arrived.</li>
+<li>Count the active excitatory inputs.</li>
+<li>Check whether any inhibitory input is active.</li>
+<li>Determine the firing state of each neuron.</li>
+<li>Record the resulting activity.</li>
+</ol>
+<p>All neurons must be updated synchronously. A neuron being updated at time <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math> must not accidentally use another neuron's newly computed state from that same time step when the connection should refer to an earlier time.</p>
+<p>I created <code>network.py</code> and introduced a Network class and maintain three primary data structures:</p>
 <ul>
-<li>What the condition says.</li>
-<li>Why it is necessary.</li>
-<li>Why it is sufficient.</li>
-<li>How it relates to the TPE grammar.</li>
-<li>Whether I can construct examples that satisfy or violate the
-condition.</li>
+<li><code>neurons</code>: A dictionary mapping neuron names to their respective Neuron objects. I use a dictionary because each neuron has a unique name, allowing me to retrieve it directly.</li>
+<li><code>synapses</code>: A list containing the connections between units.</li>
+<li><code>history</code>: A record of the activity of each neuron and external source over time.</li>
 </ul>
-<p>I will then write small programs to evaluate finite expressions and
-compare the results with the grammar-based construction.</p>
-<p>The computational tests will support my understanding, but they will
-not replace the general mathematical proof.</p>
-<p class="writeup-image-note">Planned illustration: Original paper, page 7, Theorem
-III. The corresponding image is not in the local project assets yet.</p>
-<p><strong>Deliverables:</strong></p>
+<p>Also <code>time</code>, which tracks the current simulation time step.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Network:</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>      <span class="va">self</span>.neurons: <span class="bu">dict</span>[<span class="bu">str</span>, Neuron] <span class="op">=</span> {}</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>      <span class="va">self</span>.synapses: <span class="bu">list</span>[Synapse] <span class="op">=</span> []</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>      <span class="va">self</span>.history: <span class="bu">dict</span>[<span class="bu">str</span>, <span class="bu">list</span>[<span class="bu">bool</span>]] <span class="op">=</span> defaultdict(<span class="bu">list</span>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>      <span class="va">self</span>.time <span class="op">=</span> <span class="dv">0</span></span></code></pre></div>
+<p>This works like a template or a biolerplate for our network. When I instantiate an object of this class, I get an empty network. I now need methods to add neurons and synapses to this network.</p>
+<p>When adding a neuron, I first check whether another neuron with the same name already exists. Since I use neuron names as dictionary keys, allowing duplicates would cause one neuron to overwrite another. Similarly, when adding a synapse, I check whether its target corresponds to an existing neuron. This is because every connection must deliver its signal to a neuron within the network.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> add_neuron(<span class="va">self</span>, neuron: Neuron) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> neuron.name <span class="kw">in</span> <span class="va">self</span>.neurons:</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>          <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="ss">f&quot;Neuron </span><span class="sc">{</span>neuron<span class="sc">.</span>name<span class="sc">!r}</span><span class="ss"> already exists.&quot;</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>      <span class="va">self</span>.neurons[neuron.name] <span class="op">=</span> neuron</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>      <span class="va">self</span>.history.setdefault(neuron.name, [])</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> add_synapse(<span class="va">self</span>, synapse: Synapse) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> synapse.target <span class="kw">not</span> <span class="kw">in</span> <span class="va">self</span>.neurons:</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="ss">f&quot;Unknown target neuron: </span><span class="sc">{</span>synapse<span class="sc">.</span>target<span class="sc">!r}</span><span class="ss">&quot;</span>)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.synapses.append(synapse)</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.history.setdefault(synapse.source, [])</span></code></pre></div>
+<p>I allow a synapse's source to be a name that does not correspond to an internal neuron. Why? Because I want to support external inputs (afferents) entering the network. For example, an external source A could stimulate an internal neuron Y, even though A is not itself represented as a neuron in my simulation.</p>
+<p>I can identify these external sources by checking which synaptic sources do not correspond to internal neurons.</p>
+<p>Since I implemented a discrete-time update procedure, a neuron does not necessarily respond to a signal immediately. The signal may take one or more time steps to arrive depending on the synaptic delay.</p>
+<p>In below expression, neuron A fires at time <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">t=0</annotation></semantics></math>, and neuron Y receives this signal at time <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">t=1</annotation></semantics></math>, because the synapse has a delay of <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">d=1</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mover><mo>→</mo><mrow><mi>d</mi><mo>=</mo><mn>1</mn></mrow></mover><mi>Y</mi></mrow><annotation encoding="application/x-tex">
+A \xrightarrow{d=1} Y
+</annotation></semantics></math></p>
+<p>A's activity at <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">t=0</annotation></semantics></math> can influence B at <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">t=1</annotation></semantics></math>, but it must not influence B's state at <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">t=0</annotation></semantics></math> when the synaptic delay is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>.</p>
+<p>To implement this, I need to remember the activity of each source at previous time steps. Therefore, I maintain a history of every source:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.history: <span class="bu">dict</span>[<span class="bu">str</span>, <span class="bu">list</span>[<span class="bu">bool</span>]] <span class="op">=</span> defaultdict(<span class="bu">list</span>)</span></code></pre></div>
+<p>for instance, if the activity of A over three time steps is:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>history[<span class="st">&quot;A&quot;</span>] <span class="op">=</span> [<span class="va">True</span>, <span class="va">False</span>, <span class="va">True</span>]</span></code></pre></div>
+<p>This tells me that <code>A</code> was active at <code>t=0</code>, inactive at <code>t=1</code>, and then active again at <code>t=2</code></p>
+<p>History allows me to determine whether a signal was active at the time it should have been transmitted.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> _was_active(<span class="va">self</span>, source: <span class="bu">str</span>, time_index: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> time_index <span class="op">&lt;</span> <span class="dv">0</span>:</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">False</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    values <span class="op">=</span> <span class="va">self</span>.history.get(source, [])</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> time_index <span class="op">&lt;</span> <span class="bu">len</span>(values) <span class="kw">and</span> <span class="bu">bool</span>(values[time_index])</span></code></pre></div>
+<p>If the requested time index is negative, I treat the source as inactive. This means that all neurons initially start with no previous activity.</p>
+<p>To implement the discrete-time update procedure, I will create the <code>step()</code> method. At every simulation step, I need to determine the next state of every neuron.</p>
+<p>Since we know, if I update A first and immediately overwrite its activity, B might accidentally read A's newly calculated state during the same time step. This would make the result dependent on the order in which I iterate through the neurons. Instead, I want all neurons to calculate their next states using previously recorded activity. Only after every neuron has been evaluated should I commit the new states to history.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>current: <span class="bu">dict</span>[<span class="bu">str</span>, <span class="bu">bool</span>] <span class="op">=</span> {</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    source: <span class="bu">bool</span>(external_activity.get(source, <span class="va">False</span>))</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> source <span class="kw">in</span> <span class="va">self</span>.external_sources</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>This dictionary holds the activity that will be recorded for the current time step.</p>
+<p>Next, in order to efficiently examine all incoming connections when calculating a neuron's next state, I grouped synapses according to their target neuron.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>incoming: <span class="bu">dict</span>[<span class="bu">str</span>, <span class="bu">list</span>[Synapse]] <span class="op">=</span> defaultdict(<span class="bu">list</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> synapse <span class="kw">in</span> <span class="va">self</span>.synapses:</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    incoming[synapse.target].append(synapse)</span></code></pre></div>
+<p>For each incoming synapse, I calculate the time at which its source activity should be read: <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>t</mi><mtext mathvariant="normal">source</mtext></msub><mo>=</mo><msub><mi>t</mi><mtext mathvariant="normal">current</mtext></msub><mo>−</mo><mi>d</mi></mrow><annotation encoding="application/x-tex">
+t_{\text{source}} = t_{\text{current}} - d
+</annotation></semantics></math> where <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>d</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(d)</annotation></semantics></math> is the synaptic delay.</p>
+<p>I then use <code>_was_active()</code> to retrieve the source's activity at that earlier time.</p>
+<p>If the synapse is inhibitory, an active signal sets the inhibitory veto. Otherwise, an active excitatory signal increments the excitatory count.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name, neuron <span class="kw">in</span> <span class="va">self</span>.neurons.items():</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    excitatory_count <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    inhibitory_active <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> synapse <span class="kw">in</span> incoming[name]:</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>        source_time <span class="op">=</span> <span class="va">self</span>.time <span class="op">-</span> synapse.delay</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>        active <span class="op">=</span> <span class="va">self</span>._was_active(synapse.source, source_time)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> synapse.kind <span class="kw">is</span> SynapseType.INHIBITORY:</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>            inhibitory_active <span class="op">=</span> inhibitory_active <span class="kw">or</span> active</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">elif</span> active:</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>            excitatory_count <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    current[name] <span class="op">=</span> neuron.fires(</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>        excitatory_count,</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>        inhibitory_active</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>    )</span></code></pre></div>
+<p>Notice that I am not directly modifying the neuron's historical activity here. I am only calculating its next firing state. The actual firing rule is delegated to the Neuron class, which keeps the network responsible for coordinating components rather than duplicating neuronal behaviour.</p>
+<p>Once every neuron has been evaluated, I can finally append the calculated states to their respective histories.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> source <span class="kw">in</span> <span class="va">self</span>.external_sources:</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.history[source].append(current[source])</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name <span class="kw">in</span> <span class="va">self</span>.neurons:</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.history[name].append(current[name])</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.time <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="cf">return</span> current</span></code></pre></div>
+<p>with this final step, I ensured that all newly calculated states become available together. The network therefore updates synchronously, independently of the order in which neurons are stored or iterated over.</p>
+<p>Calling <code>step()</code> repeatedly would work, but since I also wanted a convenient way to simulate a network over several time steps with a predefined input schedule, I introduce a <code>run()</code> method that accepts:</p>
 <ul>
-<li>A mathematical explanation of the characterization.</li>
-<li>Worked examples.</li>
-<li>A truth-table-based experiment.</li>
-<li>Tests for selected expressions.</li>
+<li>The number of time steps to simulate.</li>
+<li>An optional schedule specifying which external sources are active at particular time steps.</li>
 </ul>
-<p><strong>Status:</strong> Not started.</p>
-<h1 id="stage-11--investigating-theorems-ivvii">Stage 11 — Investigating
-Theorems IV–VII</h1>
-<p><strong>Objective:</strong> Investigate the equivalences between
-different assumptions about neuronal behavior.</p>
-<p>After establishing the relationship between networks and temporal
-propositional expressions, the paper considers several alternative
-physiological assumptions.</p>
-<p>The authors investigate whether different assumptions can be
-represented by equivalent networks, potentially with different
-timing.</p>
-<p>The results include:</p>
-<table>
-<thead>
-<tr>
-<th>Theorem</th>
-<th>Subject</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>IV</td>
-<td>Relative and absolute inhibition are equivalent in the extended
-sense.</td>
-</tr>
-<tr>
-<td>V</td>
-<td>Extinction is equivalent to absolute inhibition.</td>
-</tr>
-<tr>
-<td>VI</td>
-<td>Facilitation and temporal summation may be replaced by spatial
-summation.</td>
-</tr>
-<tr>
-<td>VII</td>
-<td>Alterable synapses can be replaced by circles.</td>
-</tr>
-</tbody>
-</table>
-<p>I will approach these results individually.</p>
-<p>For each one, I will identify the original assumption, the
-alternative assumption, and the construction used to establish
-equivalence.</p>
-<p>Where possible, I will implement small networks under both
-assumptions and compare their behavior.</p>
-<p>I will be careful not to assume that equivalence means identical
-network structure or identical timing. The paper's definition allows for
-a different realizing network and differences in time.</p>
-<p class="writeup-image-note">Planned illustration: Original paper, pages 9–11, Theorems
-IV–VII. The corresponding image is not in the local project assets yet.</p>
-<p><strong>Deliverables:</strong></p>
+<p>At each time step, <code>run()</code> retrieves the corresponding external inputs and calls <code>step()</code>. It returns a list containing the network's output at every time step.</p>
+<p>With this basic implementation in place, I needed to verify that the network behaved as expected. I started with three small configurations that tested the most important properties of my implementation.</p>
+<p><strong>Config1: Synaptic Delay</strong></p>
+<p>I create a neuron Y with a firing threshold of 1 and connect an external source A to it with a delay of one time step. I activate A at time step 0 and deactivate it at time step 1. I expect Y to remain inactive at time step 0 and become active at time step 1.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> test_one_step_delay(<span class="va">self</span>):</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>        net <span class="op">=</span> Network()</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>        net.add_neuron(Neuron(<span class="st">&quot;Y&quot;</span>, <span class="dv">1</span>))</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>        net.add_synapse(Synapse(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;Y&quot;</span>, delay<span class="op">=</span><span class="dv">1</span>))</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>        first <span class="op">=</span> net.step({<span class="st">&quot;A&quot;</span>: <span class="va">True</span>})</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>        second <span class="op">=</span> net.step({<span class="st">&quot;A&quot;</span>: <span class="va">False</span>})</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.assertFalse(first[<span class="st">&quot;Y&quot;</span>])</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.assertTrue(second[<span class="st">&quot;Y&quot;</span>])</span></code></pre></div>
+<p><strong>Config2: AND Gate</strong></p>
+<p>I create a neuron Y with a threshold of 2 and connect two excitatory external sources, A and B, to it. I activate both inputs simultaneously. Since the neuron requires two excitatory inputs to fire, it should activate once both signals arrive.</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> test_and_gate(<span class="va">self</span>):</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>        net <span class="op">=</span> Network()</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>        net.add_neuron(Neuron(<span class="st">&quot;Y&quot;</span>, <span class="dv">2</span>))</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>        net.add_synapse(Synapse(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;Y&quot;</span>))</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>        net.add_synapse(Synapse(<span class="st">&quot;B&quot;</span>, <span class="st">&quot;Y&quot;</span>))</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>        net.step({<span class="st">&quot;A&quot;</span>: <span class="va">True</span>, <span class="st">&quot;B&quot;</span>: <span class="va">True</span>})</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>        result <span class="op">=</span> net.step({})</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.assertTrue(result[<span class="st">&quot;Y&quot;</span>])</span></code></pre></div>
+<p><strong>Config2: Inhibitory Veto</strong> I create a neuron Y with a threshold of 1. I connect two external sources to it:</p>
 <ul>
-<li>A separate explanation of each theorem.</li>
-<li>Small example networks.</li>
-<li>Comparisons of input-output behavior.</li>
-<li>Notes on timing and structural differences.</li>
+<li>A through an excitatory synapse.</li>
+<li>B through an inhibitory synapse.</li>
 </ul>
-<p><strong>Status:</strong> Not started.</p>
-<h1 id="stage-12--investigating-cyclic-networks">Stage 12 —
-Investigating cyclic networks</h1>
-<p><strong>Objective:</strong> Extend the reconstruction to networks
-containing circular paths.</p>
-<p>The earlier results concern networks without cycles.</p>
-<p>The paper then introduces cyclic networks, in which activity can
-propagate around a circuit and regenerate activity in neurons that
-participated in the circuit.</p>
-<p>This changes the nature of the problem.</p>
-<p>In an acyclic network, repeated substitution eventually reaches the
-peripheral inputs. In a cyclic network, the dependence on previous
-activity can extend indefinitely into the past.</p>
-<p>The authors introduce recursive functions to describe these more
-complicated relationships.</p>
-<p>I will need to understand this formalism before extending the
-simulator.</p>
-<p>I expect this stage to require additional machinery for representing
-and investigating cyclic behavior.</p>
-<p class="writeup-image-note">Planned illustration: Original paper, pages 11 onward,
-definition and discussion of cyclic networks. The corresponding image is not in the local project assets yet.</p>
-<p><strong>Deliverables:</strong></p>
+<p>I activate both sources simultaneously. Even though the excitatory input is sufficient to meet the firing threshold, the active inhibitory input should prevent the neuron from firing.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> test_inhibitory_veto(<span class="va">self</span>):</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>        net <span class="op">=</span> Network()</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>        net.add_neuron(Neuron(<span class="st">&quot;Y&quot;</span>, <span class="dv">1</span>))</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>        net.add_synapse(Synapse(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;Y&quot;</span>, SynapseType.EXCITATORY))</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>        net.add_synapse(Synapse(<span class="st">&quot;B&quot;</span>, <span class="st">&quot;Y&quot;</span>, SynapseType.INHIBITORY))</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>        net.step({<span class="st">&quot;A&quot;</span>: <span class="va">True</span>, <span class="st">&quot;B&quot;</span>: <span class="va">True</span>})</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>        result <span class="op">=</span> net.step({})</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.assertFalse(result[<span class="st">&quot;Y&quot;</span>])</span></code></pre></div>
+<h1 id="stage-4--simulating-network-activity">Stage 4 — Simulating network activity</h1>
+<p>I implemented <code>Network.step()</code> to advance a network by one time step and <code>Network.run()</code> to execute multiple time steps. So, in a way, I can already simulate a network, but there are two issues:</p>
+<ol type="1">
+<li><p>Specifying external inputs should be convenient. I should not have to manually construct a dictionary of Boolean values for every time step.</p></li>
+<li><p>Inspecting the resulting activity should be straightforward. A list of dictionaries is useful for Python, but it is not particularly easy to inspect visually.</p></li>
+</ol>
+<p>Hence, a separate simulation interface to handle these tasks was needed. So to have the convenient way to run experiments, I created <code>simulation.py</code></p>
+<p>First, I needed a way to describe which external sources are active at each time step.</p>
+<p>For example, in a network with two external sources, A and B, I could represent an input schedule using dictionaries:</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>input_schedule <span class="op">=</span> {</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    <span class="dv">0</span>: {<span class="st">&quot;A&quot;</span>: <span class="va">True</span>, <span class="st">&quot;B&quot;</span>: <span class="va">False</span>},</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span>: {<span class="st">&quot;A&quot;</span>: <span class="va">False</span>, <span class="st">&quot;B&quot;</span>: <span class="va">True</span>},</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="dv">2</span>: {<span class="st">&quot;A&quot;</span>: <span class="va">True</span>, <span class="st">&quot;B&quot;</span>: <span class="va">True</span>},</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>However, this requires explicitly specifying both active and inactive sources. For many experiments, I only care about which sources are active. I would therefore also like to support a shorter representation:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>input_schedule <span class="op">=</span> {</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    <span class="dv">0</span>: {<span class="st">&quot;A&quot;</span>},</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span>: {<span class="st">&quot;B&quot;</span>},</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    <span class="dv">2</span>: {<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>},</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Self explanatory.</p>
+<p>I now have two ways to describe the same input schedule. So instead of forcing the rest of the simulation code to handle both formats, I normalized them into one common representation.</p>
+<p>I introduced <code>normalize_schedule()</code> to convert different input representations into a consistent dictionary of Boolean mappings.</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> normalize_schedule(schedule):</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Convert {time: {&#39;A&#39;: True}} or {time: {&#39;A&#39;, &#39;B&#39;}} to bool mappings.&quot;&quot;&quot;</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    normalized <span class="op">=</span> {}</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> time, active <span class="kw">in</span> (schedule <span class="kw">or</span> {}).items():</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">isinstance</span>(active, Mapping):</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>            normalized[<span class="bu">int</span>(time)] <span class="op">=</span> {<span class="bu">str</span>(k): <span class="bu">bool</span>(v) <span class="cf">for</span> k, v <span class="kw">in</span> active.items()}</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>            normalized[<span class="bu">int</span>(time)] <span class="op">=</span> {<span class="bu">str</span>(name): <span class="va">True</span> <span class="cf">for</span> name <span class="kw">in</span> active}</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> normalized</span></code></pre></div>
+<p>For instance,</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    <span class="dv">0</span>: {<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>},</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span>: {<span class="st">&quot;B&quot;</span>}</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>becomes:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    <span class="dv">0</span>: {<span class="st">&quot;A&quot;</span>: <span class="va">True</span>, <span class="st">&quot;B&quot;</span>: <span class="va">True</span>},</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span>: {<span class="st">&quot;B&quot;</span>: <span class="va">True</span>}</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Now with input normalization handled separately, I created a small <code>simulate()</code> function.</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> simulate(network: Network, steps: <span class="bu">int</span>, input_schedule<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> network.run(steps, normalize_schedule(input_schedule))</span></code></pre></div>
+<p>Notice I dont really implement any new simulation logic. The <code>simulate</code> function delegates the actual execution to <code>Network.run()</code>, which already handles advancing the network, processing external inputs, and recording neuronal activity.</p>
+<p>After running a simulation, I receive a list of dictionaries. Which is okayish! But since we are chasing convenience here, I think tabular view would be nicer to inspect. So I built a <code>print_trace()</code> method to display the results as a table.</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> print_trace(outputs, columns: Iterable[<span class="bu">str</span>] <span class="op">|</span> <span class="va">None</span> <span class="op">=</span> <span class="va">None</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    outputs <span class="op">=</span> <span class="bu">list</span>(outputs)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> columns <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>        columns <span class="op">=</span> <span class="bu">sorted</span>({key <span class="cf">for</span> row <span class="kw">in</span> outputs <span class="cf">for</span> key <span class="kw">in</span> row})</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    columns <span class="op">=</span> <span class="bu">list</span>(columns)</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;t  &quot;</span> <span class="op">+</span> <span class="st">&quot;  &quot;</span>.join(columns))</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> t, row <span class="kw">in</span> <span class="bu">enumerate</span>(outputs):</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>        bits <span class="op">=</span> [<span class="st">&quot;1&quot;</span> <span class="cf">if</span> row.get(name, <span class="va">False</span>) <span class="cf">else</span> <span class="st">&quot;0&quot;</span> <span class="cf">for</span> name <span class="kw">in</span> columns]</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f&quot;</span><span class="sc">{</span>t<span class="sc">:&lt;2}</span><span class="ss"> &quot;</span> <span class="op">+</span> <span class="st">&quot;  &quot;</span>.join(bits))</span></code></pre></div>
+<p>This function will collect the names of neurons appearing in the output <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>→</mo><annotation encoding="application/x-tex">\rightarrow</annotation></semantics></math> Sort their names to produce consistent column ordering <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>→</mo><annotation encoding="application/x-tex">\rightarrow</annotation></semantics></math> Iterate through the recorded outputs. <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>→</mo><annotation encoding="application/x-tex">\rightarrow</annotation></semantics></math> Converts Boolean activity into binary values: True becomes 1, and False becomes 0. <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>→</mo><annotation encoding="application/x-tex">\rightarrow</annotation></semantics></math> Prints one row for each time step.</p>
+<p>Like:</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>t   A   B</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="dv">0</span>   <span class="dv">1</span>   <span class="dv">0</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span>   <span class="dv">0</span>   <span class="dv">1</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span>   <span class="dv">1</span>   <span class="dv">1</span></span></code></pre></div>
+<h1 id="10-references-and-working-material">10. References and working material</h1>
+<p><strong>Primary source</strong></p>
+<p>McCulloch, W. S., &amp; Pitts, W. (1943). <em>A Logical Calculus of the Ideas Immanent in Nervous Activity</em>. Bulletin of Mathematical Biophysics, 5, 115–133.</p>
+<p><a href="https://jontalle.web.engr.illinois.edu/uploads/410-NS.F22/McCulloch-Pitts-1943-neural-networks-ocr.pdf">Read the original paper (PDF)</a></p>
+<p><strong>Working conventions</strong></p>
 <ul>
-<li>A precise definition of a cyclic network in my own words.</li>
-<li>Examples of networks containing cycles.</li>
-<li>A study of the recursive descriptions used in the paper.</li>
-<li>An extension of the simulator where necessary.</li>
+<li>I used modern mathematical notation where it improves readability, while preserving the meaning of the original paper.</li>
+<li>I identified when a statement is taken directly from the paper and when it is my own interpretation.</li>
+<li>Screenshots inserted throughout this README will refer to the corresponding sections of the original paper.</li>
+<li>Computational results will be reported with the input conditions, implementation assumptions, and tests used to obtain them.</li>
 </ul>
-<p><strong>Status:</strong> Not started.</p>
-<h1 id="stage-13--reconstructing-theorems-viiix">Stage 13 —
-Reconstructing Theorems VIII–X</h1>
-<p><strong>Objective:</strong> Investigate the paper's results
-concerning cyclic networks and recursive functions.</p>
-<p>I will work through these theorems after understanding the preceding
-definitions and constructions.</p>
-<p>For each theorem, I will record:</p>
-<ul>
-<li>The exact statement.</li>
-<li>The definitions required to understand it.</li>
-<li>The proof strategy.</li>
-<li>Any constructions or examples provided by the authors.</li>
-<li>What I can reproduce computationally.</li>
-<li>What remains a mathematical argument rather than a simulation.</li>
-</ul>
-<p>I will not claim to have reproduced a theorem merely because I have
-implemented an example related to it.</p>
-<p><strong>Deliverables:</strong></p>
-<ul>
-<li>Worked notes for Theorems VIII–X.</li>
-<li>Relevant computational experiments.</li>
-<li>A record of which proof steps I have independently
-reconstructed.</li>
-</ul>
-<p><strong>Status:</strong> Not started.</p>
+<hr />
+<p><em>This is a work in progress. I am using the reconstruction process itself as a way to understand the paper, so the explanations, implementation decisions, experiments, and conclusions will develop as I work through it.</em></p>
 
         </article>
-        <p class="writeup-repository writeup-repository-bottom"><a href="https://github.com/Vaibhav-sa30/mculloh-pitts-neuron-reconstruction" target="_blank" rel="noopener noreferrer">View the implementation repository ↗</a></p>
     </main>
     <footer class="site-footer">
         <ul class="links">
