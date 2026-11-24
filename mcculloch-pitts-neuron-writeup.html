@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A research notebook reconstructing selected constructions from McCulloch and Pitts’s 1943 neuron paper.">
+    <title>McCulloch–Pitts Reconstruction | Vaibhav Satish</title>
+    <link rel="stylesheet" href="css/research.css">
+    <link rel="stylesheet" href="css/personal-pages.css">
+    <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+</head>
+<body>
+    <header class="masthead">
+        <a href="index.html" class="masthead-label">Vaibhav Satish &nbsp;·&nbsp; Portfolio</a>
+        <nav class="nav-tabs primary-nav" aria-label="Main navigation">
+            <a href="about.html" class="nav-tab-btn">About</a>
+            <a href="research.html" class="nav-tab-btn active" aria-current="page">Research</a>
+            <a href="writings.html" class="nav-tab-btn">Writings</a>
+            <a href="ai-safety-reads.html" class="nav-tab-btn">Interests</a>
+        </nav>
+    </header>
+    <main class="research-writeup-page">
+        <p class="writeup-return"><a href="research-implementations.html">← Back to Research Implementations</a></p>
+        <p class="writeup-repository"><a href="https://github.com/Vaibhav-sa30/mculloh-pitts-neuron-reconstruction" target="_blank" rel="noopener noreferrer">View the implementation repository ↗</a></p>
+        <article class="mcculloch-writeup">
+<h1 id="mccullochpitts-reconstruction">McCulloch–Pitts
+Reconstruction</h1>
+<p>A small, educational, discrete-time simulator for reconstructing
+selected constructions from McCulloch and Pitts (1943), <em>A Logical
+Calculus of the Ideas Immanent in Nervous Activity</em>.</p>
+<figure class="mcculloch-figure"><img src="assets/images/research/mcculloch-pitts/neuron.png" alt="My hand-drawn sketch of a biological neuron." loading="lazy"><figcaption>My hand-drawn sketch of a biological neuron.</figcaption></figure>
+
+<h2 id="requirements">Requirements</h2>
+<ul>
+<li>Python 3.10 or newer</li>
+<li>No third-party packages</li>
+</ul>
+<h2 id="run-the-tests">Run the tests</h2>
+<p>From this directory:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> unittest discover <span class="at">-s</span> tests <span class="at">-v</span></span></code></pre></div>
+<h2 id="run-the-figure-reconstructions">Run the figure
+reconstructions</h2>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> experiments.figure_1a</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> experiments.figure_1b</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> experiments.figure_1c</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> experiments.figure_1d</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> experiments.thermal_illusion</span></code></pre></div>
+<h2 id="model-conventions">Model conventions</h2>
+<ul>
+<li>Activity is binary.</li>
+<li>Synaptic delays are positive integer time steps.</li>
+<li>A synapse reads its source at <code>t - delay</code>.</li>
+<li>Updates are synchronous: all neuron states at time <code>t</code>
+are computed from already-recorded earlier states.</li>
+<li><code>Neuron.threshold</code> means the minimum number of active
+excitatory synapses required to fire. This is an integer-count
+convention. The paper phrases the condition as excitation exceeding a
+threshold.</li>
+<li>Any active inhibitory synapse vetoes firing at that time.</li>
+<li>Refractory dynamics, learning, variable thresholds, and
+recurrent-network theorem machinery are not implemented yet.</li>
+</ul>
+<div class="mcculloch-figure-grid">
+<figure class="mcculloch-figure"><img src="assets/images/research/mcculloch-pitts/assumptions.png" alt="Scan of the original paper’s five assumptions for nets without circles." loading="lazy"><figcaption>The original paper’s assumptions for nets without circles.</figcaption></figure>
+<figure class="mcculloch-figure"><img src="assets/images/research/mcculloch-pitts/neuron_logic.png" alt="A neuron represented by a proposition that is either 0 or 1." loading="lazy"><figcaption>Binary notation for a propositional neuron.</figcaption></figure>
+<figure class="mcculloch-figure"><img src="assets/images/research/mcculloch-pitts/excin.png" alt="A sketch distinguishing excitatory and inhibitory synapses." loading="lazy"><figcaption>A sketch distinguishing excitatory and inhibitory synapses.</figcaption></figure>
+<figure class="mcculloch-figure"><img src="assets/images/research/mcculloch-pitts/experiment2.png" alt="A threshold experiment showing input combinations and neuron outputs." loading="lazy"><figcaption>A threshold experiment showing input combinations and neuron outputs.</figcaption></figure>
+<figure class="mcculloch-figure"><img src="assets/images/research/mcculloch-pitts/inhibitory-experiments.png" alt="Threshold and inhibitory-input experiment tables." loading="lazy"><figcaption>Threshold and inhibitory-input experiment tables.</figcaption></figure>
+</div>
+
+<h2 id="what-the-scripts-represent">What the scripts represent</h2>
+<p>The Figure 1a–1d scripts implement the operations described in the
+proof of Theorem II:</p>
+<ul>
+<li>1a: one synaptic delay, <code>S(p1)</code>.</li>
+<li>1b: delayed disjunction, <code>S(p1 OR p2)</code>.</li>
+<li>1c: delayed conjunction, <code>S(p1 AND p2)</code>.</li>
+<li>1d: delayed conjoined negation, <code>S(p1 AND NOT p2)</code>.</li>
+</ul>
+<p>These are functional reconstructions of the operations described in
+the text. Before claiming a complete reproduction, compare each
+circuit's topology against the scanned original figure.</p>
+<div class="mcculloch-figure-grid">
+<figure class="mcculloch-figure"><img src="assets/images/research/mcculloch-pitts/direct-connection1.png" alt="A direct connection from an active source neuron to a target." loading="lazy"><figcaption>A direct connection from an active source neuron to a target.</figcaption></figure>
+<figure class="mcculloch-figure"><img src="assets/images/research/mcculloch-pitts/direct-connection2.png" alt="A hand-drawn direct-connection example with an active input." loading="lazy"><figcaption>A hand-drawn direct-connection example with an active input.</figcaption></figure>
+<figure class="mcculloch-figure"><img src="assets/images/research/mcculloch-pitts/OR1.png" alt="Input-output cases for the disjunction operation." loading="lazy"><figcaption>Input-output cases for the disjunction operation.</figcaption></figure>
+<figure class="mcculloch-figure"><img src="assets/images/research/mcculloch-pitts/OR2.png" alt="A hand-drawn network representation of disjunction." loading="lazy"><figcaption>A hand-drawn network representation of disjunction.</figcaption></figure>
+<figure class="mcculloch-figure"><img src="assets/images/research/mcculloch-pitts/AND.png" alt="Input-output cases for the conjunction operation." loading="lazy"><figcaption>Input-output cases for the conjunction operation.</figcaption></figure>
+<figure class="mcculloch-figure"><img src="assets/images/research/mcculloch-pitts/ANDNOT.png" alt="Input-output cases for conjunction with a vetoing input." loading="lazy"><figcaption>Input-output cases for conjunction with a vetoing input.</figcaption></figure>
+</div>
+
+<p>The thermal-illusion script implements the temporal conditions stated
+in the paper (printed pages 8–9). It is a formal reconstruction of that
+example, not a modern physiological model of thermoreception.</p>
+<h2 id="suggested-next-milestones">Suggested next milestones</h2>
+<ol type="1">
+<li>Verify the four Figure 1 constructions against the original
+diagrams.</li>
+<li>Add a translator from acyclic networks to TPE expression trees
+(Theorem I).</li>
+<li>Add a constructive TPE-to-network compiler (Theorem II).</li>
+<li>Add realizability checks for Theorem III.</li>
+<li>Only then extend the simulator to the paper's cyclic-network
+results.</li>
+</ol>
+<h2 id="primary-source">Primary source</h2>
+<p>W. S. McCulloch and W. Pitts (1943), <em>A Logical Calculus of the
+Ideas Immanent in Nervous Activity</em>, Bulletin of Mathematical
+Biophysics, 5, 115–133.</p>
+<hr />
+<h1 id="stage-5--implementing-temporal-propositional-logic">Stage 5 —
+Implementing temporal propositional logic</h1>
+<figure class="mcculloch-figure"><img src="assets/images/research/mcculloch-pitts/functor.png" alt="The source paper’s definition of the temporal shift functor S." loading="lazy"><figcaption>The source paper’s definition of the temporal shift functor S.</figcaption></figure>
+
+<p><strong>Directory:</strong> <code>logic/</code></p>
+<p><strong>Files:</strong></p>
+<ul>
+<li><code>logic/expressions.py</code></li>
+<li><code>logic/temporal_logic.py</code></li>
+</ul>
+<p><strong>Objective:</strong> Represent and evaluate the temporal
+propositional expressions introduced in the paper.</p>
+<p>At this point, I will have a working network simulator. I now want a
+separate representation of the logical expressions that describe network
+behavior.</p>
+<p>I will begin with the basic expression types:</p>
+<ul>
+<li>Variables.</li>
+<li>Temporal shifts.</li>
+<li>Disjunction.</li>
+<li>Conjunction.</li>
+<li>Conjunction with negation.</li>
+</ul>
+<p>I will represent expressions using Python classes, forming an
+expression tree.</p>
+<p>The evaluator will need access to the activity history of the
+relevant neurons.</p>
+<p>For example:</p>
+<p>[ S(P\land\neg Q) ]</p>
+<p>should be evaluated using the values of (P) and (Q) at the preceding
+time step.</p>
+<p>I will also decide how to handle times before the beginning of a
+simulation. Initially, I may use a false-valued initial history, but I
+will document this as a simulation convention rather than assume that it
+is a universal rule of the original paper.</p>
+<p><strong>Deliverables:</strong></p>
+<ul>
+<li>Expression classes.</li>
+<li>Temporal shift evaluation.</li>
+<li>Boolean operator evaluation.</li>
+<li>Tests for nested temporal expressions.</li>
+</ul>
+<p><strong>Status:</strong> Not started.</p>
+<h1 id="stage-6--reconstructing-figures-1a1d">Stage 6 — Reconstructing
+Figures 1a–1d</h1>
+<p><strong>Directory:</strong> <code>experiments/</code></p>
+<p><strong>Files:</strong></p>
+<ul>
+<li><code>experiments/figure_1a.py</code></li>
+<li><code>experiments/figure_1b.py</code></li>
+<li><code>experiments/figure_1c.py</code></li>
+<li><code>experiments/figure_1d.py</code></li>
+</ul>
+<p><strong>Objective:</strong> Reconstruct the elementary network
+constructions used in Theorem II.</p>
+<p>Theorem II states that every TPE is realizable by a network of order
+zero.</p>
+<p>The authors use four fundamental network constructions in Figures
+1a–1d.</p>
+<p>These correspond to:</p>
+<table>
+<thead>
+<tr>
+<th>Figure</th>
+<th>Logical expression</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1a</td>
+<td>(S(P_1))</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>(S(P_1\lor P_2))</td>
+</tr>
+<tr>
+<td>1c</td>
+<td>(S(P_1\land P_2))</td>
+</tr>
+<tr>
+<td>1d</td>
+<td>(S(P_1\land\neg P_2))</td>
+</tr>
+</tbody>
+</table>
+<p>I will reconstruct each one independently.</p>
+<p>For every figure, I will:</p>
+<ol type="1">
+<li>Examine the original diagram.</li>
+<li>Identify its inputs, neurons, synapses, and delays.</li>
+<li>Write down the logical expression it is intended to realize.</li>
+<li>Construct the corresponding network.</li>
+<li>Test different input combinations.</li>
+<li>Evaluate the logical expression independently.</li>
+<li>Compare the network output with the logical output.</li>
+</ol>
+<p>I will not assume that implementing the correct input-output function
+automatically means I have reproduced the exact topology shown in the
+original figure. I will compare my construction with the paper's
+diagrams and document any differences.</p>
+<p><strong>Local implementation illustrations:</strong> The diagrams
+below show the project’s functional reconstructions; they are not
+screenshots of the original paper’s figures.</p>
+<p><em>Why I am including this passage:</em> These diagrams provide the
+concrete network constructions that I will attempt to reproduce and
+test.</p>
+<p><strong>Deliverables:</strong></p>
+<ul>
+<li>Four network constructions.</li>
+<li>Tests for each construction.</li>
+<li>Comparisons between network outputs and logical evaluations.</li>
+<li>Notes on any differences from the original diagrams.</li>
+</ul>
+<p><strong>Status:</strong> Not started.</p>
+<h1 id="stage-7--reconstructing-the-thermal-illusion">Stage 7 —
+Reconstructing the thermal illusion</h1>
+<p><strong>File:</strong>
+<code>experiments/thermal_illusion.py</code></p>
+<p><strong>Objective:</strong> Reconstruct the paper's example of heat
+sensation produced by transient cooling.</p>
+<p>The paper provides an example involving two types of cutaneous
+receptors: one associated with heat and another associated with
+cold.</p>
+<p>The authors describe a situation in which briefly applying a cold
+object to the skin can produce a sensation of heat, whereas applying it
+for a longer period produces a sensation of cold.</p>
+<p>They express the required behavior using temporal propositional
+expressions and then construct a network using the fundamental elements
+from Figures 1a–1d.</p>
+<p>I will investigate this example as an integration test of the
+simulator and temporal logic implementation.</p>
+<p>The equations, expressed in modern notation, are:</p>
+<p>[ N_3(t)=N_1(t-1)\lor \left[N_2(t-3)\land\neg N_2(t-2)\right] ]</p>
+<p>[ N_4(t)=N_2(t-2)\land N_2(t-1) ]</p>
+<p>Here:</p>
+<ul>
+<li>(N_1) represents heat receptor activity.</li>
+<li>(N_2) represents cold receptor activity.</li>
+<li>(N_3) represents the heat-sensation output.</li>
+<li>(N_4) represents the cold-sensation output.</li>
+</ul>
+<p>I will first implement these equations directly using the temporal
+logic evaluator.</p>
+<p>Then I will construct a neural network that realizes the same
+behavior.</p>
+<p>This gives me two independent ways of calculating the expected
+output, which I can compare.</p>
+<p class="writeup-image-note">The local image set does not include a thermal-illusion figure, so this section remains a written reconstruction plan.</p>
+
+<p><em>Why I am including this passage:</em> This example demonstrates
+how the authors use temporal logical expressions to specify a behavior
+and then construct a network that realizes it.</p>
+<p><strong>Deliverables:</strong></p>
+<ul>
+<li>Direct implementation of the equations.</li>
+<li>Short and long cooling input experiments.</li>
+<li>A network construction.</li>
+<li>Comparison between logical and simulated outputs.</li>
+</ul>
+<p><strong>Status:</strong> Not started.</p>
+<h1 id="stage-8--reconstructing-theorem-i">Stage 8 — Reconstructing
+Theorem I</h1>
+<p><strong>Objective:</strong> Translate a network of order zero into
+temporal propositional expressions.</p>
+<p>Theorem I states:</p>
+<blockquote>
+<p>Every net of order 0 can be solved in terms of temporal propositional
+expressions.</p>
+</blockquote>
+<p>I want to understand the proof before attempting to automate it.</p>
+<p>The central idea is to express the firing condition of a neuron in
+terms of the activity of the neurons connected to it.</p>
+<p>For a neuron with multiple excitatory inputs and inhibitory inputs,
+its firing condition can be represented as a finite disjunction of
+qualifying combinations of excitatory inputs, with inhibitory conditions
+accounted for.</p>
+<p>Because a network of order zero has no cycles, I should be able to
+repeatedly substitute expressions for upstream neurons until I obtain an
+expression in terms of the peripheral afferents.</p>
+<p>I will first work through a small example manually.</p>
+<p>Only after understanding the substitution process will I implement a
+network-to-expression translator.</p>
+<p class="writeup-image-note">Planned illustration: Original paper, page 6, Theorem I and its
+proof. The corresponding image is not in the local project assets yet.</p>
+<p><em>Why I am including this passage:</em> This is the central
+construction I need to understand before implementing the
+translator.</p>
+<p><strong>Deliverables:</strong></p>
+<ul>
+<li>A manually derived example.</li>
+<li>An explanation of the substitution procedure.</li>
+<li>A network-to-TPE translator.</li>
+<li>Tests comparing the resulting expression with network behavior.</li>
+</ul>
+<p><strong>Status:</strong> Not started.</p>
+<h1 id="stage-9--reconstructing-theorem-ii">Stage 9 — Reconstructing
+Theorem II</h1>
+<p><strong>Objective:</strong> Construct a network from a temporal
+propositional expression.</p>
+<p>Theorem II states:</p>
+<blockquote>
+<p>Every TPE is realizable by a net of order zero.</p>
+</blockquote>
+<p>This is the reverse direction of Theorem I.</p>
+<p>The four fundamental constructions from Figures 1a–1d provide the
+building blocks.</p>
+<p>I will investigate how larger expressions can be constructed by
+combining smaller networks.</p>
+<p>For example, if I can construct networks for two expressions, how can
+I combine them to construct a network for their conjunction or
+disjunction?</p>
+<p>I will begin with manually constructed examples before attempting to
+automate the process.</p>
+<p>The eventual goal is an expression-to-network compiler.</p>
+<p class="writeup-image-note">Planned illustration: Original paper, pages 6–7, Theorem II and
+its proof. The corresponding image is not in the local project assets yet.</p>
+<p><em>Why I am including this passage:</em> This proof explains how the
+fundamental network constructions can be combined to realize arbitrary
+expressions generated by the TPE grammar.</p>
+<p><strong>Deliverables:</strong></p>
+<ul>
+<li>Manually constructed examples.</li>
+<li>A reusable composition procedure.</li>
+<li>An expression-to-network compiler.</li>
+<li>Tests comparing the compiled network with direct expression
+evaluation.</li>
+</ul>
+<p><strong>Status:</strong> Not started.</p>
+<h1 id="stage-10--reconstructing-theorem-iii">Stage 10 — Reconstructing
+Theorem III</h1>
+<p><strong>Objective:</strong> Investigate the paper's characterization
+of temporal propositional expressions.</p>
+<p>Theorem III provides a condition for determining whether an
+expression built from propositional variables and logical operations
+qualifies as a TPE.</p>
+<p>The paper relates this condition to truth tables and Hilbert
+disjunctive normal form.</p>
+<p>I will work through the statement and proof before implementing any
+test.</p>
+<p>I want to understand:</p>
+<ul>
+<li>What the condition says.</li>
+<li>Why it is necessary.</li>
+<li>Why it is sufficient.</li>
+<li>How it relates to the TPE grammar.</li>
+<li>Whether I can construct examples that satisfy or violate the
+condition.</li>
+</ul>
+<p>I will then write small programs to evaluate finite expressions and
+compare the results with the grammar-based construction.</p>
+<p>The computational tests will support my understanding, but they will
+not replace the general mathematical proof.</p>
+<p class="writeup-image-note">Planned illustration: Original paper, page 7, Theorem
+III. The corresponding image is not in the local project assets yet.</p>
+<p><strong>Deliverables:</strong></p>
+<ul>
+<li>A mathematical explanation of the characterization.</li>
+<li>Worked examples.</li>
+<li>A truth-table-based experiment.</li>
+<li>Tests for selected expressions.</li>
+</ul>
+<p><strong>Status:</strong> Not started.</p>
+<h1 id="stage-11--investigating-theorems-ivvii">Stage 11 — Investigating
+Theorems IV–VII</h1>
+<p><strong>Objective:</strong> Investigate the equivalences between
+different assumptions about neuronal behavior.</p>
+<p>After establishing the relationship between networks and temporal
+propositional expressions, the paper considers several alternative
+physiological assumptions.</p>
+<p>The authors investigate whether different assumptions can be
+represented by equivalent networks, potentially with different
+timing.</p>
+<p>The results include:</p>
+<table>
+<thead>
+<tr>
+<th>Theorem</th>
+<th>Subject</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IV</td>
+<td>Relative and absolute inhibition are equivalent in the extended
+sense.</td>
+</tr>
+<tr>
+<td>V</td>
+<td>Extinction is equivalent to absolute inhibition.</td>
+</tr>
+<tr>
+<td>VI</td>
+<td>Facilitation and temporal summation may be replaced by spatial
+summation.</td>
+</tr>
+<tr>
+<td>VII</td>
+<td>Alterable synapses can be replaced by circles.</td>
+</tr>
+</tbody>
+</table>
+<p>I will approach these results individually.</p>
+<p>For each one, I will identify the original assumption, the
+alternative assumption, and the construction used to establish
+equivalence.</p>
+<p>Where possible, I will implement small networks under both
+assumptions and compare their behavior.</p>
+<p>I will be careful not to assume that equivalence means identical
+network structure or identical timing. The paper's definition allows for
+a different realizing network and differences in time.</p>
+<p class="writeup-image-note">Planned illustration: Original paper, pages 9–11, Theorems
+IV–VII. The corresponding image is not in the local project assets yet.</p>
+<p><strong>Deliverables:</strong></p>
+<ul>
+<li>A separate explanation of each theorem.</li>
+<li>Small example networks.</li>
+<li>Comparisons of input-output behavior.</li>
+<li>Notes on timing and structural differences.</li>
+</ul>
+<p><strong>Status:</strong> Not started.</p>
+<h1 id="stage-12--investigating-cyclic-networks">Stage 12 —
+Investigating cyclic networks</h1>
+<p><strong>Objective:</strong> Extend the reconstruction to networks
+containing circular paths.</p>
+<p>The earlier results concern networks without cycles.</p>
+<p>The paper then introduces cyclic networks, in which activity can
+propagate around a circuit and regenerate activity in neurons that
+participated in the circuit.</p>
+<p>This changes the nature of the problem.</p>
+<p>In an acyclic network, repeated substitution eventually reaches the
+peripheral inputs. In a cyclic network, the dependence on previous
+activity can extend indefinitely into the past.</p>
+<p>The authors introduce recursive functions to describe these more
+complicated relationships.</p>
+<p>I will need to understand this formalism before extending the
+simulator.</p>
+<p>I expect this stage to require additional machinery for representing
+and investigating cyclic behavior.</p>
+<p class="writeup-image-note">Planned illustration: Original paper, pages 11 onward,
+definition and discussion of cyclic networks. The corresponding image is not in the local project assets yet.</p>
+<p><strong>Deliverables:</strong></p>
+<ul>
+<li>A precise definition of a cyclic network in my own words.</li>
+<li>Examples of networks containing cycles.</li>
+<li>A study of the recursive descriptions used in the paper.</li>
+<li>An extension of the simulator where necessary.</li>
+</ul>
+<p><strong>Status:</strong> Not started.</p>
+<h1 id="stage-13--reconstructing-theorems-viiix">Stage 13 —
+Reconstructing Theorems VIII–X</h1>
+<p><strong>Objective:</strong> Investigate the paper's results
+concerning cyclic networks and recursive functions.</p>
+<p>I will work through these theorems after understanding the preceding
+definitions and constructions.</p>
+<p>For each theorem, I will record:</p>
+<ul>
+<li>The exact statement.</li>
+<li>The definitions required to understand it.</li>
+<li>The proof strategy.</li>
+<li>Any constructions or examples provided by the authors.</li>
+<li>What I can reproduce computationally.</li>
+<li>What remains a mathematical argument rather than a simulation.</li>
+</ul>
+<p>I will not claim to have reproduced a theorem merely because I have
+implemented an example related to it.</p>
+<p><strong>Deliverables:</strong></p>
+<ul>
+<li>Worked notes for Theorems VIII–X.</li>
+<li>Relevant computational experiments.</li>
+<li>A record of which proof steps I have independently
+reconstructed.</li>
+</ul>
+<p><strong>Status:</strong> Not started.</p>
+
+        </article>
+        <p class="writeup-repository writeup-repository-bottom"><a href="https://github.com/Vaibhav-sa30/mculloh-pitts-neuron-reconstruction" target="_blank" rel="noopener noreferrer">View the implementation repository ↗</a></p>
+    </main>
+    <footer class="site-footer">
+        <ul class="links">
+            <li><a href="https://github.com/Vaibhav-sa30" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+            <li><a href="https://linkedin.com/in/vaibhavsatish" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+            <li><a href="mailto:vaibhav.satish.sa8yn@gmail.com">Email</a></li>
+            <li><a href="https://drive.google.com/file/d/13f7uwOhL05hUTzyEP_JaRekRBXZEWbAX/view?usp=sharing" target="_blank" rel="noopener noreferrer">CV</a></li>
+            <li><a href="https://cal.com/vaibhavsatish/30min" target="_blank" rel="noopener noreferrer">Chat</a></li>
+        </ul>
+        <div class="footer-copy">&copy; 2026 Vaibhav Satish</div>
+    </footer>
+</body>
+</html>
