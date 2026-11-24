@@ -25,29 +25,6 @@ const TIMELINE_DATA = [
         }
       },
       {
-        id: "technology-law-research-fellowship-2026",
-        date: "November 2026",
-        title: "Technology Law Research Fellowship — Class of 2026",
-        organization: "Technology Law Research Fellowship",
-        category: "Fellowship & Certifications",
-        summary: "Successfully completed the July-Sept run Technology Law Research Fellowship — Class of 2026, where I studied and presented my work on “Legal Sufficiency of Automated Compliance Attestations | Attestation Without Adjudication Under the EU AI Act and India's AI Governance Architecture | Compliance-as-Code in AI Governance.”",
-        details: [
-          "Studied and presented research on the legal sufficiency of automated compliance attestations.",
-          "Examined attestation without adjudication under the EU AI Act and India's AI governance architecture, including compliance-as-code."
-        ],
-        tags: ["Technology Law", "AI Governance", "Compliance-as-Code", "Fellowship"],
-        links: [
-          {
-            url: "https://drive.google.com/file/d/1ee-Uvi_DpzwOTxNVplMuciPA6wi34NJ6/view?usp=sharing",
-            label: "View Certificate"
-          },
-          {
-            url: "https://docs.google.com/presentation/d/18ed5S3-G7T66WRtclPFI8PVhriPualG0/edit?usp=sharing&ouid=104211545336322804054&rtpof=true&sd=true",
-            label: "View Presentation Slides"
-          }
-        ]
-      },
-      {
         id: "mcculloch-pitts-neuron-2026",
         date: "November 2026",
         title: "Built McCulloch–Pitts Neuron from Scratch",
