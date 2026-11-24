@@ -87,10 +87,7 @@ const TIMELINE_DATA = [
         category: "Fellowship & Certifications",
         summary: "Completed the AI Tech Law Research Fellowship at the Centre for Development of Intellectual Property and Research (CDIPR), examining AI governance, technology law, and the legal sufficiency of automated compliance attestations.",
         details: [
-          "Completed the competitive research fellowship at CDIPR exploring technology law and AI governance boundaries.",
-          "Investigated the legal sufficiency of automated compliance attestations under evolving global regulations.",
-          "Analyzed liability allocation and evidentiary standards for autonomous systems in high-stakes environments.",
-          "Awarded the AI Tech Law Research Fellowship certificate."
+          "Completed the AI Tech Law Research Fellowship at the Centre for Development of Intellectual Property and Research (CDIPR), examining AI governance, technology law, and the legal sufficiency of automated compliance attestations."
         ],
         tags: ["AI Law", "AI Governance", "Compliance", "CDIPR"],
         link: {
