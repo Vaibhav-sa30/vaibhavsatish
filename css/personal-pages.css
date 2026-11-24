@@ -473,6 +473,14 @@
   font-size: 1.35rem;
 }
 
+.working-paper-note {
+  margin: 0 0 1rem;
+  color: var(--ink-faint);
+  font-family: var(--font-sans);
+  font-size: 0.84rem;
+  font-style: italic;
+}
+
 .paper-empty-state {
   color: var(--ink-faint);
   font-family: var(--font-sans);
@@ -571,9 +579,13 @@
 }
 
 .research-dialog {
+  position: fixed;
+  inset: 0;
   width: min(40rem, calc(100vw - 2rem));
+  height: fit-content;
   max-width: none;
   max-height: min(82dvh, 48rem);
+  margin: auto;
   padding: clamp(1.25rem, 4vw, 2rem);
   overflow-y: auto;
   border: 1px solid var(--border);
@@ -639,6 +651,13 @@
   border-top: 1px solid var(--border);
   font-family: var(--font-sans);
   font-size: 0.85rem;
+}
+
+.research-dialog-links-top {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  padding-top: 0;
+  border-top: 0;
 }
 
 .research-dialog-links a {
