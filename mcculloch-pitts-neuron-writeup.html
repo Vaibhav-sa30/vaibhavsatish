@@ -65,7 +65,7 @@
 <p>Before looking at the paper's formal assumptions, I want to establish a few concepts that will appear repeatedly throughout the reconstruction. For obbvious reasons, these are not intended to be a comprehensive introduction to neuroscience or mathematical logic. They are the minimum conceptual foundations I need, to understand the model I am about to implement.</p>
 <h2 id="31-what-is-a-neuron">3.1 What is a neuron?</h2>
 <p>In biological sense, a neuron is a cell that receives signals from other neurons and can transmit an electrical impulse to other cells.</p>
-<p><img src="assets/images/research/mcculloch-pitts/neuron.png" alt="Hand-drawn diagram of a biological neuron" /> A handrawn diagram by me of a biological neuron (made with excalidraw)</p>
+<p class="mcculloch-image-caption"><img src="assets/images/research/mcculloch-pitts/neuron.png" alt="Hand-drawn diagram of a biological neuron" /> A handrawn diagram by me of a biological neuron (made with excalidraw)</p>
 <p>The goal for me is to focus on a simplified representation of this process. A neuron receives inputs through connections called synapses. The incoming signals contribute to whether the neuron becomes active and produces an impulse of its own.</p>
 <p>The model developed in the paper abstracts away many biological details. The purpose was to study the formal relationships between neuronal activity and the structure of a network. I will follow that abstraction.</p>
 <h2 id="32-what-is-a-synapse">3.2 What is a synapse?</h2>
@@ -188,7 +188,7 @@ N_i(t) =
 \end{cases}
 </annotation></semantics></math></p>
 <p>This gives me a way to describe the activity of a network using Boolean-valued functions of time.</p>
-<p><img src="assets/images/research/mcculloch-pitts/neuron_logic.png" alt="Neuron Logic" /> Representation of a propositional neuron N.</p>
+<p class="mcculloch-image-caption"><img src="assets/images/research/mcculloch-pitts/neuron_logic.png" alt="Neuron Logic" /> Representation of a propositional neuron N.</p>
 <p>The next question is how the activity of one neuron depends on the activity of other neurons.</p>
 <p>Consider a few simple possibilities:</p>
 <div style="display: flex; gap: 20px; align-items: center;">

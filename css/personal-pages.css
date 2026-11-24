@@ -673,7 +673,7 @@
 }
 
 .research-writeup-page {
-  width: min(100% - 2rem, 860px);
+  width: min(100% - 2rem, 800px);
   margin: 0 auto;
   padding: 2.25rem 0 5rem;
 }
@@ -704,36 +704,69 @@
 .mcculloch-writeup {
   color: var(--ink);
   font-family: var(--font-serif);
-  font-size: 1.05rem;
-  line-height: 1.75;
+  font-size: clamp(1rem, 1.03rem + 0.12vw, 1.1rem);
+  line-height: 1.72;
   overflow-wrap: anywhere;
 }
 
 .mcculloch-writeup h1,
 .mcculloch-writeup h2,
-.mcculloch-writeup h3 {
-  margin: 2.6rem 0 0.8rem;
+.mcculloch-writeup h3,
+.mcculloch-writeup h4 {
   line-height: 1.25;
+  font-weight: 400;
 }
 
-.mcculloch-writeup h1 {
+.mcculloch-writeup h1:first-of-type {
   margin-top: 0;
-  font-size: clamp(2rem, 5vw, 3.2rem);
+  margin-bottom: 0.8rem;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+}
+
+.mcculloch-writeup h1:not(:first-of-type) {
+  margin: 2.65rem 0 0.75rem;
+  font-size: clamp(1.55rem, 2.4vw, 1.85rem);
 }
 
 .mcculloch-writeup h2 {
-  font-size: clamp(1.5rem, 3.5vw, 2rem);
+  margin: 2rem 0 0.6rem;
+  font-size: clamp(1.2rem, 1.8vw, 1.4rem);
 }
 
 .mcculloch-writeup h3 {
-  font-size: 1.35rem;
+  margin: 1.6rem 0 0.5rem;
+  font-size: 1.15rem;
+}
+
+.mcculloch-writeup h4 {
+  margin: 1.3rem 0 0.4rem;
+  font-size: 1.02rem;
+}
+
+.mcculloch-writeup h1:first-of-type + p {
+  margin: 0 0 1.1rem;
+  color: var(--ink-muted);
+  font-size: 1.12rem;
+  line-height: 1.5;
+}
+
+.mcculloch-writeup h1:first-of-type + p strong {
+  font-weight: 400;
+}
+
+.mcculloch-writeup h1:first-of-type + p + p {
+  margin: 0 0 1.8rem;
+  color: var(--ink-faint);
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  line-height: 1.6;
 }
 
 .mcculloch-writeup p,
 .mcculloch-writeup ul,
 .mcculloch-writeup ol,
 .mcculloch-writeup blockquote {
-  margin: 0.85rem 0;
+  margin: 0.8rem 0;
 }
 
 .mcculloch-writeup ul,
@@ -742,7 +775,7 @@
 }
 
 .mcculloch-writeup li + li {
-  margin-top: 0.3rem;
+  margin-top: 0.35rem;
 }
 
 .mcculloch-writeup a {
@@ -765,8 +798,8 @@
   border-left: 2px solid var(--accent);
   background: var(--surface);
   font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-  font-size: 0.84rem;
-  line-height: 1.6;
+  font-size: 0.82rem;
+  line-height: 1.55;
 }
 
 .mcculloch-writeup :not(pre) > code {
@@ -784,6 +817,14 @@
   border-collapse: collapse;
   font-family: var(--font-sans);
   font-size: 0.88rem;
+}
+
+.mcculloch-writeup math[display="block"] {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  font-size: 0.96em;
 }
 
 .mcculloch-writeup th,
@@ -804,27 +845,23 @@
   color: var(--ink-muted);
 }
 
-.mcculloch-figure {
-  margin: 1.4rem 0 2rem;
-  text-align: center;
-}
-
-.mcculloch-figure img {
+.mcculloch-writeup img {
   display: block;
   width: auto;
-  max-width: 100%;
+  max-width: min(100%, 44rem);
   max-height: 28rem;
   height: auto;
-  margin: 0 auto;
+  margin: 1.25rem auto;
   object-fit: contain;
 }
 
-.mcculloch-figure figcaption {
-  margin-top: 0.55rem;
+.mcculloch-writeup p.mcculloch-image-caption {
+  margin: 1.2rem auto 1.6rem;
+  text-align: center;
   color: var(--ink-faint);
   font-family: var(--font-sans);
-  font-size: 0.75rem;
-  line-height: 1.45;
+  font-size: 0.82rem;
+  line-height: 1.5;
 }
 
 @media (max-width: 600px) {
@@ -846,8 +883,13 @@
   }
 
   .research-writeup-page {
-    width: min(100% - 1.25rem, 860px);
+    width: min(100% - 1.25rem, 800px);
     padding-top: 1.5rem;
+  }
+
+  .mcculloch-writeup pre {
+    padding: 0.85rem;
+    font-size: 0.76rem;
   }
 
 }
