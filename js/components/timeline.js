@@ -61,17 +61,40 @@ const TIMELINE_DATA = [
         title: "Independent AI Safety Research: CoT Monitorability & Evaluation",
         organization: "Aicademia Research & Independent Publication",
         category: "Writing & Publications",
-        summary: "Independent AI Safety research at Aicademia examines whether chain-of-thought traces faithfully reveal agent reasoning and evaluates their monitorability, alongside published work on machine unlearning.",
-        details: [
-          "Conducted independent research investigations into Chain-of-Thought (CoT) monitorability, model controllability, scalable oversight, and mechanistic interpretability.",
-          "Published the foundational research article 'CoT Monitorability and Controllability', critiquing whether hidden reasoning traces can be reliably exploited for safety monitoring.",
-          "Authored exhaustive field guides: 'Everything Happening in Machine Unlearning As of May 2026' and 'Ground Up Understanding of Transformers'.",
-          "Active participant in technical reading groups, mechanistic interpretability seminars, and safety community discussions."
-        ],
-        tags: ["CoT Monitorability", "Scalable Oversight", "Machine Unlearning", "Mechanistic Interpretability"],
+        summary: "Published a monitorability and controllability field study article examining whether chain-of-thought traces faithfully reveal agent reasoning as capability increases.",
+        details: [],
+        tags: [],
         link: {
-          url: "writings.html",
-          label: "View Writings"
+          url: "https://vaibhavsatish.substack.com/p/can-we-still-monitor-what-ai-models?r=rcs93",
+          label: "View Writeup"
+        }
+      },
+      {
+        id: "brain-understanding-essay-2026",
+        date: "August 2026",
+        title: "We Know So Much About the Brain. So Why Don't We Understand It?",
+        organization: "Independent Writing",
+        category: "Writing & Publications",
+        summary: "Explored why extensive advances in neuroscience have not yet yielded a complete understanding of the brain.",
+        details: [],
+        tags: [],
+        link: {
+          url: "brain-consciousness.html",
+          label: "View Article"
+        }
+      },
+      {
+        id: "social-blind-spot-essay-2026",
+        date: "August 2026",
+        title: "The Social Blind Spot: Why AGI Cannot Be Measured Without Social Cognition",
+        organization: "Independent Writing",
+        category: "Writing & Publications",
+        summary: "Examined how social cognition benchmarks expose blind spots in measuring progress toward AGI.",
+        details: [],
+        tags: [],
+        link: {
+          url: "social-cognition-agi.html",
+          label: "View Article"
         }
       },
       {
@@ -132,6 +155,20 @@ const TIMELINE_DATA = [
         link: {
           url: null,
           label: null
+        }
+      },
+      {
+        id: "machine-unlearning-essay-2026",
+        date: "May 2026",
+        title: "The Art of Forgetting: Everything Happening in Machine Unlearning Right Now",
+        organization: "Independent Writing",
+        category: "Writing & Publications",
+        summary: "Surveyed machine unlearning research, from privacy and diffusion models to autonomous agents.",
+        details: [],
+        tags: [],
+        link: {
+          url: "machine-unlearning.html",
+          label: "View Article"
         }
       },
       {
@@ -197,9 +234,9 @@ const TIMELINE_DATA = [
         id: "privacy-xai-iomt-2026",
         date: "February – June 2026",
         title: "Privacy-Preserving XAI in IoMT Wearables",
-        organization: "CDIPR Collaborative Research",
+        organization: "Independent Research",
         category: "Research",
-        summary: "Co-authored a privacy-preserving XAI architecture through CDIPR collaborative research, combining localized Gemma 4 oversight with privacy-preserving telemetry for clinical wearable biosignals.",
+        summary: "Co-authored a privacy-preserving XAI architecture for clinical wearable biosignals, combining localized Gemma 4 oversight with privacy-preserving telemetry.",
         details: [
           "Co-authored working paper investigating explainable AI, telemetry privacy, and safety boundaries in Internet of Medical Things (IoMT) devices.",
           "Architected a privacy-preserving framework integrating on-device Gemma 4 models to generate longitudinal clinical summaries from sensitive continuous telemetry.",
@@ -208,8 +245,8 @@ const TIMELINE_DATA = [
         ],
         tags: ["IoMT", "Explainable AI", "Gemma 4", "LLM-as-a-Judge", "Clinical Safety"],
         link: {
-          url: "research.html",
-          label: "View Research Page"
+          url: "https://www.kaggle.com/code/vaibhavsatish/iomt-data",
+          label: "View Kaggle NB"
         }
       },
       {
