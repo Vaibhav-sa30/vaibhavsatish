@@ -375,7 +375,10 @@
 .interest-subnav a:focus-visible,
 .interest-section-links a:focus-visible,
 .about-coursework-link a:focus-visible,
-.secondary-destination a:focus-visible {
+.secondary-destination a:focus-visible,
+.research-timeline-trigger:focus-visible,
+.research-dialog-close:focus-visible,
+.research-dialog-links a:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 4px;
 }
@@ -459,6 +462,208 @@
 .interest-content.is-switching {
   opacity: 0.35;
   transform: translateY(4px);
+}
+
+.paper-section + .paper-section {
+  margin-top: 2.25rem;
+}
+
+.paper-section-title {
+  margin-bottom: 0.75rem;
+  font-size: 1.35rem;
+}
+
+.paper-empty-state {
+  color: var(--ink-faint);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+}
+
+.research-timeline {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 1.1rem;
+}
+
+.research-timeline::before {
+  position: absolute;
+  top: 0.6rem;
+  bottom: 0.7rem;
+  left: 0.23rem;
+  width: 1px;
+  background: var(--border);
+  content: "";
+}
+
+.research-timeline-item {
+  position: relative;
+  margin: 0;
+}
+
+.research-timeline-item + .research-timeline-item {
+  margin-top: 0.35rem;
+}
+
+.research-timeline-item::before {
+  position: absolute;
+  top: 1rem;
+  left: -1.04rem;
+  width: 0.45rem;
+  height: 0.45rem;
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  background: var(--page);
+  content: "";
+  z-index: 1;
+}
+
+.research-timeline-trigger {
+  display: block;
+  width: 100%;
+  padding: 0.8rem 0.9rem;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 140ms ease;
+}
+
+.research-timeline-trigger:hover {
+  background: var(--surface);
+}
+
+.research-timeline-date {
+  display: block;
+  margin-bottom: 0.3rem;
+  color: var(--ink-faint);
+  font-family: var(--font-sans);
+  font-size: 0.76rem;
+  letter-spacing: 0.025em;
+}
+
+.research-timeline-title {
+  display: block;
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-size: 1.13rem;
+  line-height: 1.4;
+}
+
+.research-timeline-summary {
+  display: block;
+  max-width: 68ch;
+  margin-top: 0.35rem;
+  color: var(--ink-muted);
+  font-family: var(--font-serif);
+  font-size: 0.96rem;
+  line-height: 1.55;
+}
+
+.research-timeline-hint {
+  display: block;
+  margin-top: 0.45rem;
+  color: var(--accent);
+  font-family: var(--font-sans);
+  font-size: 0.76rem;
+}
+
+.research-dialog {
+  width: min(40rem, calc(100vw - 2rem));
+  max-width: none;
+  max-height: min(82dvh, 48rem);
+  padding: clamp(1.25rem, 4vw, 2rem);
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--page);
+  color: var(--ink);
+  box-shadow: 0 1.5rem 4rem rgba(34, 30, 25, 0.2);
+}
+
+.research-dialog::backdrop {
+  background: rgba(35, 31, 27, 0.42);
+}
+
+.research-dialog-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.research-dialog-close {
+  flex: 0 0 auto;
+  width: 2rem;
+  height: 2rem;
+  margin: -0.25rem -0.35rem 0 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink-muted);
+  cursor: pointer;
+  font: 1.5rem/1 var(--font-sans);
+}
+
+.research-dialog h2,
+.research-dialog h3 {
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.35rem, 4vw, 1.8rem);
+  line-height: 1.25;
+}
+
+.research-dialog p,
+.research-dialog-details {
+  color: var(--ink-muted);
+  font-family: var(--font-serif);
+  font-size: 0.98rem;
+  line-height: 1.6;
+}
+
+.research-dialog-details {
+  margin: 0.8rem 0 0;
+  padding-left: 1.2rem;
+}
+
+.research-dialog-details li + li {
+  margin-top: 0.45rem;
+}
+
+.research-dialog-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem 1.1rem;
+  margin-top: 1.25rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--border);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+}
+
+.research-dialog-links a {
+  color: var(--accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 600px) {
+  .research-timeline {
+    padding-left: 0.85rem;
+  }
+
+  .research-timeline-item::before {
+    left: -0.79rem;
+  }
+
+  .research-timeline-trigger {
+    padding: 0.75rem 0.6rem;
+  }
+
+  .research-dialog {
+    max-height: 88dvh;
+    padding: 1.2rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

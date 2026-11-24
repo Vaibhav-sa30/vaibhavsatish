@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="css/personal-pages.css">
     <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
     <script src="js/interests-tabs.js" defer></script>
+    <script src="js/research-dialogs.js" defer></script>
     <script src="js/artifact-subscribe.js" defer></script>
 </head>
 
@@ -34,9 +35,96 @@
             <a href="artifacts.html">Artifacts</a>
         </nav>
         <div id="interest-content" class="interest-content" data-tab-content aria-busy="false">
-            <div class="interest-empty-state">
-                <p>I don’t have any papers or preprints listed here yet.</p>
-            </div>
+            <section class="paper-section" aria-labelledby="published-heading">
+                <h2 id="published-heading" class="paper-section-title">Published</h2>
+                <p class="paper-empty-state">No published papers yet.</p>
+            </section>
+
+            <section class="paper-section" aria-labelledby="preprints-heading">
+                <h2 id="preprints-heading" class="paper-section-title">Preprints</h2>
+                <p class="paper-empty-state">No preprints yet.</p>
+            </section>
+
+            <section class="paper-section" aria-labelledby="working-papers-heading">
+                <h2 id="working-papers-heading" class="paper-section-title">Working papers</h2>
+                <ol class="research-timeline">
+                    <li class="research-timeline-item">
+                        <button class="research-timeline-trigger" type="button" data-dialog-target="paper-cdipr-attestations">
+                            <time class="research-timeline-date" datetime="2026-07">July–September 2026</time>
+                            <span class="research-timeline-title">Compliance-as-Code in AI Governance: Legal Sufficiency of Automated Compliance Attestations, Attestation Without Adjudication Under the EU AI Act and India’s AI Governance Architecture</span>
+                            <span class="research-timeline-hint">View paper details <span aria-hidden="true">↗</span></span>
+                        </button>
+                    </li>
+                    <li class="research-timeline-item">
+                        <button class="research-timeline-trigger" type="button" data-dialog-target="paper-raiflow">
+                            <time class="research-timeline-date" datetime="2026-04">April 2026</time>
+                            <span class="research-timeline-title">RaiFlow: Compliance-as-Code Framework</span>
+                            <span class="research-timeline-summary">Developed through CDIPR research and open-source engineering, translating EU AI Act and NIST AI RMF requirements into declarative CI/CD verification pipelines.</span>
+                            <span class="research-timeline-hint">View paper details <span aria-hidden="true">↗</span></span>
+                        </button>
+                    </li>
+                    <li class="research-timeline-item">
+                        <button class="research-timeline-trigger" type="button" data-dialog-target="paper-transparency-gap">
+                            <time class="research-timeline-date" datetime="2026-01">January–March 2026</time>
+                            <span class="research-timeline-title">The Transparency Gap Thesis: Auditing Algorithmic Moderation</span>
+                            <span class="research-timeline-summary">At CDIPR, formulated the thesis on accountability failures in opaque platform moderation and benchmarked moderation systems through an ablation study.</span>
+                            <span class="research-timeline-hint">View paper details <span aria-hidden="true">↗</span></span>
+                        </button>
+                    </li>
+                </ol>
+            </section>
+
+            <dialog class="research-dialog" id="paper-cdipr-attestations" aria-labelledby="paper-cdipr-attestations-title">
+                <div class="research-dialog-header">
+                    <p class="research-timeline-date">July–September 2026 · Working paper</p>
+                    <button class="research-dialog-close" type="button" data-dialog-close aria-label="Close dialog" autofocus>×</button>
+                </div>
+                <h3 id="paper-cdipr-attestations-title">Compliance-as-Code in AI Governance</h3>
+                <p>Working paper on the legal sufficiency of automated compliance attestations and attestation without adjudication under the EU AI Act and India’s AI governance architecture.</p>
+                <div class="research-dialog-links">
+                    <a href="https://docs.google.com/document/d/1hnF92Q7qo8Hk64svdUmpZivN1_M8TjQf/edit?usp=sharing&amp;ouid=104211545336322804054&amp;rtpof=true&amp;sd=true" target="_blank" rel="noopener noreferrer">Paper ↗</a>
+                    <a href="https://docs.google.com/presentation/d/18ed5S3-G7T66WRtclPFI8PVhriPualG0/edit?usp=sharing&amp;ouid=104211545336322804054&amp;rtpof=true&amp;sd=true" target="_blank" rel="noopener noreferrer">Presentation slides ↗</a>
+                </div>
+            </dialog>
+
+            <dialog class="research-dialog" id="paper-raiflow" aria-labelledby="paper-raiflow-title">
+                <div class="research-dialog-header">
+                    <p class="research-timeline-date">April 2026 · Working paper</p>
+                    <button class="research-dialog-close" type="button" data-dialog-close aria-label="Close dialog" autofocus>×</button>
+                </div>
+                <h3 id="paper-raiflow-title">RaiFlow: Compliance-as-Code Framework</h3>
+                <p>Authored a working paper at CDIPR proposing a Compliance-as-Code framework bridging high-level regulatory statutes and production CI/CD software pipelines.</p>
+                <ul class="research-dialog-details">
+                    <li>Translated multi-jurisdictional AI safety mandates (EU AI Act, NIST AI RMF) into declarative YAML validation schemas.</li>
+                    <li>Engineered an automated repository analyzer executing a seven-stage validation pipeline within GitHub Actions.</li>
+                    <li>Integrated localized semantic LLM-as-a-Judge evaluators for automated algorithmic compliance verification.</li>
+                    <li>Built a real-time FastAPI dashboard with Server-Sent Events (SSE) telemetry to visualize compliance manifests across pull requests.</li>
+                </ul>
+                <div class="research-dialog-links">
+                    <a href="https://docs.google.com/document/d/1k1nOjDDUMOq2nCwQvhZ6RzWLQZxX_fE7/edit?usp=sharing&amp;ouid=104211545336322804054&amp;rtpof=true&amp;sd=true" target="_blank" rel="noopener noreferrer">Paper ↗</a>
+                    <a href="https://docs.google.com/presentation/d/1cYpZy9-Rm7vA2ZfOitO2NcgoJ2zvySzQ/edit?usp=sharing&amp;ouid=104211545336322804054&amp;rtpof=true&amp;sd=true" target="_blank" rel="noopener noreferrer">Presentation slides ↗</a>
+                    <a href="https://github.com/Agicademia/RaiFlow" target="_blank" rel="noopener noreferrer">Repository ↗</a>
+                </div>
+            </dialog>
+
+            <dialog class="research-dialog" id="paper-transparency-gap" aria-labelledby="paper-transparency-gap-title">
+                <div class="research-dialog-header">
+                    <p class="research-timeline-date">January–March 2026 · Working paper</p>
+                    <button class="research-dialog-close" type="button" data-dialog-close aria-label="Close dialog" autofocus>×</button>
+                </div>
+                <h3 id="paper-transparency-gap-title">The Transparency Gap Thesis: Auditing Algorithmic Moderation</h3>
+                <p>Authored a working paper at CDIPR establishing the Transparency Gap Thesis on opacity and accountability breakdowns in large-scale platform enforcement.</p>
+                <ul class="research-dialog-details">
+                    <li>Analyzed trade-offs between predictive throughput maximization and ethical interpretability.</li>
+                    <li>Conducted an ablation study benchmarking black-box classification features, achieving 0.83 Macro-F1.</li>
+                    <li>Formulated architectural specifications for transparent algorithmic fallback protocols under disputed edge cases.</li>
+                    <li>Presented analytical findings and governance recommendations to the academic research community at CDIPR.</li>
+                </ul>
+                <div class="research-dialog-links">
+                    <a href="https://docs.google.com/document/d/1AvANA5Hvz6AGAWclNGGH1K_4qqjp-kbI/edit?usp=sharing&amp;ouid=104211545336322804054&amp;rtpof=true&amp;sd=true" target="_blank" rel="noopener noreferrer">Paper ↗</a>
+                    <a href="https://github.com/Vaibhav-sa30/Auditing-Algorithmic-Moderation" target="_blank" rel="noopener noreferrer">Repository ↗</a>
+                </div>
+            </dialog>
         </div>
     </main>
 

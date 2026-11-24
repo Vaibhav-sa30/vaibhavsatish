@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="css/personal-pages.css">
     <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
     <script src="js/interests-tabs.js" defer></script>
+    <script src="js/research-dialogs.js" defer></script>
     <script src="js/artifact-subscribe.js" defer></script>
 </head>
 
@@ -33,34 +34,128 @@
             <a href="artifacts.html">Artifacts</a>
         </nav>
         <div id="interest-content" class="interest-content" data-tab-content aria-busy="false">
-            <ul class="pub-list">
-                <li class="pub-item">
-                    <span class="pub-title"><a href="machine-unlearning.html" class="pub-title-link">Machine Unlearning: Privacy-Preserving Model Modification</a></span>
-                    <span class="pub-venue">ACM Responsible AI Summer School, IIT Madras | 2024</span>
-                    <p class="pub-description">Research on selectively removing data influences from trained models while preserving their broader capabilities.</p>
-                    <div class="pub-links">
-                        <a href="https://docs.google.com/presentation/d/1tMO61-KeBU8xgmbu_5IAUn2jyX4l_sHxMts6xDnpSaU/edit?usp=sharing" class="pub-link" target="_blank" rel="noopener noreferrer">Slides</a>
-                        <a href="https://github.com/Vaibhav-sa30/acm_project" class="pub-link" target="_blank" rel="noopener noreferrer">Repo</a>
-                        <a href="https://arxiv.org/abs/2205.08096" class="pub-link" target="_blank" rel="noopener noreferrer">Reference paper</a>
-                    </div>
+            <ol class="research-timeline">
+                <li class="research-timeline-item">
+                    <button class="research-timeline-trigger" type="button" data-dialog-target="implementation-mcculloch-pitts">
+                        <time class="research-timeline-date" datetime="2026-11">November 2026</time>
+                        <span class="research-timeline-title">McCulloch–Pitts Neuron Reconstruction</span>
+                        <span class="research-timeline-summary">Reconstructed the 1943 neuron paper from first principles, translating its assumptions into temporal propositional logic and implementing threshold neurons, excitatory and inhibitory synapses, delayed network updates, logic-gate experiments, and simulations in Python.</span>
+                        <span class="research-timeline-hint">View implementation details <span aria-hidden="true">↗</span></span>
+                    </button>
                 </li>
-                <li class="pub-item">
-                    <span class="pub-title"><a href="https://github.com/Vaibhav-sa30/gpt5-red-teaming" class="pub-title-link" target="_blank" rel="noopener noreferrer">AI Safety through Red Teaming: GPT-5 Vulnerability Assessment</a></span>
-                    <span class="pub-venue">Vulnerability Research | 2024</span>
-                    <p class="pub-description">A red-teaming project investigating safety vulnerabilities in a frontier language model.</p>
-                    <div class="pub-links"><a href="https://github.com/Vaibhav-sa30/gpt5-red-teaming" class="pub-link" target="_blank" rel="noopener noreferrer">Repo</a></div>
+                <li class="research-timeline-item">
+                    <button class="research-timeline-trigger" type="button" data-dialog-target="implementation-neuroreset">
+                        <time class="research-timeline-date" datetime="2025-08">August 2025</time>
+                        <span class="research-timeline-title">NeuroReset: LLM Unlearning Replication</span>
+                        <span class="research-timeline-summary">Independently replicated and evaluated the NeuroReset dual-phase LLM unlearning method on OLMo-1B using LoRA, inverse-gradient optimization, and membership inference attacks.</span>
+                        <span class="research-timeline-hint">View implementation details <span aria-hidden="true">↗</span></span>
+                    </button>
                 </li>
-                <li class="pub-item">
-                    <span class="pub-title"><a href="https://github.com/Vaibhav-sa30/acm_project" class="pub-title-link" target="_blank" rel="noopener noreferrer">NeuroReset: LLM Unlearning via Dual Phase Mixed Methodology</a></span>
-                    <span class="pub-venue">Academic Project | 2024</span>
-                    <p class="pub-description">A dual-phase approach to removing targeted information from language models while preserving general capabilities.</p>
-                    <div class="pub-links"><a href="https://github.com/Vaibhav-sa30/acm_project" class="pub-link" target="_blank" rel="noopener noreferrer">Repo</a></div>
+                <li class="research-timeline-item">
+                    <button class="research-timeline-trigger" type="button" data-dialog-target="implementation-acm-unlearning">
+                        <time class="research-timeline-date" datetime="2024-06">June 2024</time>
+                        <span class="research-timeline-title">ACM India &amp; IIT Madras Responsible AI Project</span>
+                        <span class="research-timeline-summary">Led the Responsible AI project, replicating the Incompetent Teacher unlearning method across ResNet and CoAtNet on CIFAR-10.</span>
+                        <span class="research-timeline-hint">View implementation details <span aria-hidden="true">↗</span></span>
+                    </button>
                 </li>
-                <li class="pub-item">
-                    <span class="pub-title"><a href="https://github.com/Vaibhav-sa30" class="pub-title-link" target="_blank" rel="noopener noreferrer">Automated Content Moderation System Analysis</a></span>
-                    <span class="pub-venue">Ongoing Analysis | 2024</span>
+                <li class="research-timeline-item">
+                    <button class="research-timeline-trigger" type="button" data-dialog-target="implementation-gpt5-red-team">
+                        <time class="research-timeline-date" datetime="2024">2024</time>
+                        <span class="research-timeline-title">AI Safety through Red Teaming: GPT-5 Vulnerability Assessment</span>
+                        <span class="research-timeline-summary">A red-teaming project investigating safety vulnerabilities in a frontier language model.</span>
+                        <span class="research-timeline-hint">View implementation details <span aria-hidden="true">↗</span></span>
+                    </button>
                 </li>
-            </ul>
+                <li class="research-timeline-item">
+                    <button class="research-timeline-trigger" type="button" data-dialog-target="implementation-content-moderation">
+                        <time class="research-timeline-date" datetime="2024">2024</time>
+                        <span class="research-timeline-title">Automated Content Moderation System Analysis</span>
+                        <span class="research-timeline-summary">Investigated how multi-modal signals (text, engagement, identity features) interact with internal platform features to shape automated content moderation outcomes.</span>
+                        <span class="research-timeline-hint">View implementation details <span aria-hidden="true">↗</span></span>
+                    </button>
+                </li>
+            </ol>
+
+            <dialog class="research-dialog" id="implementation-mcculloch-pitts" aria-labelledby="implementation-mcculloch-pitts-title">
+                <div class="research-dialog-header">
+                    <p class="research-timeline-date">November 2026 · Independent implementation</p>
+                    <button class="research-dialog-close" type="button" data-dialog-close aria-label="Close dialog" autofocus>×</button>
+                </div>
+                <h2 id="implementation-mcculloch-pitts-title">McCulloch–Pitts Neuron Reconstruction</h2>
+                <p>Reconstructed McCulloch and Pitts’s 1943 neuron paper from first principles, translating its assumptions into temporal propositional logic and implementing threshold neurons, excitatory and inhibitory synapses, delayed network updates, logic-gate experiments, and simulations in Python.</p>
+                <ul class="research-dialog-details">
+                    <li>Worked through the paper’s assumptions and mathematical arguments, distinguishing interpretation from results implemented or tested.</li>
+                    <li>Built computational models to explore neuron firing, synaptic delays, synchronous network updates, and logic-gate behavior.</li>
+                </ul>
+                <div class="research-dialog-links">
+                    <a href="https://github.com/Vaibhav-sa30/mculloh-pitts-neuron-reconstruction" target="_blank" rel="noopener noreferrer">Repository ↗</a>
+                </div>
+            </dialog>
+
+            <dialog class="research-dialog" id="implementation-neuroreset" aria-labelledby="implementation-neuroreset-title">
+                <div class="research-dialog-header">
+                    <p class="research-timeline-date">August 2025 · Independent replication</p>
+                    <button class="research-dialog-close" type="button" data-dialog-close aria-label="Close dialog" autofocus>×</button>
+                </div>
+                <h2 id="implementation-neuroreset-title">NeuroReset: LLM Unlearning Replication</h2>
+                <p>Independently replicated and evaluated the NeuroReset dual-phase LLM unlearning method on OLMo-1B using LoRA, inverse-gradient optimization, and membership inference attacks.</p>
+                <ul class="research-dialog-details">
+                    <li>Replicated and empirically verified the NeuroReset dual-phase LLM unlearning architecture.</li>
+                    <li>Conducted experiments on OLMo-1B parameter weights using Low-Rank Adaptation (LoRA).</li>
+                    <li>Implemented a Forget-versus-Retain optimization routine balancing targeted degradation against linguistic retention.</li>
+                    <li>Investigated Fisher Information matrix constraints to protect salient general knowledge circuits during inverse-gradient updates.</li>
+                    <li>Evaluated unlearning efficacy via Membership Inference Attacks (MIA) and benchmarked retention against MMLU.</li>
+                </ul>
+                <div class="research-dialog-links">
+                    <a href="https://github.com/Vaibhav-sa30/Machine-Unlearning" target="_blank" rel="noopener noreferrer">Repository ↗</a>
+                </div>
+            </dialog>
+
+            <dialog class="research-dialog" id="implementation-acm-unlearning" aria-labelledby="implementation-acm-unlearning-title">
+                <div class="research-dialog-header">
+                    <p class="research-timeline-date">June 2024 · ACM India &amp; IIT Madras Summer School</p>
+                    <button class="research-dialog-close" type="button" data-dialog-close aria-label="Close dialog" autofocus>×</button>
+                </div>
+                <h2 id="implementation-acm-unlearning-title">Incompetent Teacher Unlearning Replication</h2>
+                <p>Led the ACM India and IIT Madras Summer School Responsible AI project, replicating the Incompetent Teacher unlearning method across ResNet and CoAtNet on CIFAR-10.</p>
+                <ul class="research-dialog-details">
+                    <li>Selected for the ACM Summer School on Responsible AI hosted at IIT Madras, marking the foundational transition into AI Safety.</li>
+                    <li>Appointed Project Lead for the Machine Unlearning team replicating the Incompetent Teacher negative-gradient paradigm.</li>
+                    <li>Synthesized negative gradient learning signals to remove sensitive training subsets while preventing catastrophic collapse.</li>
+                    <li>Benchmarked forgetting kinetics and classification retention across ResNet and CoAtNet hybrid vision transformers using CIFAR-10.</li>
+                    <li>Delivered an oral research presentation defending replication findings before faculty and senior research scientists.</li>
+                </ul>
+                <div class="research-dialog-links">
+                    <a href="https://arxiv.org/abs/2205.08096" target="_blank" rel="noopener noreferrer">Paper ↗</a>
+                    <a href="https://drive.google.com/file/d/1vak_v-mJDhNPkR_LRcqdzGqydpdov462/view?usp=sharing" target="_blank" rel="noopener noreferrer">Presentation slides ↗</a>
+                    <a href="https://github.com/Vaibhav-sa30/acm_project" target="_blank" rel="noopener noreferrer">Repository ↗</a>
+                </div>
+            </dialog>
+
+            <dialog class="research-dialog" id="implementation-gpt5-red-team" aria-labelledby="implementation-gpt5-red-team-title">
+                <div class="research-dialog-header">
+                    <p class="research-timeline-date">2024 · Vulnerability research</p>
+                    <button class="research-dialog-close" type="button" data-dialog-close aria-label="Close dialog" autofocus>×</button>
+                </div>
+                <h2 id="implementation-gpt5-red-team-title">AI Safety through Red Teaming: GPT-5 Vulnerability Assessment</h2>
+                <p>A red-teaming project investigating safety vulnerabilities in a frontier language model.</p>
+                <div class="research-dialog-links">
+                    <a href="https://github.com/Vaibhav-sa30/gpt5-red-teaming" target="_blank" rel="noopener noreferrer">Repository ↗</a>
+                </div>
+            </dialog>
+
+            <dialog class="research-dialog" id="implementation-content-moderation" aria-labelledby="implementation-content-moderation-title">
+                <div class="research-dialog-header">
+                    <p class="research-timeline-date">2024 · Ongoing analysis</p>
+                    <button class="research-dialog-close" type="button" data-dialog-close aria-label="Close dialog" autofocus>×</button>
+                </div>
+                <h2 id="implementation-content-moderation-title">Automated Content Moderation System Analysis</h2>
+                <p>Investigated how multi-modal signals (text, engagement, identity features) interact with internal platform features to shape automated content moderation outcomes.</p>
+                <div class="research-dialog-links">
+                    <a href="https://github.com/Vaibhav-sa30" target="_blank" rel="noopener noreferrer">GitHub profile ↗</a>
+                </div>
+            </dialog>
         </div>
     </main>
 
