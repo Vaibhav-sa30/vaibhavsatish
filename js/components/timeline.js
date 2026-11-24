@@ -53,14 +53,15 @@ const TIMELINE_DATA = [
         title: "Built McCulloch–Pitts Neuron from Scratch",
         organization: "Independent Engineering",
         category: "Engineering",
-        summary: "Built a McCulloch–Pitts neuron from scratch as an independent engineering project, using threshold logic to model artificial neural computation.",
+        summary: "Reconstructed McCulloch and Pitts’s 1943 neuron paper from first principles, translating its assumptions into temporal propositional logic and implementing threshold neurons, excitatory and inhibitory synapses, delayed network updates, logic-gate experiments, and simulations in Python.",
         details: [
-          "Built a McCulloch–Pitts neuron from scratch."
+          "Worked through the paper’s assumptions and mathematical arguments, distinguishing interpretation from results implemented or tested.",
+          "Built computational models to explore neuron firing, synaptic delays, synchronous network updates, and logic-gate behavior."
         ],
         tags: ["McCulloch–Pitts Neuron", "Neural Networks", "Foundations"],
         link: {
-          url: null,
-          label: null
+          url: "https://github.com/Vaibhav-sa30/mculloh-pitts-neuron-reconstruction",
+          label: "View Repository"
         }
       },
       {
