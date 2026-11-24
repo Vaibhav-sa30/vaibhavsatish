@@ -422,6 +422,8 @@
   flex-wrap: wrap;
   gap: 0.5rem 1.2rem;
   margin: -1.1rem 0 2rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid var(--border);
   font-family: var(--font-sans);
   font-size: 0.78rem;
 }
@@ -436,6 +438,23 @@
 .interest-subnav a[aria-current="page"] {
   color: var(--accent);
   border-color: currentColor;
+}
+
+.interest-content {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 150ms ease, transform 150ms ease;
+}
+
+.interest-content.is-switching {
+  opacity: 0.35;
+  transform: translateY(4px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .interest-content {
+    transition: none;
+  }
 }
 
 .interest-section-links {
