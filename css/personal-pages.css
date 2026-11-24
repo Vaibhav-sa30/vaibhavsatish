@@ -266,6 +266,16 @@
   color: var(--accent2);
 }
 
+.coursework-note-list {
+  margin-top: 0.35rem;
+  padding-left: 1.1rem;
+  list-style: disc;
+}
+
+.coursework-note-list li {
+  padding-left: 0.15rem;
+}
+
 .coursework-arena-finished {
   margin-top: 0.85rem;
   padding: 0.7rem 0.9rem;
