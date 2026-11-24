@@ -7,20 +7,6 @@ const TIMELINE_DATA = [
     year: "2026",
     milestones: [
       {
-        id: "future-of-ai-bluedot-2026",
-        date: "2026",
-        title: "Future of AI Course — BlueDot Impact",
-        organization: "BlueDot Impact",
-        category: "Education",
-        summary: "Completed BlueDot Impact’s Future of AI course.",
-        details: [],
-        tags: [],
-        link: {
-          url: "https://bluedot.org/certification?id=recIapMHVIT1LEcuI",
-          label: "View Certificate"
-        }
-      },
-      {
         id: "ai-safety-canada-2026",
         date: "December 2026",
         title: "AI Controllability and Monitorability Talk",
@@ -53,6 +39,20 @@ const TIMELINE_DATA = [
         link: {
           url: "https://github.com/Vaibhav-sa30/mculloh-pitts-neuron-reconstruction",
           label: "View Repository"
+        }
+      },
+      {
+        id: "future-of-ai-bluedot-2026",
+        date: "November 2026",
+        title: "Future of AI Course — BlueDot Impact",
+        organization: "BlueDot Impact",
+        category: "Education",
+        summary: "Completed BlueDot Impact’s Future of AI course.",
+        details: [],
+        tags: [],
+        link: {
+          url: "https://bluedot.org/certification?id=recIapMHVIT1LEcuI",
+          label: "View Certificate"
         }
       },
       {
