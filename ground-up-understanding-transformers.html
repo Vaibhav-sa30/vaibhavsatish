@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A ground-up explanation of Transformer language models: tokens, attention, residual streams, and next-token prediction.">
+    <title>Ground Up Understanding of Transformers | Vaibhav Satish</title>
+    <link rel="stylesheet" href="css/research.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
+    <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+    <style>
+        .transformer-essay { max-width: 780px; }
+        .essay-header { margin-bottom: 2.5rem; }
+        .essay-title { font-size: clamp(2.25rem, 6vw, 3.6rem); line-height: 1.12; letter-spacing: -0.025em; margin: 0.5rem 0 1rem; }
+        .essay-deck { max-width: 680px; color: var(--ink-muted); font-size: 1.2rem; line-height: 1.6; }
+        .essay-byline { color: var(--ink-faint); font: 12px var(--font-sans); margin-top: 1.25rem; }
+        .essay-content h2 { margin: 2.5rem 0 0.75rem; font-size: 1.65rem; }
+        .essay-content h3 { margin: 2rem 0 0.65rem; font-size: 1.25rem; color: var(--ink); }
+        .essay-content h3.gd-part { margin-top: 2.75rem; font-size: 1.35rem; }
+        .essay-content h4 { margin: 1.25rem 0 0.5rem; font-size: 1.05rem; color: var(--ink); }
+        .essay-content p, .essay-content ul, .essay-content ol { margin: 0 0 1rem; color: var(--ink-muted); }
+        .essay-content ul, .essay-content ol { padding-left: 1.4rem; }
+        .essay-content li { margin: 0.4rem 0; }
+        .essay-content code { font-size: 0.9em; background: var(--surface); padding: 0.12em 0.3em; border-radius: 3px; }
+        .essay-content blockquote { margin: 1.25rem 0; padding: 0.75rem 1.2rem; border-left: 3px solid var(--border); color: var(--ink-muted); font-style: italic; }
+        .essay-table { width: 100%; border-collapse: collapse; margin: 1.25rem 0 1.5rem; font-size: 0.95rem; }
+        .essay-table th, .essay-table td { padding: 0.45rem 0.65rem; border-bottom: 1px solid var(--border); text-align: left; }
+        .essay-table th { font-family: var(--font-sans); font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-faint); }
+        .essay-table td:last-child, .essay-table th:last-child { text-align: right; }
+        .math-display { margin: 1.25rem 0; overflow-x: auto; }
+        .gradient-descent-section { margin: 3rem 0 2.5rem; padding-top: 2.5rem; border-top: 1px solid var(--border); }
+        .essay-takeaway { margin: 2rem 0; padding: 1.2rem 1.4rem; background: var(--surface); border-left: 3px solid var(--accent); color: var(--ink); }
+    </style>
+</head>
+<body>
+    <header class="masthead">
+        <a href="index.html" class="masthead-label">Vaibhav Satish &nbsp;·&nbsp; Portfolio</a>
+        <nav class="nav-tabs" aria-label="Main navigation">
+            <a href="research.html" class="nav-tab-btn">Research</a>
+            <a href="writings.html" class="nav-tab-btn active" aria-current="page">Writings</a>
+            <a href="artifacts.html" class="nav-tab-btn">Artifacts</a>
+            <a href="about.html" class="nav-tab-btn">About</a>
+        </nav>
+    </header>
+
+    <main class="main-content transformer-essay">
+        <header class="essay-header">
+            <span class="kicker">Machine Learning · A Ground-Up Guide</span>
+            <h1 class="essay-title">Ground Up Understanding of Transformers</h1>
+            <p class="essay-deck">A Transformer is easier to understand when we follow the information: from token IDs, through layers that mix and reshape context, to a probability distribution over the next token.</p>
+            <p class="essay-byline">By Vaibhav Satish &nbsp;·&nbsp; October 9, 2026 &nbsp;·&nbsp; Long read</p>
+        </header>
+
+        <article class="essay-content">
+            <h2>Prologue</h2>
+            <p>While it is true that,</p>
+            <p style="background-color: bisque; padding: 20px; border-radius: 10px;"><i>“If you wish to make an apple pie from scratch, you must first invent the universe.” <br> ~ Carl Sagan, Cosmos</i></p>
+            <p>Most guides on a particular topic, not just Transformers, do very little justice to its beauty when they use the title "[Topic] from Scratch."</p>
+            <p>This guide is yet another failed attempt to teach something from scratch. However, the goal would be to assume as little prerequisites as possible.</p>
+            <p>I believe that if you want to understand something from absolute scratch, you must zoom out a lot, form an initial hypothesis about how the system might work, and then work your way up through trial and error until you reach the point you want to be at. Throughout this process, you must constantly ask yourself, "What needs to be true, given what we have right now, for us to get to the next best thing?" Luckily, with LLMs, we already have that zoomed-out experience. We all have something mysterious on our computers that can take our written text and reply so fluently that, to a regular human, it feels as though they are interacting with another human on the other side of the screen. I can't entirely blame Blake Lemoine, the former Google engineer who lost his job after publicly claiming that Google's LaMDA chatbot might be sentient. It does feel magical. And that was back in 2022! Whether AI has indeed become sentient, or whether that particular controversy was somehow a publicity stunt, is something we'll keep out of the scope of this article. Nevertheless, both are interesting topics of discussion. But let's go back in time and imagine an early human interacting with one of today's language models. I am almost certain that some would believe they had found God, discovered evidence of a higher being, or finally found a way to communicate with one. They might even use this as an argument against atheists. Some atheists and agnostics might reconsider their beliefs, too, simply because the technology would be far too advanced for them to understand how something like this could be possible. (I might be underestimating our ancestors tho.)</p>
+            <p>But that is exactly our starting point with this article. We have a mysterious box that interacts with us so fluently, and, at first glance, we can imagine two possible explanations for what is happening:</p>
+            <ol>
+                <li>There is an actual, higher, sentient being inside the box interacting with us. (An intuitive appeal to Occam's razor.)</li>
+                <li>There is an extraordinarily good mechanical imitator inside the box, processing our words through a complex system in such a way that its outputs look and feel eerily similar to how a human would interact. (A more mechanistic explanation.)</li>
+            </ol>
+            <p>
+                Now, one might argue: <i>"Oi! that's a wrong application of Occam's razor because, obviously, the simpler explanation is the second one. So many other assumptions need to be true for the first explanation to hold, and we don't even have evidence for them."</i> <br> And they'd be right. The second explanation is indeed easier to defend, but only from our perspective as <strong>modern</strong> humans. <strong>We</strong> already know that physical systems can process information and that neural networks can learn patterns from data. We have a growing body of knowledge that helps us explain how such a system could work. When chatgpt was first released, the world's reaction was not that there is an actual higher being interacting with human fluency. we immediately associated it with "Ah! must be the technology. So advanced it is getting nowadays." [unless it was? idk] But to encounter the same box without any of that background knowledge and having no idea what computation is, what a neural network is, or how something could learn from examples. The first explanation might suddenly feel a lot more intuitive.
+            </p>
+             <p>The following way works really well for me, and it is likely to help more who understand things this way. However, I am positive that you might discover you preferred this way of learning all along, just didn't know you did.</p>
+
+            
+
+            <h2>Questions:</h2>
+            <ol>
+                <li>
+                    <h4>What made us decide that the algorithm we will build, will need a lot of examples to discover patterns? (Lots of training data?)</h4>
+                </li>
+                <li>
+                    <h4>How to collect and learn to store that data. </h4>
+                </li>
+                <li>
+                    <h4>How do we deal with so much text?Observe and figure out what's the clever next action?</h4>
+                </li>
+                
+
+                <li>
+                    <h4>Deeplearning as a function:
+                        <ol type="a">
+                            <li>
+                                Single boolean Neuron (Step function as a threshold-- called activation function)
+                            </li>
+                            <li>
+                                Multiple boolean Neuron (still step function as activation)
+                            </li>
+                            <li>
+                                Multiple Neurons but using real numbers now (step function activation can be too harsh. If 0.50 is the threshol, then wdym you'll cancel your plan if it is 0.49 but accept the plan if it is 0.51. That is ridiculous.)
+                            </li>
+                            <li>
+                                So we have multiple neurons but for activation function, we will be using something more smoother than step function. Call it, sigmoid function. (How is sigmoid function invented?)
+                            </li>
+                        </ol>
+                    </h4>
+                </li>
+            </ol>
+
+            <h2>1. Text becomes a sequence of token IDs</h2>
+            <p>A tokenizer breaks text into pieces from a fixed vocabulary. A piece might be a whole word, part of a word, punctuation, or whitespace. The sentence “Transformers read context” might become a sequence such as <code>[4812, 1937, 8421]</code>. These integers are labels, not meaningful measurements: token 4812 is not inherently “larger” or more related to token 4813.</p>
+            <p>The model looks up a learned vector for each ID. If the hidden width is <em>d</em>, every token starts as a point in a <em>d</em>-dimensional space. The sequence is now a matrix: one row per token, one column per feature. These vectors are the model’s working representation of the prompt.</p>
+
+            <h2>2. The model needs to know where tokens are</h2>
+            <p>Attention alone does not tell the model whether “the dog chased the person” differs from “the person chased the dog.” Position information supplies order. A model combines token representations with positional information, using learned position embeddings, rotary position encodings, or another scheme.</p>
+            <p>After this step, each vector carries information about both the token and its place in the sequence. The exact positional method varies across model families, but the job is the same: make order available to later computation.</p>
+
+            <h2>3. Attention lets positions exchange information</h2>
+            <p>At each layer, every position can gather information from earlier positions. First, learned linear projections turn the current representations into <strong>queries</strong>, <strong>keys</strong>, and <strong>values</strong>. A query expresses what a position is looking for; keys describe what other positions offer; values carry the information that can be passed along.</p>
+            <p>The model compares each query with the keys, scales the scores, and applies softmax to get weights. It uses those weights to form a weighted sum of values. In compact form, one attention head computes <code>softmax(QKᵀ / √dₖ + mask)V</code>. The mask blocks access to future tokens, so a prediction at position <em>t</em> cannot use tokens after <em>t</em>.</p>
+            <p>Why multiple heads? Each head has its own projections and can learn a different way to route information. Their outputs are joined and projected back into the model’s hidden width. Heads are not hand-assigned to concepts; their roles emerge during training and can overlap.</p>
+
+            <h2>4. A feed-forward network transforms each position</h2>
+            <p>After attention mixes information across positions, a multilayer perceptron (MLP) transforms each position’s vector independently. It usually expands the vector into a wider intermediate space, applies a nonlinear function, and projects it back. Some models use gated variants of this MLP.</p>
+            <p>Attention and the MLP do different kinds of work: attention moves information between token positions, while the MLP changes the features available at each position. A Transformer layer uses both.</p>
+
+            <h2>5. Residual connections keep a running representation</h2>
+            <p>The attention and MLP updates are added back to the stream of vectors through residual connections. Instead of replacing a token’s representation at every step, each sublayer contributes an update. Layer normalization helps keep activations in a useful range. The order of normalization and sublayers differs between architectures, but the residual stream remains a useful way to picture the evolving state.</p>
+            <p>A layer therefore looks roughly like: normalize, compute attention, add the update; normalize, compute the MLP, add that update. Stack many layers and the representation at each position becomes progressively contextualized.</p>
+
+            <h2>6. The final representation becomes a next-token prediction</h2>
+            <p>At the last position, the final vector is projected to one score per vocabulary token. These scores are called <em>logits</em>. Softmax turns them into probabilities. The model may choose the highest-probability token, sample from the distribution, or use another decoding rule.</p>
+            <p>Generation is autoregressive: append the selected token to the input and run the prediction again. The next step can use the earlier context, including the token just generated. A short answer is produced by repeating this loop until the model emits a stopping token or reaches a length limit.</p>
+
+            <section class="gradient-descent-section" aria-labelledby="gradient-descent">
+            <h2 id="gradient-descent">Gradient Descent From Absolute Scratch</h2>
+            I say we start with a ball on a hill, become curious about its movement, and keep asking questions until we accidentally invent something called gradient descent.</p>
+            <p>Let's try, shall we.</p>
+            <img src="assets/images/blogs/transformer/ball.png" alt="" width="500px">
+            <p>
+                This is my ball that we are interested in. We push it. It starts at a position, let's call it <strong>Point A</strong> and after we push it, it rolls for a while until it stops. It reaches a new position. Call it <strong>Point B.</strong>
+            </p>
+            <img src="assets/images/blogs/transformer/ball moving.png" width="600px">
+            <p>I feel it is interesting to know how fast the ball was moving throughout the journey. But what information do we need for that? At the very least, we need following two things:</p>
+            <ol><li>How much its position changed.</li><li>How much time it took.</li></ol>
+            <p>So we measure two things: 1. the <strong>distance</strong> the ball covered from Point A to Point B, and 2. the <strong>time</strong> it took to reach Point B from Point A.</p>
+            <p>Suppose the ball starts at position 0 metres and reaches position 20 metres after 5 seconds.</p>
+            <p>Its change in position is:</p>
+            <div class="math-display">\[
+\Delta x = 20-0=20\text{ m}
+\]</div>
+            <p>Its change in time is:</p>
+            <div class="math-display">\[
+\Delta t = 5-0=5\text{ s}
+\]</div>
+            <p>We divide the change in position by the change in time.</p>
+            <div class="math-display">\[
+\text{Rate of movement}
+=\frac{\Delta x}{\Delta t}
+=\frac{20}{5}=4\text{ m/s}
+\]</div>
+            <p>There we go. The ball moved at a rate of 4 metres per second. Now, let's notice something interesting about what we just did.</p>
+            <p>We took a quantity, measured how much it changed, and divided that change by the amount of time over which it happened.</p>
+    
+            <p>But what exactly do we have right now? Our answer gives us only one constant-looking value, that is, 4m/s. However, we may observe that ball was not really having constant motion throughout the journey. 
+            </p>
+            <img src="assets/images/blogs/transformer/ball rolling cases.png" style="width: 720px;" alt="">
+            <p>It doesn't tell us how fast the ball was moving at any particular moment. Maybe it started slowly, accelerated down the hill, and ended up moving very quickly. Maybe it was moving quickly at first and then slowed down. Maybe it stopped halfway through and started rolling again.</p>
+            <p>All these possibilities could give us the same average rate of 4 m/s. It tells us the ball's average rate of movement over five seconds.
+            This is giving us a <strong>general</strong> way to describe how quickly something changes.
+            </p>
+            <p>We are now interested in this generalizability property.</p>
+
+            <p>
+            Can we build a machine in which we can throw position and timestamp as inputs and expect it throw out an approximate or actual speed at that point. </p>
+
+            <p>So that is our new question. <strong>How do we find the ball's speed at one particular instant?</strong></p>
+            <p style="background-color: red;">breaker</p>
+            <p>Say we want to know how fast it was moving exactly 2 seconds after we released it.</p>
+            <p>We could calculate the average rate of movement over the first 2 seconds. But that would only tell us what happened during those 2 seconds.</p>
+            <p>We could calculate it over the first 1 second. Better, perhaps.</p>
+            <p>What about the first 0.1 seconds?</p>
+            <p>Or 0.001 seconds?</p>
+            <p>The smaller our time interval becomes, the closer we get to isolating the ball's movement around the instant we care about.</p>
+            <p>Let's give this a try.</p>
+            <p>Suppose the ball's position is described by the following function:</p>
+            <div class="math-display">\[
+x(t)=t^2
+\]</div>
+            <p>Here, \(t\) is time in seconds, and \(x(t)\) is the ball's position in metres. We're using an intentionally simple mathematical model to explore the idea.</p>
+            <p>At \(t=2\):</p>
+            <div class="math-display">\[
+x(2)=2^2=4
+\]</div>
+            <p>At \(t=2.1\):</p>
+            <div class="math-display">\[
+x(2.1)=2.1^2=4.41
+\]</div>
+            <p>So, over the next 0.1 seconds, its position changes by:</p>
+            <div class="math-display">\[
+\Delta x=4.41-4=0.41
+\]</div>
+            <p>Its average rate of movement over that short interval is:</p>
+            <div class="math-display">\[
+\frac{\Delta x}{\Delta t}
+=\frac{0.41}{0.1}
+=4.1\text{ m/s}
+\]</div>
+            <p>Now let's shrink the interval.</p>
+            <p>At \(t=2.01\):</p>
+            <div class="math-display">\[
+x(2.01)=4.0401
+\]</div>
+            <p>Therefore,</p>
+            <div class="math-display">\[
+\frac{4.0401-4}{0.01}
+=4.01\text{ m/s}
+\]</div>
+            <p>And if we shrink it further, to 0.001 seconds, we get:</p>
+            <div class="math-display">\[
+\frac{4.004001-4}{0.001}
+=4.001\text{ m/s}
+\]</div>
+            <p>Look at the pattern.</p>
+            <table class="essay-table"><thead><tr><th>Time interval</th><th>Average rate of movement</th></tr></thead><tbody><tr><td>0.1 s</td><td>4.1 m/s</td></tr><tr><td>0.01 s</td><td>4.01 m/s</td></tr><tr><td>0.001 s</td><td>4.001 m/s</td></tr><tr><td>0.0001 s</td><td>4.0001 m/s</td></tr></tbody></table>
+            <p>Our estimates are approaching 4 m/s.</p>
+            <p>It looks like we are getting closer and closer to the rate of movement at exactly \(t=2\).</p>
+            <p>And we haven't needed to measure the ball at a literal instant. We have approached that instant by examining smaller and smaller intervals.</p>
+            <p>But how do we turn this observation into an exact mathematical answer?</p>
+            <h3>3. Can we make the interval zero?</h3>
+            <p>Let's return to our original idea:</p>
+            <div class="math-display">\[
+\text{Rate of movement}
+=\frac{\text{Change in position}}{\text{Change in time}}
+\]</div>
+            <p>To investigate the rate at \(t=2\), we can write:</p>
+            <div class="math-display">\[
+\frac{x(2+h)-x(2)}{h}
+\]</div>
+            <p>Here, \(h\) is simply the small amount of time we move forward from the instant we're investigating.</p>
+            <p>If \(h=0.1\), we examine the next 0.1 seconds.</p>
+            <p>If \(h=0.001\), we examine the next 0.001 seconds.</p>
+            <p>Now, a tempting idea occurs to us.</p>
+            <p>Why not set \(h=0\)?</p>
+            <p>That would mean examining the exact same instant.</p>
+            <p>But look at what happens:</p>
+            <div class="math-display">\[
+\frac{x(2+0)-x(2)}{0}
+=\frac{0}{0}
+\]</div>
+            <p>Oops.</p>
+            <p>We've run into a mathematical problem. We cannot divide by zero.</p>
+            <p>And yet we clearly seem to be approaching a meaningful answer. Our estimates keep getting closer to 4.</p>
+            <p>So perhaps we don't need to <em>set</em> the interval to zero. Perhaps we need to ask a slightly different question.</p>
+            <p><strong>What value does our expression approach as the interval gets arbitrarily close to zero?</strong></p>
+            <p>We can express that idea using a limit:</p>
+            <div class="math-display">\[
+\lim_{h\to0}
+\frac{x(t+h)-x(t)}{h}
+\]</div>
+            <p>This is the limit of our average rate of change as the interval shrinks towards zero.</p>
+            <p>For our particular function, \(x(t)=t^2\), we can simplify the expression.</p>
+            <div class="math-display">\[
+\begin{aligned}
+\frac{x(t+h)-x(t)}{h}
+&=\frac{(t+h)^2-t^2}{h}\\[4pt]
+&=\frac{t^2+2th+h^2-t^2}{h}\\[4pt]
+&=\frac{2th+h^2}{h}\\[4pt]
+&=2t+h
+\end{aligned}
+\]</div>
+            <p>As \(h\) approaches zero, \(2t+h\) approaches \(2t\).</p>
+            <p>Therefore,</p>
+            <div class="math-display">\[
+\lim_{h\to0}
+\frac{x(t+h)-x(t)}{h}=2t
+\]</div>
+            <p>At \(t=2\), this gives us exactly 4 m/s.</p>
+            <p>We have found a way to calculate the instantaneous rate of change of the ball's position.</p>
+            <p>Mathematicians call this the <strong>derivative</strong>.</p>
+            <p>More precisely, the derivative of a function \(f(x)\) is defined as:</p>
+            <div class="math-display">\[
+\boxed{
+f'(x)=\lim_{h\to0}
+\frac{f(x+h)-f(x)}{h}
+}
+\]</div>
+            <p>And the process of finding a derivative is called <em>differentiation</em>.</p>
+            <p>We've just discovered it by trying to answer a question about a moving ball.</p>
+            <h3>4. What have we actually discovered?</h3>
+            <p>Let's pause for a moment.</p>
+            <p>We started with two measurements: the change in position and the change in time.</p>
+            <p>Dividing them gave us an average rate of movement.</p>
+            <p>But we wanted something more precise, so we made the interval smaller and smaller until we could determine the instantaneous rate of change.</p>
+            <p>This gave us the derivative.</p>
+            <p>For a position function \(x(t)\), its derivative with respect to time tells us the instantaneous velocity:</p>
+            <div class="math-display">\[
+v(t)=\frac{dx}{dt}
+\]</div>
+            <p>We use the notation \(dx/dt\) to mean the derivative of position with respect to time.</p>
+            <p>If we care about speed rather than velocity, we take the magnitude of the velocity. Velocity includes direction; speed does not.</p>
+            <p>But the really interesting part is that we haven't discovered a formula that only works for balls.</p>
+            <p>We've discovered a general tool for asking:</p>
+            <p><strong>How quickly is this quantity changing at this particular point?</strong></p>
+            <p>And that question is about to lead us somewhere interesting.</p>
+            <h3 class="gd-part">Part II. The Ball Has More Secrets</h3>
+            <h3>5. Knowing the speed isn't enough</h3>
+            <p>We now know how to find the ball's velocity at any particular instant.</p>
+            <p>But suppose we want to understand its movement more deeply.</p>
+            <p>Imagine the ball is rolling down a hill. At one moment, it is moving at 4 m/s.</p>
+            <p>What happens next?</p>
+            <p>Will it be moving at 4.1 m/s? At 5 m/s? Will it slow down to 3 m/s?</p>
+            <p>Knowing its current velocity doesn't necessarily tell us what its velocity will be a moment later.</p>
+            <p>We need another piece of information.</p>
+            <p>We need to know how its velocity itself is changing.</p>
+            <p>Let's apply our newly discovered idea again.</p>
+            <p>Previously, we examined how position changed with time.</p>
+            <p>Now, instead of tracking position, let's track velocity.</p>
+            <p>Suppose our ball follows the same model:</p>
+            <div class="math-display">\[
+x(t)=t^2
+\]</div>
+            <p>We already found that its velocity is:</p>
+            <div class="math-display">\[
+v(t)=2t
+\]</div>
+            <p>At \(t=2\), its velocity is 4 m/s.</p>
+            <p>At \(t=2.1\), its velocity is 4.2 m/s.</p>
+            <p>So the velocity changes by 0.2 m/s over 0.1 seconds.</p>
+            <p>The rate of change of velocity is:</p>
+            <div class="math-display">\[
+\frac{\Delta v}{\Delta t}
+=\frac{4.2-4}{0.1}
+=2\text{ m/s}^2
+\]</div>
+            <p>What if we make this interval smaller and smaller, just as we did before?</p>
+            <p>We would arrive at the instantaneous rate of change of velocity.</p>
+            <p>And what do we call the rate of change of velocity?</p>
+            <p><strong>Acceleration.</strong></p>
+            <p>We can calculate it by taking the derivative of velocity with respect to time:</p>
+            <div class="math-display">\[
+a(t)=\frac{dv}{dt}
+\]</div>
+            <p>Since velocity is already the derivative of position, acceleration is the derivative of a derivative.</p>
+            <div class="math-display">\[
+a(t)=\frac{d}{dt}
+\left(\frac{dx}{dt}\right)
+\]</div>
+            <p>For our example:</p>
+            <div class="math-display">\[
+x(t)=t^2
+\]</div>
+            <div class="math-display">\[
+v(t)=2t
+\]</div>
+            <div class="math-display">\[
+a(t)=2
+\]</div>
+            <p>The ball has constant acceleration of 2 m/s² in this mathematical model.</p>
+            <p>Notice what happened.</p>
+            <p>We wanted to understand how the ball's movement was changing, so we applied our tool for measuring rates of change to the quantity we were already studying.</p>
+            <p>The result was another derivative.</p>
+            <p>This is called the <strong>second derivative</strong> of position with respect to time.</p>
+            <p>And it gives us acceleration.</p>
+            <h3>6. Can we keep going?</h3>
+            <p>Of course we can.</p>
+            <p>Now we know how position changes, how velocity changes, and how acceleration changes.</p>
+            <p>But what if the acceleration isn't constant?</p>
+            <p>Imagine a rocket launching into space. Its acceleration might increase as its engines ramp up, or decrease as fuel runs low.</p>
+            <p>Suppose we know the rocket's current acceleration.</p>
+            <p>Can we tell whether its acceleration is increasing or decreasing?</p>
+            <p>We can try exactly the same trick.</p>
+            <p>Instead of tracking position, we track acceleration.</p>
+            <p>Instead of asking how quickly position changes, we ask how quickly acceleration changes.</p>
+            <p>That gives us the third derivative of position with respect to time.</p>
+            <p>Physicists call this quantity <strong>jerk</strong>.</p>
+            <div class="math-display">\[
+j(t)=\frac{da}{dt}
+=\frac{d^3x}{dt^3}
+\]</div>
+            <p>If jerk is positive, acceleration is increasing locally. If jerk is negative, acceleration is decreasing locally.</p>
+            <p>And if jerk is zero over an interval, acceleration is constant over that interval.</p>
+            <p>We can keep going.</p>
+            <p>The fourth derivative is sometimes called <em>snap</em> or <em>jounce</em>. Higher derivatives have further uses in physics, engineering, trajectory planning, and the mathematical description of motion.</p>
+            <p>We don't need to memorize all these names. The important thing is the pattern.</p>
+            <ul><li>The first derivative tells us how position changes.</li><li>The second derivative tells us how velocity changes.</li><li>The third derivative tells us how acceleration changes.</li><li>The fourth derivative tells us how jerk changes.</li></ul>
+            <p>Each time, we take the quantity we just obtained and ask how that quantity changes.</p>
+            <p>And each time, our original tool gives us another layer of information.</p>
+            <p>But let's be careful about one thing.</p>
+            <p>A higher derivative doesn't automatically reveal everything about the ball, nor does it guarantee that we can predict its future. It gives us another piece of information about how the motion behaves locally.</p>
+            <p>Still, we've uncovered a powerful idea.</p>
+            <p><strong>If we want to understand how a quantity changes, we can differentiate it. If we want to understand how that change itself behaves, we can differentiate again.</strong></p>
+            <p>But there is a new question waiting for us.</p>
+            <p>We now know how to extract information about a function, one derivative at a time.</p>
+            <p>Can we use that information to reconstruct what the function itself is doing?</p>
+            <h3>7. Can we predict where the ball will be next?</h3>
+            <p>Suppose we are observing a ball at a particular instant.</p>
+            <p>We know its current position, its velocity, and its acceleration.</p>
+            <p>Can we use these measurements to estimate where it will be a short time later?</p>
+            <p>Let's think about it.</p>
+            <p>If we know the ball is currently at position \(x_0\), we already have a starting point.</p>
+            <p>If we know its velocity \(v_0\), we know how much its position would change per second if that velocity stayed constant.</p>
+            <p>So for a very small time interval \(h\), we might estimate:</p>
+            <div class="math-display">\[
+x(t+h)\approx x_0+v_0h
+\]</div>
+            <p>This is the same reasoning behind the familiar distance-equals-speed-times-time relationship, applied over a short interval.</p>
+            <p>But what if the ball is accelerating?</p>
+            <p>Its velocity won't remain constant. It will change while we are making our prediction.</p>
+            <p>Our estimate could be better if we account for acceleration as well.</p>
+            <p>For constant acceleration, we know the familiar equation:</p>
+            <div class="math-display">\[
+x(t+h)=x_0+v_0h+\frac12a_0h^2
+\]</div>
+            <p>The first term gives us the starting position.</p>
+            <p>The second accounts for the movement we would expect from the current velocity.</p>
+            <p>The third corrects for the fact that the velocity is changing.</p>
+            <p>What if the acceleration itself is changing?</p>
+            <p>Then we might need to account for jerk, too.</p>
+            <p>This leads us to an intriguing possibility.</p>
+            <p><strong>Perhaps we can use the derivatives at a single point to build an increasingly accurate approximation of the function around that point.</strong></p>
+            <p>Let's see whether mathematics allows us to do that.</p>
+            <h3 class="gd-part">Part III. Reconstructing a Function From Its Derivatives</h3>
+            <h3>8. What happens when we keep adding information?</h3>
+            <p>Let's return to our simple function:</p>
+            <div class="math-display">\[
+f(x)=x^2
+\]</div>
+            <p>Suppose we want to estimate its value near \(x=2\).</p>
+            <p>We know:</p>
+            <div class="math-display">\[
+f(2)=4
+\]</div>
+            <p>We also know its first derivative:</p>
+            <div class="math-display">\[
+f'(x)=2x
+\]</div>
+            <p>So:</p>
+            <div class="math-display">\[
+f'(2)=4
+\]</div>
+            <p>This tells us that, near \(x=2\), the function increases at approximately 4 units for every one-unit increase in \(x\).</p>
+            <p>If we move from \(x=2\) to \(x=2.1\), we can estimate:</p>
+            <div class="math-display">\[
+f(2.1)\approx f(2)+f'(2)(0.1)
+\]</div>
+            <div class="math-display">\[
+f(2.1)\approx4+4(0.1)=4.4
+\]</div>
+            <p>But the true value is:</p>
+            <div class="math-display">\[
+f(2.1)=(2.1)^2=4.41
+\]</div>
+            <p>We are off by 0.01.</p>
+            <p>Why?</p>
+            <p>Because our estimate assumes the function continues increasing at the same rate it was increasing at \(x=2\).</p>
+            <p>But the slope is changing, too.</p>
+            <p>We know how to measure that change. We take the second derivative.</p>
+            <div class="math-display">\[
+f''(x)=2
+\]</div>
+            <p>So:</p>
+            <div class="math-display">\[
+f''(2)=2
+\]</div>
+            <p>This tells us that the slope is increasing at a constant rate.</p>
+            <p>We can use this information to improve our estimate by adding a correction term:</p>
+            <div class="math-display">\[
+f(2+h)\approx
+f(2)+f'(2)h+\frac{f''(2)}{2}h^2
+\]</div>
+            <p>For \(h=0.1\):</p>
+            <div class="math-display">\[
+\begin{aligned}
+f(2.1)&\approx
+4+4(0.1)+\frac{2}{2}(0.1)^2\\
+&=4+0.4+0.01\\
+&=4.41
+\end{aligned}
+\]</div>
+            <p>We got the exact answer!</p>
+            <p>That isn't a coincidence. Our original function is a quadratic, and its second derivative captures all the curvature we need to reconstruct it exactly.</p>
+            <p>The factor of \(1/2\) might seem to have appeared out of nowhere. It comes from the way the changing slope accumulates into a change in position. More generally, each successive derivative contributes a term with a corresponding factorial in the denominator.</p>
+            <p>Let's imagine we were working with a more complicated function.</p>
+            <p>Its second derivative might not be constant. We could take a third derivative, then a fourth, and continue adding correction terms.</p>
+            <p>The general expression we arrive at is:</p>
+            <div class="math-display">\[
+\begin{aligned}
+f(x+h)\approx{}&
+f(x)+f'(x)h\\
+&+\frac{f''(x)}{2!}h^2\\
+&+\frac{f'''(x)}{3!}h^3\\
+&+\frac{f^{(4)}(x)}{4!}h^4+\cdots
+\end{aligned}
+\]</div>
+            <p>If the corresponding infinite series converges to the function, this is called its <strong>Taylor series</strong> about \(x\).</p>
+            <p>There are technical conditions here. Not every infinitely differentiable function equals its Taylor series, and the series might only represent the function within a limited region. But the intuition is what matters for our journey.</p>
+            <p>The function's value tells us where we start.</p>
+            <p>Its first derivative tells us the initial slope.</p>
+            <p>Its second derivative tells us how the slope changes.</p>
+            <p>Its third derivative tells us how the curvature changes.</p>
+            <p>And so on.</p>
+            <p>Each term adds a correction based on another layer of local information.</p>
+            <p>We're using what we know at one point to build an approximation of what happens nearby.</p>
+            <p>We've gone from measuring motion to reconstructing functions.</p>
+            <p>And this is where things start getting interesting for our original goal.</p>
+            <p>Because we haven't yet said anything about machine learning.</p>
+            <h3>9. What if our function has a million inputs?</h3>
+            <p>So far, our function has had one input.</p>
+            <p>We choose a value of \(x\), and the function returns a value \(f(x)\).</p>
+            <p>But imagine a function with two inputs:</p>
+            <div class="math-display">\[
+L(w_1,w_2)
+\]</div>
+            <p>Here, \(w_1\) and \(w_2\) are two adjustable numbers, and \(L\) returns a single value.</p>
+            <p>We can picture this function as a landscape.</p>
+            <p>The two inputs determine our horizontal position on the landscape, and the function's output determines the height of the ground at that position.</p>
+            <p>Some locations are high. Others are low.</p>
+            <p>Our goal is to find a location where the height is as small as possible.</p>
+            <p>Why would we want to do that?</p>
+            <p>Because we can imagine this landscape representing the error of a machine learning model.</p>
+            <p>The inputs are the model's adjustable parameters, and the output is its loss: a number that tells us how poorly or well the model is performing according to some chosen objective.</p>
+            <p>We want to find parameter values that make this loss small.</p>
+            <p>In other words, we want to find a low point in the landscape.</p>
+            <p>Let's start with just two parameters so we can picture what's happening.</p>
+            <p>Later, we can imagine thousands, millions, or billions of them.</p>
+            <p>Our problem is simple to state:</p>
+            <p><strong>We're standing somewhere on a landscape, and we want to get downhill. How do we decide where to move?</strong></p>
+            <h3 class="gd-part">Part IV. From a Hill to a Loss Landscape</h3>
+            <h3>10. Which direction is downhill?</h3>
+            <p>Imagine standing on a hillside with your eyes closed.</p>
+            <p>You can't see the entire landscape. You don't know where the bottom is.</p>
+            <p>You can, however, make small movements and notice whether the ground rises or falls.</p>
+            <p>If moving a little to your right takes you uphill, then right is not the direction we want to go.</p>
+            <p>If moving a little to your left takes you downhill, then left looks promising.</p>
+            <p>This is essentially the question we asked when we invented the derivative.</p>
+            <p>Instead of asking how quickly a ball's position changes over time, we now ask how quickly the loss changes as we adjust a parameter.</p>
+            <p>Let's begin with one parameter, \(w\), and a loss function \(L(w)\).</p>
+            <p>Suppose we are currently at \(w=3\).</p>
+            <p>Our loss is:</p>
+            <div class="math-display">\[
+L(3)=9
+\]</div>
+            <p>For this example, let's use:</p>
+            <div class="math-display">\[
+L(w)=w^2
+\]</div>
+            <p>Our goal is to find a value of \(w\) that makes the loss as small as possible.</p>
+            <p>We can see that \(w=0\) gives a loss of zero. But let's pretend we don't know that yet.</p>
+            <p>We want to figure out which direction to move.</p>
+            <p>Let's inspect nearby points.</p>
+            <div class="math-display">\[
+L(3)=9
+\]</div>
+            <div class="math-display">\[
+L(3.1)=9.61
+\]</div>
+            <div class="math-display">\[
+L(2.9)=8.41
+\]</div>
+            <p>Increasing \(w\) made the loss larger. Decreasing \(w\) made the loss smaller.</p>
+            <p>So, at \(w=3\), decreasing \(w\) seems like a good idea.</p>
+            <p>But can we discover a more systematic way to decide which direction to move, without having to test both sides repeatedly?</p>
+            <p>We already have the tool we need.</p>
+            <p>Let's take the derivative.</p>
+            <div class="math-display">\[
+\frac{dL}{dw}=2w
+\]</div>
+            <p>At \(w=3\):</p>
+            <div class="math-display">\[
+\frac{dL}{dw}=6
+\]</div>
+            <p>What does this number mean?</p>
+            <p>It tells us that, at our current location, increasing \(w\) slightly would increase the loss, at a rate of approximately 6 units of loss per unit of \(w\).</p>
+            <p>Conversely, decreasing \(w\) slightly would reduce the loss, at least locally.</p>
+            <p>The derivative has given us directional information.</p>
+            <p>If the derivative is positive, moving a little to the right increases the function, so moving left decreases it locally.</p>
+            <p>If the derivative is negative, moving a little to the right decreases the function, so moving right decreases it locally.</p>
+            <p>And if the derivative is zero, the function has no first-order slope at that point. We might be at a minimum, a maximum, or a flat point that is neither.</p>
+            <p>We've just rediscovered something important.</p>
+            <p><strong>The derivative doesn't merely tell us how a function changes. It can help us decide which direction to move if we want the function to increase or decrease.</strong></p>
+            <p>And for our purposes, we want to decrease it.</p>
+            <h3>11. Why not just move in the opposite direction?</h3>
+            <p>Our derivative at \(w=3\) was 6.</p>
+            <p>It tells us that moving towards larger values of \(w\) increases the loss locally.</p>
+            <p>So let's try moving in the opposite direction.</p>
+            <p>We could simply subtract the derivative from our current parameter:</p>
+            <div class="math-display">\[
+w_{\text{new}}=w_{\text{old}}-\frac{dL}{dw}
+\]</div>
+            <p>Starting at \(w=3\):</p>
+            <div class="math-display">\[
+w_{\text{new}}=3-6=-3
+\]</div>
+            <p>Interesting.</p>
+            <p>Our new parameter is \(-3\).</p>
+            <p>But the loss is:</p>
+            <div class="math-display">\[
+L(-3)=9
+\]</div>
+            <p>We haven't made any progress at all!</p>
+            <p>What went wrong?</p>
+            <p>We followed the right direction, but we moved too far.</p>
+            <p>The derivative told us which way was downhill <em>near our current location</em>. It did not tell us that travelling six whole units in that direction would be a good idea.</p>
+            <p>Remember our discussion about approximating functions.</p>
+            <p>The derivative gives us a local picture of the landscape. If we move too far, that local picture might no longer be a reliable guide.</p>
+            <p>We need a way to control how far we move.</p>
+            <h3>12. How big should our step be?</h3>
+            <p>Let's try something more cautious.</p>
+            <p>Instead of subtracting the entire derivative, let's subtract only a fraction of it.</p>
+            <p>We introduce a new number, \(\eta\), which controls the size of our step.</p>
+            <p>Our update rule becomes:</p>
+            <div class="math-display">\[
+\boxed{
+w_{\text{new}}
+=w_{\text{old}}-\eta\frac{dL}{dw}
+}
+\]</div>
+            <p>The number \(\eta\) is called the <strong>learning rate</strong>.</p>
+            <p>For now, think of it as a knob that controls how aggressively we follow the downhill direction.</p>
+            <p>If \(\eta=1\), we take the full step suggested by the derivative.</p>
+            <p>If \(\eta=0.1\), we take one-tenth of that step.</p>
+            <p>If \(\eta=0.01\), we take one-hundredth of that step.</p>
+            <p>Let's use a learning rate of 0.1.</p>
+            <p>Our current parameter is \(w=3\), and our derivative is 6.</p>
+            <p>Therefore:</p>
+            <div class="math-display">\[
+w_{\text{new}}=3-0.1(6)=2.4
+\]</div>
+            <p>Let's check the loss.</p>
+            <p>Before:</p>
+            <div class="math-display">\[
+L(3)=9
+\]</div>
+            <p>After:</p>
+            <div class="math-display">\[
+L(2.4)=5.76
+\]</div>
+            <p>Our loss has fallen from 9 to 5.76.</p>
+            <p>We've made progress!</p>
+            <p>Now let's repeat the process.</p>
+            <p>At \(w=2.4\), the derivative is:</p>
+            <div class="math-display">\[
+\frac{dL}{dw}=2(2.4)=4.8
+\]</div>
+            <p>So:</p>
+            <div class="math-display">\[
+w_{\text{new}}=2.4-0.1(4.8)=1.92
+\]</div>
+            <p>And our loss becomes:</p>
+            <div class="math-display">\[
+L(1.92)=3.6864
+\]</div>
+            <p>Again, it has decreased.</p>
+            <p>Let's keep going.</p>
+            <table class="essay-table"><thead><tr><th>Step</th><th>Parameter \(w\)</th><th>Loss \(L(w)=w^2\)</th></tr></thead><tbody><tr><td>0</td><td>3.0000</td><td>9.0000</td></tr><tr><td>1</td><td>2.4000</td><td>5.7600</td></tr><tr><td>2</td><td>1.9200</td><td>3.6864</td></tr><tr><td>3</td><td>1.5360</td><td>2.3593</td></tr><tr><td>4</td><td>1.2288</td><td>1.5099</td></tr><tr><td>5</td><td>0.9830</td><td>0.9664</td></tr></tbody></table>
+            <p>Look at what is happening.</p>
+            <p>We start with a parameter value that produces a high loss.</p>
+            <p>We measure the slope of the loss function at our current position.</p>
+            <p>We move a little in the opposite direction.</p>
+            <p>Then we measure the slope again, because the landscape may look different from our new position.</p>
+            <p>And we repeat.</p>
+            <p>The parameter moves closer to zero, and the loss gets smaller.</p>
+            <p>We're gradually walking downhill.</p>
+            <p>This is the central idea behind <strong>gradient descent</strong>.</p>
+            <h3 class="gd-part">Part V. Inventing Gradient Descent</h3>
+            <h3>13. Let's give our invention a name</h3>
+            <p>We have all the ingredients now.</p>
+            <p>We have a function whose output we want to minimize.</p>
+            <p>We have a way to measure its local rate of change.</p>
+            <p>We use that information to decide which direction to move.</p>
+            <p>We choose how far to move using a learning rate.</p>
+            <p>Then we repeat the process from our new location.</p>
+            <p>Mathematically, for a function \(L(w)\), our update rule is:</p>
+            <div class="math-display">\[
+\boxed{
+w_{t+1}=w_t-\eta L'(w_t)
+}
+\]</div>
+            <p>Here:</p>
+            <ul><li>\(w_t\) is our current parameter.</li><li>\(L'(w_t)\) is the derivative of the loss at that parameter.</li><li>\(\eta\) is the learning rate.</li><li>\(w_{t+1}\) is our updated parameter.</li></ul>
+            <p>We have arrived at <strong>gradient descent</strong>.</p>
+            <p>Strictly speaking, what we have derived so far is gradient descent in one dimension, where there is a single adjustable parameter. In higher dimensions, the derivative becomes a gradient, and the same basic idea applies.</p>
+            <p>But before we move on to that, let's ask an important question.</p>
+            <p>Why does this method work at all?</p>
+            <p>Why should repeatedly stepping against the derivative make the loss smaller?</p>
+            <h3>14. Why does subtracting the derivative help?</h3>
+            <p>Let's return to the idea of a local approximation.</p>
+            <p>Suppose we're at a parameter value \(w\), and we consider making a small change \(\Delta w\).</p>
+            <p>Using the first-order approximation we developed earlier, we can estimate the new loss:</p>
+            <div class="math-display">\[
+L(w+\Delta w)
+\approx L(w)+L'(w)\Delta w
+\]</div>
+            <p>This is the simplest version of the Taylor approximation. It tells us how the function is expected to change if we move a small distance.</p>
+            <p>Now, if \(L'(w)\) is positive, what happens when \(\Delta w\) is negative?</p>
+            <p>Their product is negative.</p>
+            <p>So our approximate new loss is:</p>
+            <div class="math-display">\[
+L(w+\Delta w)\approx L(w)+\text{negative number}
+\]</div>
+            <p>The loss should decrease.</p>
+            <p>Likewise, if the derivative is negative, a positive change in \(w\) makes the product negative, again suggesting a decrease.</p>
+            <p>That is the logic behind moving against the derivative.</p>
+            <p>More generally, gradient descent chooses:</p>
+            <div class="math-display">\[
+\Delta w=-\eta L'(w)
+\]</div>
+            <p>Substituting this into our approximation:</p>
+            <div class="math-display">\[
+\begin{aligned}
+L(w+\Delta w)
+&\approx L(w)+L'(w)\Delta w\\
+&=L(w)-\eta[L'(w)]^2
+\end{aligned}
+\]</div>
+            <p>Because the square of a real number is non-negative, the correction term is non-positive whenever \(\eta\) is positive.</p>
+            <p>So, according to this local approximation, our loss should decrease.</p>
+            <p>This is the mathematical intuition behind gradient descent.</p>
+            <p>There is one important qualification: this is a local prediction, not a universal guarantee. The approximation ignores higher-order terms. If we take a step that is too large, the actual loss can increase. For smooth functions, sufficiently small steps can provide a decrease when the gradient is nonzero, but convergence still depends on the function and the learning-rate choices.</p>
+            <p>That is why the learning rate matters so much.</p>
+            <p>We have a good direction, but we still need to choose a sensible step size.</p>
+            <h3>15. What happens if the learning rate is too small or too large?</h3>
+            <p>Let's imagine walking down a mountain.</p>
+            <p>If we take tiny steps, we can make progress, but it might take us an awfully long time to reach the bottom.</p>
+            <p>If we take enormous steps, we might leap past the valley, land on the opposite slope, and leap back again.</p>
+            <p>Depending on the terrain and the step size, we might oscillate, fail to converge, or even move towards higher losses.</p>
+            <p>The learning rate controls this trade-off.</p>
+            <p>A small learning rate generally makes updates more cautious. A large learning rate makes them more aggressive.</p>
+            <p>Neither extreme is ideal in every situation.</p>
+            <p>This is why training a neural network involves more than simply calculating a gradient. We also need to choose appropriate optimization settings, and sometimes adapt the learning rate as training progresses.</p>
+            <p>But notice what we haven't needed to do.</p>
+            <p>We haven't needed to know the entire landscape in advance.</p>
+            <p>We haven't needed to calculate where the global minimum is.</p>
+            <p>We haven't needed a map of every possible parameter value.</p>
+            <p>We have simply used local information to decide what to do next.</p>
+            <p>We look at where we are, estimate the downhill direction, take a step, and look again.</p>
+            <p>That is an extraordinarily useful strategy when the landscape is too complicated to understand all at once.</p>
+            <h3 class="gd-part">Part VI. What Does This Have to Do With Neural Networks?</h3>
+            <h3>16. Replace our single parameter with millions of parameters</h3>
+            <p>So far, we've imagined a loss function with one adjustable parameter:</p>
+            <div class="math-display">\[
+L(w)
+\]</div>
+            <p>But a neural network doesn't usually have just one parameter.</p>
+            <p>It has many.</p>
+            <p>A network might have weights and biases distributed across dozens or hundreds of layers. A large model may have billions of parameters.</p>
+            <p>Let's represent all these parameters as a vector:</p>
+            <div class="math-display">\[
+\boldsymbol{\theta}
+=
+\begin{bmatrix}
+\theta_1\\
+\theta_2\\
+\vdots\\
+\theta_n
+\end{bmatrix}
+\]</div>
+            <p>The loss now depends on all of them:</p>
+            <div class="math-display">\[
+L(\boldsymbol{\theta})
+\]</div>
+            <p>Each possible combination of parameter values corresponds to a point in a very high-dimensional parameter space.</p>
+            <p>The loss function assigns a number to that point.</p>
+            <p>Our task is still the same: find parameter values that make the loss small.</p>
+            <p>The only difference is that our landscape now has many more dimensions than we can visualize.</p>
+            <p>So, how do we figure out which way is downhill?</p>
+            <p>We already know the answer.</p>
+            <p>We examine how the loss changes when we change a parameter.</p>
+            <p>But now we do this for every parameter.</p>
+            <p>For the first parameter, we calculate:</p>
+            <div class="math-display">\[
+\frac{\partial L}{\partial\theta_1}
+\]</div>
+            <p>For the second:</p>
+            <div class="math-display">\[
+\frac{\partial L}{\partial\theta_2}
+\]</div>
+            <p>For the third:</p>
+            <div class="math-display">\[
+\frac{\partial L}{\partial\theta_3}
+\]</div>
+            <p>And so on.</p>
+            <p>Each of these quantities tells us how sensitive the loss is to a small change in one parameter, while holding the other parameters fixed.</p>
+            <p>Because the loss depends on several variables, we use <em>partial derivatives</em> rather than ordinary single-variable derivatives.</p>
+            <p>We collect all these partial derivatives into one vector.</p>
+            <div class="math-display">\[
+\nabla L(\boldsymbol{\theta})
+=
+\begin{bmatrix}
+\frac{\partial L}{\partial\theta_1}\\
+\frac{\partial L}{\partial\theta_2}\\
+\vdots\\
+\frac{\partial L}{\partial\theta_n}
+\end{bmatrix}
+\]</div>
+            <p>This vector is called the <strong>gradient</strong>.</p>
+            <p>And it gives us a compact way to describe how the loss changes with respect to all our parameters.</p>
+            <h3>17. Why is the gradient a direction?</h3>
+            <p>Here's a useful way to think about it.</p>
+            <p>Suppose you're standing on a hill in a landscape with two horizontal dimensions.</p>
+            <p>You could walk north, south, east, west, or in any diagonal direction.</p>
+            <p>The slope you experience depends on the direction you choose.</p>
+            <p>The gradient combines the partial derivatives of the landscape into a vector that points in the direction of steepest local increase, when measured using ordinary Euclidean distance.</p>
+            <p>So if we want to move in the direction of steepest local decrease, we move in the opposite direction.</p>
+            <p>That means we can update every parameter at once:</p>
+            <div class="math-display">\[
+\boxed{
+\boldsymbol{\theta}_{t+1}
+=
+\boldsymbol{\theta}_t
+-\eta\nabla L(\boldsymbol{\theta}_t)
+}
+\]</div>
+            <p>This is the multidimensional form of gradient descent.</p>
+            <p>The idea hasn't changed at all.</p>
+            <p>We still calculate the local rate of change.</p>
+            <p>We still move against it.</p>
+            <p>We still control our step size with a learning rate.</p>
+            <p>And we still repeat.</p>
+            <p>The gradient simply generalizes the derivative to a function with many inputs.</p>
+            <p>One subtle but important point: the gradient is the direction of steepest increase relative to the usual Euclidean geometry of parameter space. In other geometries, or with different scaling of parameters, the best direction for making progress can be different. But ordinary gradient descent uses this standard definition.</p>
+            <h3>18. How does a neural network know its loss?</h3>
+            <p>Let's finally connect our imaginary landscape to an actual learning problem.</p>
+            <p>Suppose we're training a neural network to classify images of cats and dogs.</p>
+            <p>We give it an image.</p>
+            <p>The network processes that image using its current weights and biases, then produces a prediction.</p>
+            <p>We compare the prediction with the correct label using a loss function.</p>
+            <p>If the network predicts the correct answer confidently, the loss might be small.</p>
+            <p>If it predicts the wrong answer confidently, the loss might be large.</p>
+            <p>The precise behavior depends on the loss function we choose, but the general idea is that the loss measures how poorly the model is performing on the training objective.</p>
+            <p>Now we have a number we can try to minimize.</p>
+            <p>But the network has millions or billions of adjustable parameters. Which of them should we change, and by how much?</p>
+            <p>This is where gradients enter.</p>
+            <p>For each parameter, we want to know how a small change in that parameter would affect the loss.</p>
+            <p>The gradient provides this information.</p>
+            <p>If the gradient with respect to a particular parameter is strongly positive, increasing that parameter slightly would tend to increase the loss locally. Gradient descent therefore tends to decrease it.</p>
+            <p>If the gradient is strongly negative, increasing that parameter slightly would tend to decrease the loss locally. Gradient descent therefore tends to increase it.</p>
+            <p>If the gradient component is close to zero, the loss is locally less sensitive to small changes in that parameter, at least to first order.</p>
+            <p>The update rule combines these pieces of information to adjust the parameters.</p>
+            <p>Then we run the model again, evaluate the loss, calculate the new gradients, and update the parameters once more.</p>
+            <p>Over many iterations, this can lead to a network that performs much better on its training objective.</p>
+            <p>Of course, real neural networks introduce additional complications. Their loss landscapes can be non-convex, training often uses mini-batches rather than the entire dataset for every update, and the gradients are typically computed using backpropagation. Generalization to unseen data is a separate concern from minimizing training loss.</p>
+            <p>But the core principle is the one we have just discovered.</p>
+            <p>We are using the local behavior of a function to decide how to change its inputs so that its output becomes smaller.</p>
+            <h3>19. But wait. How do we calculate the gradient of a huge neural network?</h3>
+            <p>This is a natural question.</p>
+            <p>Our mathematical definition of a derivative involves a limit.</p>
+            <p>We could, in principle, estimate a derivative numerically by perturbing a parameter slightly and measuring the change in loss.</p>
+            <p>For example:</p>
+            <div class="math-display">\[
+\frac{\partial L}{\partial\theta_i}
+\approx
+\frac{L(\boldsymbol{\theta}+h\mathbf e_i)
+-L(\boldsymbol{\theta})}{h}
+\]</div>
+            <p>Here, \(\mathbf e_i\) is a vector that changes only the \(i\)-th parameter.</p>
+            <p>But imagine doing this for every parameter in a model with billions of parameters.</p>
+            <p>We would need an enormous number of additional loss evaluations. That would be far too expensive for ordinary training.</p>
+            <p>Fortunately, we have another tool.</p>
+            <p>Remember that a neural network is built from layers of mathematical operations. Each layer takes some inputs, performs computations using parameters, and produces outputs for the next layer.</p>
+            <p>We can calculate how the final loss depends on the outputs of the last layer. Then we can use the chain rule to propagate that information backwards through the network, calculating how the loss depends on earlier activations and parameters.</p>
+            <p>This process is called <strong>backpropagation</strong>.</p>
+            <p>Backpropagation is not the same thing as gradient descent.</p>
+            <p>Backpropagation is an efficient way to calculate gradients. Gradient descent is an optimization method that uses those gradients to update parameters.</p>
+            <p>They work together, but they solve different problems.</p>
+            <p>We can think of backpropagation as answering:</p>
+            <p><em>How should the loss be attributed to changes in all these parameters?</em></p>
+            <p>And gradient descent as answering:</p>
+            <p><em>Now that we know how the loss changes, how should we adjust the parameters?</em></p>
+            <p>This distinction matters because we can use backpropagation with different optimizers, and gradient-based optimization can use gradients computed in different ways.</p>
+            <p>But for our journey, the important thing is that we don't have to estimate every derivative independently.</p>
+            <p>The structure of the computation lets us calculate the gradients efficiently.</p>
+            <h3 class="gd-part">Epilogue. What We Actually Invented</h3>
+            <p>Let's look back at the journey.</p>
+            <p>We started with a ball rolling down a hill.</p>
+            <p>We wanted to know how fast it was moving, so we divided the change in position by the change in time.</p>
+            <p>That gave us average velocity.</p>
+            <p>But we wanted to know what was happening at a particular instant, so we shrank the time interval towards zero.</p>
+            <p>That led us to limits and derivatives.</p>
+            <p>Then we wanted to know how velocity itself was changing. We differentiated again and discovered acceleration.</p>
+            <p>We continued exploring higher derivatives, each one revealing another aspect of local behavior.</p>
+            <p>Then we asked whether we could use derivatives to approximate a function near a point. By adding successive corrections, we arrived at the intuition behind Taylor series.</p>
+            <p>Finally, we changed our perspective.</p>
+            <p>Instead of tracking a ball moving through physical space, we imagined a point moving through a landscape defined by a function's output.</p>
+            <p>Instead of asking how position changes with time, we asked how loss changes when we adjust a parameter.</p>
+            <p>We found the slope, moved against it, and controlled our step size.</p>
+            <p>With one parameter, we had a derivative.</p>
+            <p>With many parameters, we had a gradient.</p>
+            <p>And with repeated updates, we had gradient descent.</p>
+            <p>The same mathematical idea had travelled from the motion of a ball to the training of a neural network.</p>
+            <p>There is something beautiful about that.</p>
+            <p>Gradient descent doesn't require us to know the entire function in advance. It doesn't require us to know where the minimum is. It doesn't even require us to understand the entire landscape.</p>
+            <p>It asks for something more modest.</p>
+            <p>Look at where you are.</p>
+            <p>Find out how the landscape changes around you.</p>
+            <p>Use that information to choose a direction.</p>
+            <p>Take a step.</p>
+            <p>And repeat.</p>
+            <p>Of course, this doesn't guarantee that we'll find the global minimum. Some landscapes are complicated, some steps are poorly chosen, and some functions have many local minima, saddle points, and flat regions. Real-world optimization requires care.</p>
+            <p>But the basic idea remains powerful.</p>
+            <p>We started by wondering how to describe a ball's movement.</p>
+            <p>We ended by discovering a method that helps machines improve their behavior, one parameter update at a time.</p>
+            <p>And all we really did was keep asking the next question.</p>
+            </section>
+
+            <h2>7. Training teaches the prediction task</h2>
+            <p>During pretraining, the model sees many text sequences. At each position, it tries to predict the actual next token from the tokens before it. A cross-entropy loss penalizes probability assigned away from that target. <a href="#gradient-descent">Gradient descent</a> adjusts the model’s weights to reduce the loss across many examples.</p>
+            <p>This objective rewards predicting patterns in the training distribution. It does not directly tell the model to be truthful, helpful, or safe. Later stages such as supervised fine-tuning and preference optimization shape how the pretrained model responds, but the next-token prediction machinery remains underneath.</p>
+
+            <h2>8. What this picture explains—and what it does not</h2>
+            <p>The information-flow view explains how a Transformer can combine a prompt’s parts, build context-sensitive representations, and generate coherent continuations. It also gives us handles for research: inspect activations, intervene on components, trace information, or evaluate behavior under controlled changes.</p>
+            <p>But the picture is not a complete explanation of what a model “knows.” Attention weights alone do not reveal the full computation: later projections, residual additions, MLPs, and interactions across layers all matter. Nor does fluent output guarantee that a prediction is grounded or correct. Understanding a model requires experiments on its internal computation and its behavior.</p>
+
+            <div class="essay-takeaway"><strong>The compact mental model:</strong> each token has a vector; attention gathers context from other positions; an MLP transforms that context; residual connections carry a running state through many layers; the final state predicts the next token.</div>
+            <p>For the original architecture, see <a href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener noreferrer">“Attention Is All You Need”</a>. Decoder-only language models use the same central ideas with causal masking and a generation-focused training setup.</p>
+            <p><a href="writings.html" class="pub-link">← Back to Writings</a></p>
+        </article>
+    </main>
+
+    <footer class="site-footer">
+        <ul class="links">
+            <li><a href="https://github.com/Vaibhav-sa30" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+            <li><a href="https://linkedin.com/in/vaibhavsatish" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+            <li><a href="mailto:vaibhav.satish.sa8yn@gmail.com">Email</a></li>
+            <li><a href="https://drive.google.com/file/d/13f7uwOhL05hUTzyEP_JaRekRBXZEWbAX/view?usp=sharing" target="_blank" rel="noopener noreferrer">CV</a></li>
+            <li><a href="https://cal.com/vaibhavsatish/30min" target="_blank" rel="noopener noreferrer">Chat</a></li>
+        </ul>
+        <div class="footer-copy">&copy; 2026 Vaibhav Satish</div>
+    </footer>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            if (typeof renderMathInElement !== "function") return;
+            renderMathInElement(document.querySelector(".essay-content"), {
+                delimiters: [
+                    { left: "\\[", right: "\\]", display: true },
+                    { left: "\\(", right: "\\)", display: false }
+                ],
+                throwOnError: false
+            });
+        });
+    </script>
+</body>
+</html>

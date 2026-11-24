@@ -55,6 +55,7 @@
       document.title = page.title;
       if (descriptionMeta && page.description) descriptionMeta.content = page.description;
       updateActiveTab(url.pathname);
+      content.dispatchEvent(new CustomEvent("portfolio:tab-content-updated", { bubbles: true }));
 
       if (addHistoryEntry) {
         history.pushState({ sectionPath: url.pathname }, "", `${url.pathname}${url.search}${url.hash}`);

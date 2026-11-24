@@ -623,7 +623,7 @@
     // --- VIEW FORMAT SWITCHER (Links, Detailed, Grid) ---
     function initViewSwitcher() {
         const pubList = document.querySelector('.pub-list');
-        if (!pubList) return;
+        if (!pubList || document.querySelector('.writings-page')) return;
 
         const sectionTitle = document.querySelector('.section-title');
 
@@ -681,5 +681,10 @@
             renderWritingsPageStats();
             watchArticleLikeCount(getArticleId());
         });
+    });
+
+    document.addEventListener('portfolio:tab-content-updated', () => {
+        if (!document.querySelector('.writings-main .card-engagement-stats')) return;
+        loadSupabaseSDK(renderWritingsPageStats);
     });
 })();

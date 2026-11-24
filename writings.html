@@ -4,14 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Vaibhav Satish - Writings & Essays">
-    <title>Vaibhav Satish | Writings</title>
+    <meta name="description" content="Research writeups and technical explainers by Vaibhav Satish.">
+    <title>Vaibhav Satish | Writings — Research Writeups</title>
 
     <link rel="stylesheet" href="css/research.css">
+    <link rel="stylesheet" href="css/personal-pages.css">
+    <link rel="stylesheet" href="css/writings.css">
     <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+    <script src="js/interests-tabs.js" defer></script>
 </head>
 
-<body>
+<body class="writings-page">
     <header class="masthead">
         <a href="index.html" class="masthead-label">Vaibhav Satish &nbsp;·&nbsp; Portfolio</a>
         <nav class="nav-tabs primary-nav" aria-label="Main navigation">
@@ -22,66 +25,40 @@
         </nav>
     </header>
 
-    <main class="main-content">
+    <main class="main-content writings-main">
         <h1 class="section-title">Writings</h1>
-
-        <ul class="pub-list">
-            <!-- Machine Unlearning Essay -->
-            <li class="pub-item">
-                <span class="kicker" style="color: var(--accent);">AI Safety & Technical Essay</span>
-                <span class="pub-title">
-                    <a href="machine-unlearning.html" class="pub-title-link">Everything Happening in Machine Unlearning As of May 2026</a>
-                </span>
-                <span class="pub-venue">May 2026 &nbsp;·&nbsp; ~22 min read</span>
-                <p class="pub-description">
-                    AI models are trained to learn. But what happens when they need to forget? From privacy law to diffusion models to autonomous agents, machine unlearning has quietly become one of the most consequential battlegrounds in AI research.
-                </p>
-                <div class="pub-links" style="align-items: center; justify-content: space-between;">
-                    <a href="machine-unlearning.html" class="pub-link">Read Essay →</a>
-                    <div class="card-engagement-stats" data-article-id="machine-unlearning"></div>
-                </div>
-            </li>
-
-            <!-- Neuroscience & Philosophy of Mind Essay -->
-            <li class="pub-item">
-                <span class="kicker" style="color: #7c3aed;">Neuroscience & Philosophy of Mind</span>
-                <span class="pub-title">
-                    <a href="brain-consciousness.html" class="pub-title-link">What is it about our Brains that we still don't Understand?</a>
-                </span>
-                <span class="pub-venue">August 2026 &nbsp;·&nbsp; ~24 min read</span>
-                <p class="pub-description">
-                    Neuroscience has mapped every region, decoded every neurotransmitter, and charted synaptic plasticity in microscopic detail. And yet consciousness, memory, thought, and free will remain as mysterious as ever. Here is everything science knows, and everything it still cannot explain.
-                </p>
-                <div class="pub-links" style="align-items: center; justify-content: space-between;">
-                    <a href="brain-consciousness.html" class="pub-link" style="color: #7c3aed; background: #f5f3ff;">Read Essay →</a>
-                    <div class="card-engagement-stats" data-article-id="brain-consciousness"></div>
-                </div>
-            <!-- Social Cognition & AGI Essay -->
-            <li class="pub-item">
-                <span class="kicker" style="color: #0f766e;">AI Research &amp; AGI Evaluation</span>
-                <span class="pub-title">
-                    <a href="social-cognition-agi.html" class="pub-title-link">The Social Blind Spot: Why AGI Cannot Be Measured Without Social Cognition</a>
-                </span>
-                <span class="pub-venue">August 2026 &nbsp;·&nbsp; ~26 min read</span>
-                <p class="pub-description">
-                    Frontier AI models score above 90% on MMLU, crush Olympiad math, and generate production code. But ask them to hold ground under social pressure, track false beliefs, or detect manipulation — and the numbers collapse. Here is everything happening at the most neglected frontier of AGI research.
-                </p>
-                <div class="pub-links" style="align-items: center; justify-content: space-between;">
-                    <a href="social-cognition-agi.html" class="pub-link" style="color: #0f766e; background: #f0fdfa;">Read Essay →</a>
-                    <div class="card-engagement-stats" data-article-id="social-cognition-agi"></div>
-                </div>
-            </li>
-        </ul>
+        <nav class="interest-subnav writings-tabs" data-tab-navigation aria-label="Writing categories">
+            <a href="writings.html" aria-current="page">Research Writeups</a>
+            <a href="writings-ai-safety.html">AI Safety</a>
+            <a href="writings-curios.html">Curios</a>
+        </nav>
+        <div id="interest-content" class="interest-content" data-tab-content aria-busy="false">
+            <section class="writing-collection" aria-labelledby="research-writeups-heading">
+                <h2 class="writing-category-title" id="research-writeups-heading">Research Writeups</h2>
+                <ul class="pub-list">
+                    <li class="pub-item">
+                        <span class="kicker">Machine Learning · Ground-Up Guide</span>
+                        <span class="pub-title">
+                            <a href="ground-up-understanding-transformers.html" class="pub-title-link">Ground Up Understanding of Transformers</a>
+                        </span>
+                        <span class="pub-venue">October 2026 &nbsp;·&nbsp; ~10 min read</span>
+                        <p class="pub-description">A ground-up tour of how Transformers turn tokens into vectors, move context with attention, and generate text one token at a time.</p>
+                        <div class="pub-links">
+                            <a href="ground-up-understanding-transformers.html" class="pub-link">Read the blog →</a>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+        </div>
     </main>
 
     <footer class="site-footer">
         <ul class="links">
-            <li><a href="https://github.com/Vaibhav-sa30" target="_blank">GitHub</a></li>
-            <li><a href="https://linkedin.com/in/vaibhavsatish" target="_blank">LinkedIn</a></li>
+            <li><a href="https://github.com/Vaibhav-sa30" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+            <li><a href="https://linkedin.com/in/vaibhavsatish" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
             <li><a href="mailto:vaibhavsatish9@gmail.com">Email</a></li>
-            <li><a href="https://drive.google.com/file/d/13f7uwOhL05hUTzyEP_JaRekRBXZEWbAX/view?usp=sharing"
-                    target="_blank">CV</a></li>
-            <li><a href="https://cal.com/vaibhav-satish/30min" target="_blank">Chat</a></li>
+            <li><a href="https://drive.google.com/file/d/13f7uwOhL05hUTzyEP_JaRekRBXZEWbAX/view?usp=sharing" target="_blank" rel="noopener noreferrer">CV</a></li>
+            <li><a href="https://cal.com/vaibhav-satish/30min" target="_blank" rel="noopener noreferrer">Chat</a></li>
         </ul>
         <div class="footer-copy">&copy; 2026 Vaibhav Satish</div>
     </footer>
