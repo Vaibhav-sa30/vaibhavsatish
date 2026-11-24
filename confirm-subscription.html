@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm subscription | Vaibhav Satish</title>
+    <link rel="stylesheet" href="css/research.css">
+    <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+</head>
+<body>
+    <main class="main-content">
+        <h1 class="section-title">Research updates</h1>
+        <p id="confirmation-status" class="artifacts-intro" aria-live="polite">Confirming your email…</p>
+        <a href="artifacts.html" class="pub-link">Browse Artifacts</a>
+    </main>
+    <script>
+        (async function () {
+            const status = document.querySelector('#confirmation-status');
+            const token = new URLSearchParams(window.location.search).get('token');
+            if (!token) { status.textContent = 'This confirmation link is missing its token.'; return; }
+            try {
+                const response = await fetch('https://frgzcwsqbakawyrqegxj.supabase.co/functions/v1/confirm-artifact-subscription', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', apikey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJmcmd6Y3dzcWJha3d5cnFlZ3hqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU5OTY4MjgsImV4cCI6MjEwMTU3MjgyOH0.gx7BkqFV604F-KclMAgaJ_c-s7Re9FFnlZoGs1PAVSI', Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJmcmd6Y3dzcWJha3d5cnFlZ3hqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU5OTY4MjgsImV4cCI6MjEwMTU3MjgyOH0.gx7BkqFV604F-KclMAgaJ_c-s7Re9FFnlZoGs1PAVSI' },
+                    body: JSON.stringify({ token })
+                });
+                const result = await response.json();
+                if (!response.ok) throw new Error(result.error || 'Could not confirm your subscription.');
+                status.textContent = 'Your email is confirmed. You’ll receive an update when new research artifacts are published.';
+            } catch (error) { status.textContent = error.message || 'Could not confirm your subscription.'; }
+        }());
+    </script>
+</body>
+</html>

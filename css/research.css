@@ -436,6 +436,94 @@ h1, h2, h3 {
   line-height: 1.6;
 }
 
+/* Research artifacts and email updates */
+.artifacts-intro {
+  max-width: 650px;
+  margin: 1.25rem 0 2rem;
+  color: var(--ink-muted);
+  font-size: 1.1rem;
+}
+
+.artifact-list .pub-item {
+  padding: 1.5rem 0;
+}
+
+.artifact-subscribe {
+  margin-top: 3rem;
+  padding: 2rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.artifact-subscribe h2 {
+  font-size: 1.7rem;
+  margin: 0.35rem 0;
+}
+
+.artifact-subscribe > p {
+  color: var(--ink-muted);
+  margin-bottom: 1.25rem;
+}
+
+.subscribe-toggle {
+  cursor: pointer;
+}
+
+.subscribe-form {
+  margin-top: 1.5rem;
+  max-width: 520px;
+}
+
+.subscribe-form label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.subscribe-input-row {
+  display: flex;
+  gap: 0.65rem;
+}
+
+.subscribe-input-row input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.85rem 1rem;
+  background: white;
+  color: var(--ink);
+  font: 15px var(--font-sans);
+}
+
+.subscribe-input-row button {
+  cursor: pointer;
+}
+
+.subscribe-input-row button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.subscribe-status {
+  margin-top: 0.7rem;
+  color: var(--ink-muted);
+  font: 13px var(--font-sans);
+}
+
+@media (max-width: 600px) {
+  .artifact-subscribe {
+    padding: 1.25rem;
+  }
+
+  .subscribe-input-row {
+    flex-direction: column;
+  }
+}
+
 .pub-links {
   margin-top: 1.2rem;
   display: flex;
