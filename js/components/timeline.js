@@ -75,8 +75,8 @@ const TIMELINE_DATA = [
         ],
         tags: ["NPTEL", "IIT Madras", "Silver Elite", "Top 5%", "Responsible AI"],
         link: {
-          url: null,
-          label: null
+          url: "https://drive.google.com/file/d/1Nbb8PjC2yhhp1UjwA8QWeMArm5UOd9vx/view?usp=sharing",
+          label: "View Certificate"
         }
       },
       {
