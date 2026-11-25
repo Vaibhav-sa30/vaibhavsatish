@@ -488,9 +488,34 @@
 }
 
 .paper-empty-state {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 0.5rem 0 2rem;
   color: var(--ink-faint);
   font-family: var(--font-sans);
   font-size: 0.9rem;
+}
+
+.paper-empty-state img {
+  display: block;
+  width: clamp(6rem, 18vw, 9rem);
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+.paper-empty-state figcaption {
+  margin: 0;
+}
+
+@media (max-width: 520px) {
+  .paper-empty-state {
+    gap: 0.8rem;
+  }
+
+  .paper-empty-state img {
+    width: 5.5rem;
+  }
 }
 
 .research-timeline {
