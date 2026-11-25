@@ -1,690 +1,455 @@
-/* ========================================================
-   ARTICLE ENGAGEMENT SYSTEM (LIKES, SHARES, COMMENTS & SUPABASE)
-   ======================================================== */
-
+/* Shared, anonymous likes and moderated comments for individual writeups. */
 (function () {
-    // Ensure css/research.css is loaded for styling across all pages
-    if (!document.querySelector('link[href*="css/research.css"]')) {
-        const link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = 'css/research.css';
-        document.head.appendChild(link);
-    }
-
-    // Default Supabase Configuration
     const SUPABASE_URL = window.SUPABASE_URL || 'https://frgzcwsqbakawyrqegxj.supabase.co';
     const SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZyZ3pjd3NxYmFrYXd5cnFlZ3hqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU5OTY4MjgsImV4cCI6MjEwMTU3MjgyOH0.gx7BkqFV604F-KclMAgaJ_c-s7Re9FFnlZoGs1PAVSI';
+    const VISITOR_ID_KEY = 'portfolio_anonymous_visitor_id';
+    const COMMENT_MAX_LENGTH = 2000;
+    const NAME_MAX_LENGTH = 50;
 
     let supabaseClient = null;
+    let supabaseClientPromise = null;
 
     function getArticleId() {
-        const path = window.location.pathname;
-        const page = path.split('/').pop().replace('.html', '');
-        return page || 'home';
-    }
+        const engagement = document.getElementById('engagement-section');
+        if (engagement?.dataset.articleId) return engagement.dataset.articleId;
 
-    function initSupabase() {
-        if (window.supabase && SUPABASE_URL.indexOf('YOUR_SUPABASE') === -1) {
-            try {
-                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            } catch (e) {
-                console.warn('Supabase initialization failed, falling back to local storage:', e);
-            }
+        const path = window.location.pathname.replace(/\/+$/, '');
+        const slug = path.split('/').pop().replace(/\.html$/i, '');
+        if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/i.test(slug)) {
+            throw new Error('This writeup is missing a valid article identifier.');
         }
+        return slug;
     }
 
-    function loadSupabaseSDK(callback) {
-        if (window.supabase) {
-            callback();
-            return;
+    function createVisitorId() {
+        if (!window.crypto?.getRandomValues) {
+            throw new Error('This browser cannot create a secure anonymous visitor ID.');
         }
-        const script = document.createElement('script');
-        script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js';
-        script.onload = () => {
-            initSupabase();
-            callback();
-        };
-        script.onerror = () => {
-            callback();
-        };
-        document.head.appendChild(script);
+
+        if (window.crypto.randomUUID) return window.crypto.randomUUID();
+        const bytes = new Uint8Array(16);
+        window.crypto.getRandomValues(bytes);
+        bytes[6] = (bytes[6] & 0x0f) | 0x40;
+        bytes[8] = (bytes[8] & 0x3f) | 0x80;
+        const hex = Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('');
+        return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
     }
 
-    // --- DATA FETCH & MUTATION HELPERS ---
-    async function fetchLikes(articleId) {
-        if (supabaseClient) {
-            try {
-                const { data, error } = await supabaseClient
-                    .from('article_likes')
-                    .select('like_count')
-                    .eq('article_id', articleId)
-                    .maybeSingle();
-                if (error) throw error;
-                return data ? data.like_count : 0;
-            } catch (error) {
-                console.error('Could not load shared article likes:', error);
-                return null;
-            }
+    function getVisitorId() {
+        let visitorId = localStorage.getItem(VISITOR_ID_KEY);
+        if (!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(visitorId || '')) {
+            visitorId = createVisitorId();
+            localStorage.setItem(VISITOR_ID_KEY, visitorId);
         }
-        return null;
+        return visitorId;
     }
 
-    async function addLike(articleId) {
-        if (!supabaseClient) throw new Error('Shared likes service is unavailable. Please try again later.');
-        const { data, error } = await supabaseClient.rpc('increment_like', { target_article_id: articleId });
+    function loadSupabaseSDK() {
+        if (window.supabase?.createClient) return Promise.resolve();
+        if (supabaseClientPromise) return supabaseClientPromise;
+
+        supabaseClientPromise = new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js';
+            script.onload = () => window.supabase?.createClient
+                ? resolve()
+                : reject(new Error('The Supabase client library loaded without its API.'));
+            script.onerror = () => reject(new Error('The Supabase client library could not be loaded.'));
+            document.head.appendChild(script);
+        }).catch((error) => {
+            supabaseClientPromise = null;
+            throw error;
+        });
+        return supabaseClientPromise;
+    }
+
+    async function getSupabaseClient() {
+        if (supabaseClient) return supabaseClient;
+        if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+            throw new Error('The public Supabase URL or anonymous key is missing.');
+        }
+
+        await loadSupabaseSDK();
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+            auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
+        });
+        return supabaseClient;
+    }
+
+    function unwrapRpcRow(data) {
+        const row = Array.isArray(data) ? data[0] : data;
+        if (!row) throw new Error('The engagement service returned an empty response.');
+        return row;
+    }
+
+    async function getArticleEngagement(articleId, visitorId) {
+        const client = await getSupabaseClient();
+        const { data, error } = await client.rpc('get_article_engagement', {
+            target_article_id: articleId,
+            target_visitor_id: visitorId
+        });
         if (error) throw error;
-        if (!Number.isFinite(Number(data))) throw new Error('The likes service returned an invalid count.');
-        localStorage.setItem(`liked_${articleId}`, 'true');
-        return Number(data);
+        const row = unwrapRpcRow(data);
+        return {
+            likeCount: Number(row.like_count),
+            visitorLiked: row.visitor_liked === true,
+            commentCount: Number(row.comment_count)
+        };
     }
 
-    function setLikeSyncStatus(message, isError) {
-        const status = document.getElementById('like-sync-status');
-        if (!status) return;
-        status.textContent = message;
-        status.classList.toggle('error', Boolean(isError));
+    async function toggleArticleLike(articleId, visitorId) {
+        const client = await getSupabaseClient();
+        const { data, error } = await client.rpc('toggle_article_like', {
+            target_article_id: articleId,
+            target_visitor_id: visitorId
+        });
+        if (error) throw error;
+        const row = unwrapRpcRow(data);
+        return { likeCount: Number(row.like_count), visitorLiked: row.liked === true };
     }
 
-    async function refreshArticleLikeCount(articleId) {
-        const count = await fetchLikes(articleId);
-        if (count === null) {
-            setLikeSyncStatus('Likes could not sync. Please refresh or try again later.', true);
+    async function fetchApprovedComments(articleId) {
+        const client = await getSupabaseClient();
+        const { data, error } = await client
+            .from('article_comments')
+            .select('id, article_id, author_name, content, created_at')
+            .eq('article_id', articleId)
+            .eq('moderation_status', 'approved')
+            .order('created_at', { ascending: true });
+        if (error) throw error;
+        return Array.isArray(data) ? data : [];
+    }
+
+    async function submitComment(articleId, visitorId, authorName, content, honeypot) {
+        const client = await getSupabaseClient();
+        const { data, error } = await client.rpc('submit_article_comment', {
+            target_article_id: articleId,
+            target_visitor_id: visitorId,
+            target_author_name: authorName,
+            target_content: content,
+            target_honeypot: honeypot
+        });
+        if (error) throw error;
+        return unwrapRpcRow(data);
+    }
+
+    function setStatus(element, message, isError = false) {
+        if (!element) return;
+        element.textContent = message;
+        element.classList.toggle('error', isError);
+    }
+
+    function setLikeButtons(state) {
+        document.querySelectorAll('[data-like-button]').forEach((button) => {
+            button.classList.toggle('liked', state.visitorLiked);
+            button.setAttribute('aria-pressed', String(state.visitorLiked));
+            button.disabled = false;
+            const count = button.querySelector('[data-like-count]');
+            if (count) count.textContent = String(state.likeCount);
+            const label = button.querySelector('[data-like-label]');
+            if (label) label.textContent = state.visitorLiked ? 'Liked' : 'Like';
+        });
+
+    }
+
+    function setCommentCount(count) {
+        document.querySelectorAll('[data-comment-count]').forEach((element) => {
+            element.textContent = String(count);
+        });
+    }
+
+    function formatCommentDate(value) {
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return 'Date unavailable';
+        return new Intl.DateTimeFormat(undefined, {
+            year: 'numeric', month: 'short', day: 'numeric'
+        }).format(date);
+    }
+
+    function renderComments(container, comments) {
+        container.replaceChildren();
+        if (!comments.length) {
+            const empty = document.createElement('div');
+            empty.className = 'no-comments';
+            empty.textContent = 'No approved comments yet. Be the first to share a thought.';
+            container.appendChild(empty);
             return;
         }
-        const mainCount = document.getElementById('like-count-label');
-        const topCount = document.getElementById('top-like-count');
-        if (mainCount) mainCount.textContent = count;
-        if (topCount) topCount.textContent = count;
-        setLikeSyncStatus('', false);
-    }
 
-    function watchArticleLikeCount(articleId) {
-        if (!document.getElementById('engagement-section')) return;
-        refreshArticleLikeCount(articleId);
-        window.setInterval(() => {
-            if (!document.hidden) refreshArticleLikeCount(articleId);
-        }, 15000);
-        window.addEventListener('focus', () => refreshArticleLikeCount(articleId));
-        document.addEventListener('visibilitychange', () => {
-            if (!document.hidden) refreshArticleLikeCount(articleId);
+        comments.forEach((comment) => {
+            const card = document.createElement('article');
+            card.className = 'comment-card';
+
+            const header = document.createElement('div');
+            header.className = 'comment-header';
+            const author = document.createElement('span');
+            author.className = 'comment-author';
+            author.textContent = comment.author_name;
+            const date = document.createElement('time');
+            date.className = 'comment-date';
+            date.dateTime = comment.created_at;
+            date.textContent = formatCommentDate(comment.created_at);
+            header.append(author, date);
+
+            const body = document.createElement('p');
+            body.className = 'comment-body';
+            body.textContent = comment.content;
+            card.append(header, body);
+            container.appendChild(card);
         });
     }
 
-    async function fetchComments(articleId) {
-        if (supabaseClient) {
-            try {
-                const { data, error } = await supabaseClient
-                    .from('article_comments')
-                    .select('*')
-                    .eq('article_id', articleId)
-                    .order('created_at', { ascending: false });
-                if (data && !error) return data;
-            } catch (e) {}
-        }
-        const localComments = localStorage.getItem(`comments_${articleId}`);
-        return localComments ? JSON.parse(localComments) : [];
-    }
+    function renderTopEngagement(articleId) {
+        const byline = document.querySelector('.byline, .essay-byline');
+        if (!byline || byline.dataset.engagementBar === 'true') return;
 
-    async function postComment(articleId, name, content) {
-        const newComment = {
-            id: 'local_' + Date.now(),
-            article_id: articleId,
-            author_name: name,
-            content: content,
-            created_at: new Date().toISOString()
-        };
-
-        if (supabaseClient) {
-            try {
-                const { data, error } = await supabaseClient
-                    .from('article_comments')
-                    .insert([{ article_id: articleId, author_name: name, content: content }])
-                    .select();
-                if (data && data.length > 0 && !error) {
-                    return data[0];
-                }
-            } catch (e) {}
-        }
-
-        const existing = JSON.parse(localStorage.getItem(`comments_${articleId}`) || '[]');
-        existing.unshift(newComment);
-        localStorage.setItem(`comments_${articleId}`, JSON.stringify(existing));
-        return newComment;
-    }
-
-    function timeAgo(dateString) {
-        const date = new Date(dateString);
-        const seconds = Math.floor((new Date() - date) / 1000);
-        if (seconds < 60) return 'Just now';
-        const minutes = Math.floor(seconds / 60);
-        if (minutes < 60) return `${minutes}m ago`;
-        const hours = Math.floor(minutes / 60);
-        if (hours < 24) return `${hours}h ago`;
-        const days = Math.floor(hours / 24);
-        return `${days}d ago`;
-    }
-
-    function escapeHTML(str) {
-        return str.replace(/[&<>'"]/g, 
-            tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
-        );
-    }
-
-    // --- TOP ARTICLE ENGAGEMENT BAR ---
-    function renderTopArticleEngagement() {
-        const byline = document.querySelector('.byline');
-        if (!byline) return;
-
-        const articleId = getArticleId();
-        const topBar = document.createElement('div');
-        topBar.className = 'top-engagement-bar';
-        topBar.innerHTML = `
-            <button id="top-like-btn" class="top-engagement-btn">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                </svg>
-                <span id="top-like-count">0</span>
+        const bar = document.createElement('div');
+        bar.className = 'top-engagement-bar';
+        bar.dataset.engagementBar = 'true';
+        bar.innerHTML = `
+            <button type="button" class="top-engagement-btn" data-like-button data-article-id="${articleId}" aria-pressed="false" disabled>
+                <span data-like-label>Like</span><span data-like-count>—</span>
             </button>
-            
-            <a href="#engagement-section" class="top-engagement-stat" style="text-decoration: none;">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                </svg>
-                <span id="top-comment-count">0</span> Comments
-            </a>
-
-            <button id="top-share-btn" class="top-engagement-btn">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="18" cy="5" r="3"></circle>
-                    <circle cx="6" cy="12" r="3"></circle>
-                    <circle cx="18" cy="19" r="3"></circle>
-                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-                </svg>
-                Share
-            </button>
-            <span id="top-share-toast" class="top-share-toast">Copied!</span>
+            <a class="top-engagement-stat" href="#engagement-section"><span data-comment-count>—</span> Comments</a>
+            <button type="button" class="top-engagement-btn" data-share-button>Share</button>
+            <span class="top-share-toast" data-share-status role="status" aria-live="polite"></span>
         `;
-
-        byline.appendChild(topBar);
-
-        const topLikeBtn = document.getElementById('top-like-btn');
-        const topLikeCount = document.getElementById('top-like-count');
-        const topCommentCount = document.getElementById('top-comment-count');
-        const topShareBtn = document.getElementById('top-share-btn');
-        const topShareToast = document.getElementById('top-share-toast');
-
-        if (localStorage.getItem(`liked_${articleId}`) === 'true') {
-            topLikeBtn.classList.add('liked');
-        }
-
-        fetchComments(articleId).then(comments => {
-            topCommentCount.textContent = comments.length;
-        });
-
-        topLikeBtn.addEventListener('click', async () => {
-            topLikeBtn.disabled = true;
-            try {
-                const newCount = await addLike(articleId);
-                topLikeCount.textContent = newCount;
-                topLikeBtn.classList.add('liked');
-                topLikeBtn.disabled = true;
-                const mainLikeLabel = document.getElementById('like-count-label');
-                if (mainLikeLabel) {
-                    mainLikeLabel.textContent = newCount;
-                    const mainLikeBtn = document.getElementById('like-btn');
-                    if (mainLikeBtn) {
-                        mainLikeBtn.classList.add('liked');
-                        mainLikeBtn.disabled = true;
-                    }
-                }
-                setLikeSyncStatus('', false);
-            } catch (error) {
-                console.error('Could not save article like:', error);
-                setLikeSyncStatus('Your like could not be saved. Please try again.', true);
-                topLikeBtn.disabled = false;
-            }
-        });
-
-        topShareBtn.addEventListener('click', () => {
-            navigator.clipboard.writeText(window.location.href).then(() => {
-                topShareToast.classList.add('show');
-                setTimeout(() => topShareToast.classList.remove('show'), 2000);
-            });
-        });
+        byline.insertAdjacentElement('afterend', bar);
     }
 
-    // --- WRITINGS PAGE CARD STATS ---
-    function renderWritingsPageStats() {
-        const statContainers = document.querySelectorAll('.card-engagement-stats');
-        statContainers.forEach(async (container) => {
-            const articleId = container.getAttribute('data-article-id');
-            if (!articleId) return;
-
-            const [likes, comments] = await Promise.all([
-                fetchLikes(articleId),
-                fetchComments(articleId)
-            ]);
-
-            container.innerHTML = `
-                <span class="stat-badge" title="Likes">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-                    ${likes === null ? 'Likes unavailable' : `${likes} Likes`}
-                </span>
-                <span class="stat-badge" title="Comments">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-                    ${comments.length} Comments
-                </span>
-            `;
-        });
-    }
-
-    // --- MAIN ENGAGEMENT UI INJECTION ---
-    function renderEngagementUI() {
-        const articleId = getArticleId();
+    function renderEngagementUI(articleId) {
         const container = document.getElementById('engagement-section');
-        if (!container) return;
-
+        if (!container || container.dataset.engagementRendered === 'true') return;
+        container.dataset.engagementRendered = 'true';
+        container.dataset.articleId = articleId;
         container.innerHTML = `
             <div class="engagement-wrapper">
-                <!-- Action Bar -->
                 <div class="engagement-action-bar">
-                    <button id="like-btn" class="engagement-btn like-btn">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                        </svg>
-                        <span id="like-count-label">...</span> Likes
+                    <button type="button" class="engagement-btn like-btn" data-like-button data-article-id="${articleId}" aria-pressed="false" disabled>
+                        <span data-like-label>Like</span><span data-like-count>—</span>
                     </button>
-
-                    <button id="share-btn" class="engagement-btn share-btn">
-                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="18" cy="5" r="3"></circle>
-                            <circle cx="6" cy="12" r="3"></circle>
-                            <circle cx="18" cy="19" r="3"></circle>
-                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-                        </svg>
-                        Share
-                    </button>
-
-                    <button id="copy-link-btn" class="engagement-btn secondary-btn">
-                        Copy Link
-                    </button>
-                    <span id="share-toast" class="share-toast">Link copied!</span>
+                    <button type="button" class="engagement-btn secondary-btn" data-share-button>Share</button>
+                    <span class="share-toast" data-share-status role="status" aria-live="polite"></span>
                 </div>
-                <p id="like-sync-status" class="like-sync-status" role="status" aria-live="polite"></p>
-
-                <!-- Floating Glass Modal for Post-Like Handle -->
-                <div id="like-handle-modal" class="like-handle-modal">
-                    <div class="like-modal-backdrop" id="like-modal-backdrop"></div>
-                    <div class="like-modal-content">
-                        <button class="like-modal-close" id="like-modal-close-btn">&times;</button>
-                        <div class="like-modal-icon">👏</div>
-                        <h4 class="like-modal-title">Thanks for liking!</h4>
-                        <p class="like-modal-desc">Want to tag your X handle or name with your like? (Optional)</p>
-                        <input type="text" id="like-handle-input" class="like-modal-input" placeholder="@yourhandle or Name">
-                        <div class="like-modal-actions">
-                            <button id="like-handle-save-btn" class="like-modal-save-btn">Save Handle</button>
-                            <button id="like-modal-skip-btn" class="like-modal-skip-btn">Skip</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Comments Section -->
-                <div class="comments-container">
-                    <h3 class="comments-title">Discussion & Comments</h3>
-                    
-                    <form id="comment-form" class="comment-form">
+                <p class="like-sync-status" data-like-status role="status" aria-live="polite">Loading likes…</p>
+                <section class="comments-container" aria-labelledby="comments-title-${articleId}">
+                    <h3 class="comments-title" id="comments-title-${articleId}">Discussion &amp; Comments</h3>
+                    <form class="comment-form" data-comment-form novalidate>
                         <div class="form-group">
-                            <input type="text" id="comment-name" placeholder="Your Name or Handle" required class="comment-input" />
+                            <label class="engagement-field-label" for="comment-name-${articleId}">Display name</label>
+                            <input type="text" id="comment-name-${articleId}" name="author_name" placeholder="Your name or handle" required maxlength="${NAME_MAX_LENGTH}" autocomplete="name" class="comment-input">
                         </div>
                         <div class="form-group">
-                            <textarea id="comment-content" placeholder="Share your thoughts or questions..." required rows="3" class="comment-textarea"></textarea>
+                            <label class="engagement-field-label" for="comment-content-${articleId}">Comment</label>
+                            <textarea id="comment-content-${articleId}" name="content" placeholder="Share your thoughts or questions…" required maxlength="${COMMENT_MAX_LENGTH}" rows="4" class="comment-textarea"></textarea>
                         </div>
-                        <button type="submit" id="submit-comment-btn" class="comment-submit-btn">Post Comment</button>
+                        <div class="engagement-honeypot" aria-hidden="true">
+                            <label for="website-${articleId}">Leave this field empty</label>
+                            <input id="website-${articleId}" name="website" type="text" tabindex="-1" autocomplete="off">
+                        </div>
+                        <button type="submit" class="comment-submit-btn" data-comment-submit>Post comment</button>
+                        <p class="comment-status" data-comment-status role="status" aria-live="polite"></p>
                     </form>
-
-                    <div id="comments-list" class="comments-list">
-                        <div class="comments-loading">Loading comments...</div>
+                    <div class="comments-list" data-comments-list aria-live="polite">
+                        <div class="comments-loading">Loading approved comments…</div>
                     </div>
-                </div>
+                </section>
             </div>
         `;
+    }
 
-        const likeBtn = document.getElementById('like-btn');
-        const likeCountLabel = document.getElementById('like-count-label');
-        const shareBtn = document.getElementById('share-btn');
-        const copyLinkBtn = document.getElementById('copy-link-btn');
-        const shareToast = document.getElementById('share-toast');
-        const commentForm = document.getElementById('comment-form');
-        const commentName = document.getElementById('comment-name');
-        const commentContent = document.getElementById('comment-content');
-        const commentsList = document.getElementById('comments-list');
-
-        if (localStorage.getItem(`liked_${articleId}`) === 'true') {
-            likeBtn.classList.add('liked');
-            likeBtn.disabled = true;
-            const topLikeBtn = document.getElementById('top-like-btn');
-            if (topLikeBtn) topLikeBtn.disabled = true;
+    async function refreshArticle(articleId, visitorId) {
+        const status = document.querySelector('[data-like-status]');
+        try {
+            const state = await getArticleEngagement(articleId, visitorId);
+            if (!Number.isFinite(state.likeCount) || !Number.isFinite(state.commentCount)) {
+                throw new Error('The engagement service returned invalid counts.');
+            }
+            setLikeButtons(state);
+            setCommentCount(state.commentCount);
+            setStatus(status, '');
+        } catch (error) {
+            console.error(`Could not load engagement for ${articleId}:`, error);
+            document.querySelectorAll('[data-like-button]').forEach((button) => { button.disabled = false; });
+            setStatus(status, 'Likes could not be loaded. Please try again.', true);
         }
 
-        // Check Secret PIN / Admin status
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('admin') === '7777') {
-            sessionStorage.setItem('is_author_admin', 'true');
-            localStorage.setItem('is_author_admin', 'true');
+        const list = document.querySelector('[data-comments-list]');
+        if (!list) return;
+        try {
+            const comments = await fetchApprovedComments(articleId);
+            renderComments(list, comments);
+        } catch (error) {
+            console.error(`Could not load approved comments for ${articleId}:`, error);
+            list.replaceChildren();
+            const message = document.createElement('div');
+            message.className = 'comments-error';
+            message.textContent = 'Comments could not be loaded. Please try again later.';
+            list.appendChild(message);
         }
+    }
 
-        const isAdmin = sessionStorage.getItem('is_author_admin') === 'true' || 
-                        localStorage.getItem('is_author_admin') === 'true' || 
-                        urlParams.get('admin') === '7777';
+    function commentErrorMessage(error) {
+        const errorText = `${error?.message || ''} ${error?.details || ''}`;
+        if (errorText.includes('COMMENT_RATE_LIMITED')) {
+            return 'You’ve reached the comment limit. Please try again later.';
+        }
+        if (errorText.includes('COMMENT_SPAM_REJECTED')) {
+            return 'Your comment could not be accepted. Please review it and try again.';
+        }
+        if (errorText.includes('INVALID_COMMENT')) {
+            return `Check the display name and keep your comment within ${COMMENT_MAX_LENGTH} characters.`;
+        }
+        return 'Your comment could not be submitted. Please try again.';
+    }
 
-        if (isAdmin) {
-            const adminBadge = document.createElement('div');
-            adminBadge.className = 'author-admin-status-badge';
-            adminBadge.style.cssText = `
-                position: fixed;
-                top: 14px;
-                right: 14px;
-                z-index: 10000;
-                background: #1c1917;
-                color: #f5f5f4;
-                font-family: 'DM Sans', sans-serif;
-                font-size: 11px;
-                font-weight: 600;
-                padding: 6px 12px;
-                border-radius: 20px;
-                box-shadow: 0 4px 14px rgba(0,0,0,0.2);
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                border: 1px solid rgba(255,255,255,0.2);
-            `;
-            adminBadge.innerHTML = `
-                <span>👑 Author Mode Active</span>
-                <button id="lock-admin-btn" style="background: rgba(255,255,255,0.2); border: none; color: #fff; font-size: 10px; padding: 2px 8px; border-radius: 10px; cursor: pointer; font-weight: 500;">Lock / Exit</button>
-            `;
-            document.body.appendChild(adminBadge);
-
-            setTimeout(() => {
-                const lockBtn = document.getElementById('lock-admin-btn');
-                if (lockBtn) {
-                    lockBtn.onclick = () => {
-                        sessionStorage.removeItem('is_author_admin');
-                        localStorage.removeItem('is_author_admin');
-                        location.href = location.pathname;
-                    };
+    function bindArticleInteractions(articleId, visitorId) {
+        document.querySelectorAll('[data-like-button]').forEach((button) => {
+            button.addEventListener('click', async () => {
+                if (button.disabled) return;
+                const status = document.querySelector('[data-like-status]');
+                document.querySelectorAll('[data-like-button]').forEach((item) => { item.disabled = true; });
+                setStatus(status, 'Saving your like…');
+                try {
+                    const state = await toggleArticleLike(articleId, visitorId);
+                    setLikeButtons(state);
+                    setStatus(status, '');
+                } catch (error) {
+                    console.error(`Could not toggle like for ${articleId}:`, error);
+                    document.querySelectorAll('[data-like-button]').forEach((item) => { item.disabled = false; });
+                    setStatus(status, 'Your like could not be saved. Please try again.', true);
                 }
-            }, 100);
-        }
+            });
+        });
 
-        function unlockAuthorAdmin() {
-            if (isAdmin) {
-                if (confirm('🔒 Lock Author Admin Mode and return to Visitor View?')) {
-                    sessionStorage.removeItem('is_author_admin');
-                    localStorage.removeItem('is_author_admin');
-                    location.href = location.pathname;
+        document.querySelectorAll('[data-share-button]').forEach((button) => {
+            button.addEventListener('click', async () => {
+                const status = button.parentElement.querySelector('[data-share-status]');
+                try {
+                    if (navigator.share) await navigator.share({ title: document.title, url: location.href });
+                    else {
+                        await navigator.clipboard.writeText(location.href);
+                        setStatus(status, 'Link copied.');
+                        window.setTimeout(() => setStatus(status, ''), 1800);
+                    }
+                } catch (error) {
+                    if (error?.name !== 'AbortError') {
+                        console.error('Could not share this writeup:', error);
+                        setStatus(status, 'Sharing is unavailable in this browser.', true);
+                    }
                 }
+            });
+        });
+
+        const form = document.querySelector('[data-comment-form]');
+        if (!form) return;
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const nameInput = form.elements.author_name;
+            const contentInput = form.elements.content;
+            const honeypot = form.elements.website;
+            const status = form.querySelector('[data-comment-status]');
+            const submitButton = form.querySelector('[data-comment-submit]');
+            const authorName = nameInput.value.trim();
+            const content = contentInput.value.trim();
+
+            if (!authorName || authorName.length > NAME_MAX_LENGTH) {
+                setStatus(status, `Add a display name of ${NAME_MAX_LENGTH} characters or fewer.`, true);
+                nameInput.focus();
+                return;
+            }
+            if (!content || content.length > COMMENT_MAX_LENGTH) {
+                setStatus(status, `Write a comment of ${COMMENT_MAX_LENGTH} characters or fewer.`, true);
+                contentInput.focus();
                 return;
             }
 
-            const pin = prompt('Enter Author Secret PIN:');
-            if (pin === '7777') {
-                sessionStorage.setItem('is_author_admin', 'true');
-                localStorage.setItem('is_author_admin', 'true');
-                alert('👑 Author Admin Mode Unlocked!');
-                location.reload();
-            } else if (pin !== null) {
-                alert('Incorrect Secret PIN');
+            submitButton.disabled = true;
+            submitButton.textContent = 'Posting…';
+            setStatus(status, 'Submitting your comment…');
+            try {
+                const result = await submitComment(articleId, visitorId, authorName, content, honeypot.value);
+                form.reset();
+                setStatus(status, result.moderation_status === 'pending'
+                    ? 'Thanks. Your comment is awaiting moderation.'
+                    : 'Your comment was submitted.');
+                const updated = await getArticleEngagement(articleId, visitorId);
+                setCommentCount(updated.commentCount);
+            } catch (error) {
+                console.error(`Could not submit comment for ${articleId}:`, error);
+                setStatus(status, commentErrorMessage(error), true);
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Post comment';
             }
+        });
+    }
+
+    async function renderWritingsPageStats() {
+        const containers = document.querySelectorAll('.card-engagement-stats[data-article-id]');
+        if (!containers.length) return;
+        let visitorId;
+        try {
+            visitorId = getVisitorId();
+        } catch (error) {
+            console.error('Could not create an anonymous visitor ID:', error);
+            containers.forEach((container) => { container.textContent = 'Engagement counts unavailable'; });
+            return;
         }
 
-        // Bulletproof Keyboard Shortcut: Alt+A OR Ctrl+A OR Ctrl+Shift+A
-        window.addEventListener('keydown', (e) => {
-            const isA = e.code === 'KeyA' || (e.key && e.key.toLowerCase() === 'a');
-            if (isA && (e.altKey || (e.ctrlKey && e.shiftKey))) {
-                e.preventDefault();
-                unlockAuthorAdmin();
-            }
-        });
-
-        // Triple-click on © 2026 Vaibhav Satish text in footer to toggle Author/Visitor Mode
-        let footerClickCount = 0;
-        let footerClickTimer = null;
-        document.addEventListener('click', (e) => {
-            const target = e.target.closest('.footer-copy, .author-admin-btn');
-            if (target) {
-                footerClickCount++;
-                if (footerClickCount === 3) {
-                    footerClickCount = 0;
-                    clearTimeout(footerClickTimer);
-                    unlockAuthorAdmin();
-                }
-                clearTimeout(footerClickTimer);
-                footerClickTimer = setTimeout(() => { footerClickCount = 0; }, 600);
-            }
-        });
-
-        likeBtn.addEventListener('click', async () => {
-            likeBtn.disabled = true;
-            likeBtn.classList.add('pop');
+        for (const container of containers) {
+            const articleId = container.dataset.articleId;
             try {
-                const newCount = await addLike(articleId);
-                likeCountLabel.textContent = newCount;
-                likeBtn.classList.add('liked');
-
-                const topLikeCount = document.getElementById('top-like-count');
-                if (topLikeCount) topLikeCount.textContent = newCount;
-                const topLikeBtn = document.getElementById('top-like-btn');
-                if (topLikeBtn) {
-                    topLikeBtn.classList.add('liked');
-                    topLikeBtn.disabled = true;
-                }
-                setLikeSyncStatus('', false);
-
-                // Show Optional Post-Like Handle Modal
-                const modal = document.getElementById('like-handle-modal');
-                if (modal && !localStorage.getItem(`handle_saved_${articleId}`)) {
-                    modal.classList.add('show');
+                const state = await getArticleEngagement(articleId, visitorId);
+                container.replaceChildren();
+                for (const [label, count] of [['Likes', state.likeCount], ['Comments', state.commentCount]]) {
+                    const badge = document.createElement('span');
+                    badge.className = 'stat-badge';
+                    badge.textContent = `${count} ${label}`;
+                    container.appendChild(badge);
                 }
             } catch (error) {
-                console.error('Could not save article like:', error);
-                setLikeSyncStatus('Your like could not be saved. Please try again.', true);
-                likeBtn.disabled = false;
-            } finally {
-                setTimeout(() => likeBtn.classList.remove('pop'), 300);
-            }
-        });
-
-        // Handle Modal Controls
-        const handleModal = document.getElementById('like-handle-modal');
-        const closeModal = () => { if (handleModal) handleModal.classList.remove('show'); };
-
-        if (document.getElementById('like-modal-close-btn')) document.getElementById('like-modal-close-btn').onclick = closeModal;
-        if (document.getElementById('like-modal-backdrop')) document.getElementById('like-modal-backdrop').onclick = closeModal;
-        if (document.getElementById('like-modal-skip-btn')) document.getElementById('like-modal-skip-btn').onclick = closeModal;
-
-        // Save Optional Handle for Like
-        const saveHandleBtn = document.getElementById('like-handle-save-btn');
-        if (saveHandleBtn) {
-            saveHandleBtn.addEventListener('click', async () => {
-                const handleInput = document.getElementById('like-handle-input');
-                const handleVal = handleInput ? handleInput.value.trim() : '';
-                if (handleVal && supabaseClient) {
-                    await supabaseClient.from('article_like_handles').insert([{
-                        article_id: articleId,
-                        reader_handle: handleVal
-                    }]);
-                    localStorage.setItem(`handle_saved_${articleId}`, 'true');
-                }
-                closeModal();
-            });
-        }
-
-        shareBtn.addEventListener('click', () => {
-            if (navigator.share) {
-                navigator.share({
-                    title: document.title,
-                    url: window.location.href
-                }).catch(() => {});
-            } else {
-                copyToClipboard();
-            }
-        });
-
-        copyLinkBtn.addEventListener('click', copyToClipboard);
-
-        function copyToClipboard() {
-            navigator.clipboard.writeText(window.location.href).then(() => {
-                shareToast.classList.add('show');
-                setTimeout(() => shareToast.classList.remove('show'), 2500);
-            });
-        }
-
-        async function loadComments() {
-            const comments = await fetchComments(articleId);
-            const topCommentCount = document.getElementById('top-comment-count');
-            if (topCommentCount) topCommentCount.textContent = comments ? comments.length : 0;
-
-            if (!comments || comments.length === 0) {
-                commentsList.innerHTML = `<div class="no-comments">No comments yet. Be the first to share a thought!</div>`;
-                return;
-            }
-
-            commentsList.innerHTML = comments.map(c => `
-                <div class="comment-card" data-id="${c.id}">
-                    <div class="comment-header">
-                        <span class="comment-author">${escapeHTML(c.author_name)}</span>
-                        <div style="display:flex; align-items:center; gap:10px;">
-                            <span class="comment-date">${timeAgo(c.created_at)}</span>
-                            ${isAdmin ? `<button class="delete-comment-btn" data-id="${c.id}" title="Delete comment (Admin)">🗑️ Delete</button>` : ''}
-                        </div>
-                    </div>
-                    <div class="comment-body">${escapeHTML(c.content)}</div>
-                </div>
-            `).join('');
-
-            // Attach Delete Event Listeners if Admin
-            if (isAdmin) {
-                commentsList.querySelectorAll('.delete-comment-btn').forEach(btn => {
-                    btn.onclick = async () => {
-                        const commentId = btn.getAttribute('data-id');
-                        if (confirm('Delete this comment permanently?')) {
-                            if (supabaseClient) {
-                                await supabaseClient.from('article_comments').delete().eq('id', commentId);
-                            }
-                            loadComments();
-                        }
-                    };
-                });
+                console.error(`Could not load writing-card stats for ${articleId}:`, error);
+                container.textContent = 'Engagement counts could not be loaded';
             }
         }
+    }
 
-        loadComments();
+    async function initializeArticle() {
+        const engagement = document.getElementById('engagement-section');
+        if (!engagement) return;
 
-        commentForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const name = commentName.value.trim();
-            const content = commentContent.value.trim();
-            if (!name || !content) return;
+        let articleId;
+        let visitorId;
+        try {
+            articleId = getArticleId();
+            visitorId = getVisitorId();
+        } catch (error) {
+            console.error('Could not initialize article engagement:', error);
+            engagement.textContent = 'Likes and comments need a secure browser session to load.';
+            return;
+        }
 
-            const submitBtn = document.getElementById('submit-comment-btn');
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Posting...';
-
-            await postComment(articleId, name, content);
-
-            // Send Instant Email Notification to Author (vaibhavsatish9@gmail.com)
-            try {
-                fetch('https://formsubmit.co/ajax/vaibhavsatish9@gmail.com', {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        _subject: `💬 New Comment on "${document.title}"`,
-                        Article: articleId,
-                        Commenter: name,
-                        Comment: content,
-                        Time: new Date().toLocaleString()
-                    })
-                }).catch(() => {});
-            } catch (e) {}
-
-            commentContent.value = '';
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Post Comment';
-
-            loadComments();
+        renderTopEngagement(articleId);
+        renderEngagementUI(articleId);
+        bindArticleInteractions(articleId, visitorId);
+        await Promise.all([refreshArticle(articleId, visitorId), renderWritingsPageStats()]);
+        window.setInterval(() => {
+            if (!document.hidden) refreshArticle(articleId, visitorId);
+        }, 30000);
+        window.addEventListener('focus', () => refreshArticle(articleId, visitorId));
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) refreshArticle(articleId, visitorId);
         });
     }
 
-    // --- VIEW FORMAT SWITCHER (Links, Detailed, Grid) ---
-    function initViewSwitcher() {
-        const pubList = document.querySelector('.pub-list');
-        if (!pubList || document.querySelector('.writings-page')) return;
-
-        const sectionTitle = document.querySelector('.section-title');
-
-        if (sectionTitle && !document.querySelector('.view-switcher')) {
-            const headerBar = document.createElement('div');
-            headerBar.className = 'view-header-bar';
-            
-            sectionTitle.parentNode.insertBefore(headerBar, sectionTitle);
-            headerBar.appendChild(sectionTitle);
-
-            const switcher = document.createElement('div');
-            switcher.className = 'view-switcher';
-            switcher.innerHTML = `
-                <button class="view-btn" data-view="links" title="Links format (Just titles)">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
-                </button>
-                <button class="view-btn" data-view="detailed" title="Detailed list format">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="7" y1="8" x2="17" y2="8"></line><line x1="7" y1="12" x2="17" y2="12"></line><line x1="7" y1="16" x2="13" y2="16"></line></svg>
-                </button>
-                <button class="view-btn" data-view="grid" title="Grid cards format">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-                </button>
-            `;
-            headerBar.appendChild(switcher);
-        }
-
-        // Saved preference or default to 'links'
-        const savedView = localStorage.getItem('pub_view_preference') || 'links';
-
-        function applyView(viewMode) {
-            pubList.classList.remove('view-links', 'view-detailed', 'view-grid');
-            pubList.classList.add(`view-${viewMode}`);
-            localStorage.setItem('pub_view_preference', viewMode);
-
-            document.querySelectorAll('.view-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.getAttribute('data-view') === viewMode);
-            });
-        }
-
-        applyView(savedView);
-
-        document.querySelectorAll('.view-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const mode = btn.getAttribute('data-view');
-                applyView(mode);
-            });
-        });
+    function start() {
+        if (document.getElementById('engagement-section')) initializeArticle();
+        else renderWritingsPageStats();
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        initViewSwitcher();
-        loadSupabaseSDK(() => {
-            renderTopArticleEngagement();
-            renderEngagementUI();
-            renderWritingsPageStats();
-            watchArticleLikeCount(getArticleId());
-        });
-    });
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once: true });
+    else start();
 
-    document.addEventListener('portfolio:tab-content-updated', () => {
-        if (!document.querySelector('.writings-main .card-engagement-stats')) return;
-        loadSupabaseSDK(renderWritingsPageStats);
-    });
+    document.addEventListener('portfolio:tab-content-updated', renderWritingsPageStats);
 })();

@@ -1,0 +1,59 @@
+.engagement-field-label {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: var(--ink-muted);
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+.engagement-honeypot {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.comment-status,
+.comments-error {
+  margin-top: 0.65rem;
+  color: var(--ink-muted);
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.comment-status.error,
+.comments-error,
+.share-toast.error,
+.top-share-toast.error {
+  color: #b42318;
+}
+
+.engagement-btn:disabled,
+.comment-submit-btn:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.comment-form {
+  position: relative;
+}
+
+@media (max-width: 600px) {
+  .top-engagement-bar {
+    margin-left: 0;
+    flex-wrap: wrap;
+  }
+
+  .engagement-wrapper {
+    margin-top: 3rem;
+    padding-top: 1.75rem;
+  }
+
+  .comment-form {
+    padding: 1rem;
+  }
+}
