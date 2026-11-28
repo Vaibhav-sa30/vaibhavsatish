@@ -977,12 +977,17 @@
 .about-photo {
   margin: 1.5rem 0 2rem;
   max-width: 620px;
+  overflow: hidden;
+  border-radius: 4px;
 }
 
 .about-photo img {
   display: block;
   width: 100%;
-  height: auto;
+  height: 350px;
+  object-fit: cover;
+  object-position: center;
+  transform: scale(1.2);
   border: 1px solid var(--border);
   border-radius: 4px;
 }
