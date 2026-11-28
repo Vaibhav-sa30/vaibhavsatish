@@ -993,9 +993,34 @@
 }
 
 .about-photo figcaption {
+  position: relative;
+  z-index: 2;
+  display: block;
   margin-top: 0.55rem;
+  padding-top: 0.55rem;
+  background: var(--page);
   color: var(--ink-faint);
   font-family: var(--font-sans);
   font-size: 0.78rem;
   line-height: 1.5;
+}
+
+/* About page — inline links */
+.about-copy .pub-description a {
+  color: var(--accent2);
+  text-decoration: underline;
+  text-decoration-color: var(--border);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+.about-copy .pub-description a:hover {
+  color: var(--accent);
+  text-decoration-color: var(--accent);
+}
+
+.about-copy .pub-description a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
 }
