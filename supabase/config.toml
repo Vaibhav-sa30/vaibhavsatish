@@ -1,0 +1,13 @@
+project_id = "frgzcwsqbakawyrqegxj"
+
+[functions.subscribe-artifacts]
+verify_jwt = false
+
+[functions.notify-artifact]
+verify_jwt = false
+
+[functions.confirm-artifact-subscription]
+verify_jwt = false
+
+[functions.unsubscribe-artifacts]
+verify_jwt = false
